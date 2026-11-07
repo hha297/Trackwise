@@ -107,43 +107,261 @@ def payload_hash(payload: dict[str, Any]) -> str:
     return hashlib.sha256(blob).hexdigest()
 
 
+async def find_observation_by_content_hash(
+    conn: asyncpg.Connection,
+    *,
+    source_system: str,
+    external_id: str,
+    content_hash: str,
+) -> uuid.UUID | None:
+    """Idempotency: reuse existing observation when content is unchanged."""
+    value = await conn.fetchval(
+        """
+        select id
+        from public.food_source_observations
+        where source_system = $1
+          and external_id = $2
+          and content_hash = $3
+        order by created_at desc
+        limit 1
+        """,
+        source_system,
+        external_id,
+        content_hash,
+    )
+    return cast(uuid.UUID | None, value)
+
+
 async def insert_observation(
     conn: asyncpg.Connection,
     product: SourceProduct,
     *,
     import_job_item_id: uuid.UUID | None,
-) -> uuid.UUID:
-    return cast(
-        uuid.UUID,
-        await conn.fetchval(
-        """
-        insert into public.food_source_observations (
-          source_system, external_id, observation_version, content_hash,
-          barcode_raw, barcode_normalized, name_original, brand_original,
-          ingredients_original, nutrition_original, nutrition_basis_original,
-          license_tag, attribution_text, redistribution_class,
-          import_job_item_id, retrieved_at
-        ) values (
-          $1,$2,1,$3,$4,$5,$6,$7,$8,$9::jsonb,$10,$11,$12,$13,$14, timezone('utc', now())
+) -> tuple[uuid.UUID, bool]:
+    """
+    Insert an append-only observation.
+
+    Returns (observation_id, created). Concurrent identical payloads collapse via
+    unique index + UniqueViolation → (existing_id, False).
+    """
+    content = payload_hash(product.raw_payload or product.nutrition_original)
+    try:
+        observation_id = await _insert_observation_row(
+            conn, product, content_hash=content, import_job_item_id=import_job_item_id
         )
-        returning id
+        return observation_id, True
+    except asyncpg.UniqueViolationError:
+        existing = await find_observation_by_content_hash(
+            conn,
+            source_system=product.source_system,
+            external_id=product.external_id,
+            content_hash=content,
+        )
+        if existing is None:
+            raise
+        return existing, False
+
+
+async def _insert_observation_row(
+    conn: asyncpg.Connection,
+    product: SourceProduct,
+    *,
+    content_hash: str,
+    import_job_item_id: uuid.UUID | None,
+) -> uuid.UUID:
+    # Prefer extended columns when migration applied; fall back for older DBs.
+    try:
+        return cast(
+            uuid.UUID,
+            await conn.fetchval(
+                """
+                insert into public.food_source_observations (
+                  source_system, external_id, observation_version, content_hash,
+                  barcode_raw, barcode_normalized, name_original, brand_original,
+                  ingredients_original, nutrition_original, nutrition_basis_original,
+                  license_tag, attribution_text, redistribution_class,
+                  import_job_item_id, retrieved_at,
+                  raw_payload, source_url, provider_data_version
+                ) values (
+                  $1,$2,1,$3,$4,$5,$6,$7,$8,$9::jsonb,$10,$11,$12,$13,$14, timezone('utc', now()),
+                  $15::jsonb,$16,$17
+                )
+                returning id
+                """,
+                product.source_system,
+                product.external_id,
+                content_hash,
+                product.barcode_raw,
+                normalize_barcode(product.barcode_raw),
+                display_name_preserved(product.name_original),
+                display_name_preserved(product.brand_original),
+                product.ingredients_original,
+                json.dumps(product.nutrition_original),
+                product.nutrition_basis_original,
+                product.license_tag,
+                product.attribution_text,
+                product.redistribution_class,
+                import_job_item_id,
+                json.dumps(product.raw_payload or {}),
+                product.source_url,
+                product.provider_data_version,
+            ),
+        )
+    except asyncpg.UndefinedColumnError:
+        return cast(
+            uuid.UUID,
+            await conn.fetchval(
+                """
+                insert into public.food_source_observations (
+                  source_system, external_id, observation_version, content_hash,
+                  barcode_raw, barcode_normalized, name_original, brand_original,
+                  ingredients_original, nutrition_original, nutrition_basis_original,
+                  license_tag, attribution_text, redistribution_class,
+                  import_job_item_id, retrieved_at
+                ) values (
+                  $1,$2,1,$3,$4,$5,$6,$7,$8,$9::jsonb,$10,$11,$12,$13,$14, timezone('utc', now())
+                )
+                returning id
+                """,
+                product.source_system,
+                product.external_id,
+                content_hash,
+                product.barcode_raw,
+                normalize_barcode(product.barcode_raw),
+                display_name_preserved(product.name_original),
+                display_name_preserved(product.brand_original),
+                product.ingredients_original,
+                json.dumps(product.nutrition_original),
+                product.nutrition_basis_original,
+                product.license_tag,
+                product.attribution_text,
+                product.redistribution_class,
+                import_job_item_id,
+            ),
+        )
+
+
+async def reclaim_stale_running_items(
+    conn: asyncpg.Connection,
+    job_id: uuid.UUID,
+    *,
+    stale_after_seconds: int = 900,
+) -> int:
+    """Re-queue items stuck in running after worker crash / interrupt."""
+    stale_after_seconds = max(60, stale_after_seconds)
+    value = await conn.fetchval(
+        """
+        with updated as (
+          update public.food_import_job_items
+          set status = 'queued',
+              updated_at = timezone('utc', now()),
+              error_payload = coalesce(error_payload, '{}'::jsonb)
+                || jsonb_build_object('reclaimed', true)
+          where job_id = $1
+            and status = 'running'
+            and updated_at < timezone('utc', now()) - make_interval(secs => $2)
+          returning id
+        )
+        select count(*)::int from updated
         """,
-        product.source_system,
-        product.external_id,
-        payload_hash(product.raw_payload or product.nutrition_original),
-        product.barcode_raw,
-        normalize_barcode(product.barcode_raw),
-        display_name_preserved(product.name_original),
-        display_name_preserved(product.brand_original),
-        product.ingredients_original,
-        json.dumps(product.nutrition_original),
-        product.nutrition_basis_original,
-        product.license_tag,
-        product.attribution_text,
-        product.redistribution_class,
-        import_job_item_id,
-        ),
+        job_id,
+        stale_after_seconds,
     )
+    return int(value or 0)
+
+
+async def count_job_item_stats(
+    conn: asyncpg.Connection, job_id: uuid.UUID
+) -> dict[str, int]:
+    rows = await conn.fetch(
+        """
+        select status, count(*)::int as n
+        from public.food_import_job_items
+        where job_id = $1
+        group by status
+        """,
+        job_id,
+    )
+    stats = {
+        "queued": 0,
+        "running": 0,
+        "succeeded": 0,
+        "failed": 0,
+        "skipped": 0,
+        "discovered": 0,
+    }
+    for row in rows:
+        key = str(row["status"])
+        n = int(row["n"])
+        if key in stats:
+            stats[key] = n
+        stats["discovered"] += n
+    return stats
+
+
+async def finalize_import_job(
+    conn: asyncpg.Connection,
+    job_id: uuid.UUID,
+    *,
+    provider: str,
+    duration_ms: int,
+) -> tuple[str, dict[str, Any]]:
+    """
+    Finalize job status from durable item counts (safe under concurrent workers).
+
+    Leaves job as running when queued/running items remain.
+    """
+    counts = await count_job_item_stats(conn, job_id)
+    checkpoint: dict[str, Any] = {
+        "provider": provider,
+        "discovered": counts["discovered"],
+        "succeeded": counts["succeeded"],
+        "failed": counts["failed"],
+        "skipped": counts["skipped"],
+        "queued": counts["queued"],
+        "running": counts["running"],
+        "duration_ms": duration_ms,
+    }
+    if counts["queued"] > 0 or counts["running"] > 0:
+        job_status = "running"
+        await conn.execute(
+            """
+            update public.food_import_jobs
+            set status = 'running',
+                checkpoint = $2::jsonb,
+                updated_at = timezone('utc', now())
+            where id = $1
+            """,
+            job_id,
+            json.dumps(checkpoint),
+        )
+        return job_status, checkpoint
+
+    job_status = job_status_from_counts(counts)
+    await conn.execute(
+        """
+        update public.food_import_jobs
+        set status = $3,
+            finished_at = timezone('utc', now()),
+            checkpoint = $2::jsonb
+        where id = $1
+        """,
+        job_id,
+        json.dumps(checkpoint),
+        job_status,
+    )
+    return job_status, checkpoint
+
+
+def job_status_from_counts(counts: dict[str, int]) -> str:
+    failed = int(counts.get("failed", 0))
+    succeeded = int(counts.get("succeeded", 0))
+    if failed and succeeded:
+        return "partial"
+    if failed and not succeeded:
+        return "failed"
+    # all succeeded, all skipped, or empty job → succeeded (no failures)
+    return "succeeded"
 
 
 async def ensure_processing_row(conn: asyncpg.Connection, observation_id: uuid.UUID) -> None:
@@ -191,6 +409,12 @@ async def create_draft_food_from_source(
                 return 0.0
         return None
 
+    norm = normalize_barcode(barcode)
+    if norm:
+        existing = await find_catalog_food_by_barcode(conn, norm)
+        if existing is not None:
+            return existing
+
     food_id = cast(
         uuid.UUID,
         await conn.fetchval(
@@ -200,7 +424,7 @@ async def create_draft_food_from_source(
               calories, protein_g, carbs_g, fat_g,
               nutrition_basis, basis_unit, basis_amount
             ) values (
-              null, $1, $2, $3, 'open_food_facts', 'draft',
+              null, $1, $2, $3, $8, 'draft',
               coalesce($4, 0), coalesce($5, 0), coalesce($6, 0), coalesce($7, 0),
               'per100', 'g', 100
             )
@@ -213,21 +437,28 @@ async def create_draft_food_from_source(
             macro("protein_g"),
             macro("carbohydrates_g"),
             macro("fat_g"),
+            product.source_system,
         ),
     )
 
-    norm = normalize_barcode(barcode)
     if norm:
-        await conn.execute(
-            """
-            insert into public.food_barcodes (
-              food_id, barcode_raw, barcode_normalized, is_primary, scope, owner_user_id, is_active
-            ) values ($1, $2, $3, true, 'catalog', null, true)
-            """,
-            food_id,
-            barcode,
-            norm,
-        )
+        try:
+            await conn.execute(
+                """
+                insert into public.food_barcodes (
+                  food_id, barcode_raw, barcode_normalized, is_primary, scope, owner_user_id, is_active
+                ) values ($1, $2, $3, true, 'catalog', null, true)
+                """,
+                food_id,
+                barcode,
+                norm,
+            )
+        except asyncpg.UniqueViolationError:
+            # Concurrent draft won the barcode race — use the existing catalog food.
+            existing = await find_catalog_food_by_barcode(conn, norm)
+            if existing is not None:
+                return existing
+            raise
 
     search = normalize_search_name(name)
     if search:

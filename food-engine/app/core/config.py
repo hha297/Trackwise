@@ -25,7 +25,7 @@ class Settings(BaseSettings):
 
     app_env: Literal["development", "test", "staging", "production"] = "development"
     app_name: str = "Trackwise Food Intelligence"
-    app_version: str = "0.3.0"
+    app_version: str = "0.4.0"
     api_v1_prefix: str = "/api/v1"
 
     supabase_url: str | None = None
@@ -66,11 +66,27 @@ class Settings(BaseSettings):
     r2_private_access_key_id: str | None = None
     r2_private_secret_access_key: str | None = None
 
-    # Ingestion
-    off_user_agent: str = "TrackwiseFoodEngine/0.3 (https://trackwise.one)"
+    # Ingestion / providers (Phase 4)
+    off_enabled: bool = True
+    off_user_agent: str = "TrackwiseFoodEngine/0.4 (https://trackwise.one)"
     off_base_url: str = "https://world.openfoodfacts.org"
+
+    fineli_enabled: bool = True
+    fineli_api_enabled: bool = False
+    fineli_api_base_url: str = "https://fineli.fi/fineli"
+    fineli_dataset_path: str | None = None
+
+    usda_enabled: bool = True
+    usda_fdc_api_key: str | None = None
+    usda_fdc_base_url: str = "https://api.nal.usda.gov/fdc/v1"
+
+    provider_timeout_seconds: float = 30.0
+    provider_max_retries: int = 3
     ingest_pilot_batch_size: int = 25
+    ingest_batch_max_size: int = 100
     ingest_rate_limit_per_second: float = 2.0
+    ingest_download_images: bool = False
+
     image_max_bytes: int = 8_000_000
     image_min_dimension: int = 100
     image_max_dimension: int = 4096
@@ -98,6 +114,8 @@ class Settings(BaseSettings):
         "r2_endpoint",
         "r2_private_access_key_id",
         "r2_private_secret_access_key",
+        "fineli_dataset_path",
+        "usda_fdc_api_key",
         mode="before",
     )
     @classmethod

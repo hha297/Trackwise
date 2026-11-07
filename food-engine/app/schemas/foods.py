@@ -75,12 +75,35 @@ class ImportJobCreate(BaseModel):
     barcodes: list[str] = Field(min_length=1, max_length=100)
 
 
+class IngestJobCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    provider: str = Field(min_length=2, max_length=64)
+    external_ids: list[str] = Field(min_length=1, max_length=100)
+
+
+class IngestSingleRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    provider: str = Field(min_length=2, max_length=64)
+    external_id: str = Field(min_length=1, max_length=128)
+
+
 class ImportJobOut(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     job_id: UUID
     status: str
     stats: dict[str, Any] | None = None
+
+
+class ProviderStatusOut(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    provider: str
+    enabled: bool
+    configured: bool
+    detail: str | None = None
 
 
 class PublishRequest(BaseModel):

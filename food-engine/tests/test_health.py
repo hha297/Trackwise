@@ -12,7 +12,7 @@ def test_health_returns_ok(client: TestClient) -> None:
     assert payload == {
         "status": "ok",
         "service": "trackwise-food-engine",
-        "version": "0.3.0",
+        "version": "0.4.0",
     }
 
 
