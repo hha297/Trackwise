@@ -20,13 +20,35 @@ from app.schemas.foods import (
     ImageReviewRequest,
     ImportJobCreate,
     ImportJobOut,
+    IngestJobCreate,
+    IngestSingleRequest,
+    ProviderStatusOut,
     PublishRequest,
 )
+from app.sources.registry import build_provider_registry, provider_statuses
 from app.storage.r2 import R2Storage
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/admin", tags=["admin"])
+
+
+@router.get("/providers", response_model=list[ProviderStatusOut])
+async def list_providers(
+    admin: Annotated[AdminPrincipal, Depends(require_admin)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> list[ProviderStatusOut]:
+    _ = admin
+    registry = build_provider_registry(settings)
+    return [
+        ProviderStatusOut(
+            provider=s.provider,
+            enabled=s.enabled,
+            configured=s.configured,
+            detail=s.detail,
+        )
+        for s in provider_statuses(settings, registry)
+    ]
 
 
 @router.post("/imports", response_model=ImportJobOut)
@@ -35,12 +57,57 @@ async def create_import(
     admin: Annotated[AdminPrincipal, Depends(require_admin)],
     settings: Annotated[Settings, Depends(get_settings)],
 ) -> ImportJobOut:
+    """Legacy OFF barcode pilot create."""
     pipeline = IngestionPipeline(settings)
     job_id = await pipeline.create_pilot_job(
         body.barcodes,
         created_by=UUID(admin.user_id),
     )
     return ImportJobOut(job_id=job_id, status="queued")
+
+
+@router.post("/ingest/jobs", response_model=ImportJobOut)
+async def create_ingest_job(
+    body: IngestJobCreate,
+    admin: Annotated[AdminPrincipal, Depends(require_admin)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> ImportJobOut:
+    pipeline = IngestionPipeline(settings)
+    try:
+        job_id = await pipeline.create_job(
+            provider=body.provider.strip(),
+            external_ids=body.external_ids,
+            created_by=UUID(admin.user_id),
+        )
+    except KeyError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        ) from exc
+    return ImportJobOut(job_id=job_id, status="queued")
+
+
+@router.post("/ingest/single", response_model=ImportJobOut)
+async def ingest_single(
+    body: IngestSingleRequest,
+    admin: Annotated[AdminPrincipal, Depends(require_admin)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> ImportJobOut:
+    pipeline = IngestionPipeline(settings)
+    try:
+        result = await pipeline.ingest_single(
+            provider=body.provider.strip(),
+            external_id=body.external_id.strip(),
+            created_by=UUID(admin.user_id),
+        )
+    except KeyError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        ) from exc
+    job_id = UUID(str(result["job_id"]))
+    status_value = _status_from_stats(result)
+    return ImportJobOut(job_id=job_id, status=status_value, stats=result)
 
 
 @router.post("/imports/{job_id}/run", response_model=ImportJobOut)
@@ -51,8 +118,13 @@ async def run_import(
 ) -> ImportJobOut:
     _ = admin
     pipeline = IngestionPipeline(settings)
-    stats = await pipeline.process_job(job_id)
-    return ImportJobOut(job_id=job_id, status="succeeded", stats=stats)
+    try:
+        stats = await pipeline.process_job(job_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except KeyError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+    return ImportJobOut(job_id=job_id, status=_status_from_stats(stats), stats=stats)
 
 
 @router.get("/imports/{job_id}", response_model=ImportJobOut)
@@ -73,6 +145,20 @@ async def get_import(
     if isinstance(stats, str):
         stats = json.loads(stats)
     return ImportJobOut(job_id=row["id"], status=row["status"], stats=stats)
+
+
+def _status_from_stats(stats: dict[str, Any]) -> str:
+    if "status" in stats and isinstance(stats["status"], str):
+        return stats["status"]
+    if int(stats.get("queued", 0) or 0) or int(stats.get("running", 0) or 0):
+        return "running"
+    failed = int(stats.get("failed", 0) or 0)
+    succeeded = int(stats.get("succeeded", 0) or 0)
+    if failed and succeeded:
+        return "partial"
+    if failed and not succeeded:
+        return "failed"
+    return "succeeded"
 
 
 @router.get("/candidates", response_model=list[CandidateFoodOut])
@@ -248,5 +334,10 @@ async def worker_run_import(
     _worker: Annotated[dict[str, str], Depends(require_worker)],
 ) -> ImportJobOut:
     pipeline = IngestionPipeline(settings)
-    stats = await pipeline.process_job(job_id)
-    return ImportJobOut(job_id=job_id, status="succeeded", stats=stats)
+    try:
+        stats = await pipeline.process_job(job_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except KeyError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+    return ImportJobOut(job_id=job_id, status=_status_from_stats(stats), stats=stats)

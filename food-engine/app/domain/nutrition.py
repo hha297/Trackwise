@@ -111,3 +111,39 @@ def facts_from_off_nutriments(nutriments: dict[str, object], *, basis: Basis = "
         )
     )
     return facts
+
+
+MAPPED_NUTRIENT_SPECS: tuple[tuple[str, str], ...] = (
+    ("energy_kcal", "kcal"),
+    ("energy_kj", "kJ"),
+    ("protein_g", "g"),
+    ("carbohydrates_g", "g"),
+    ("fat_g", "g"),
+    ("saturated_fat_g", "g"),
+    ("sugars_g", "g"),
+    ("fiber_g", "g"),
+    ("salt_g", "g"),
+    ("sodium_mg", "mg"),
+)
+
+
+def facts_from_mapped_nutrition(
+    nutrition: dict[str, object],
+    *,
+    basis: Basis = "per_100g",
+) -> list[NutrientFact]:
+    """Build facts from provider-normalized keys (Fineli/USDA mapped dicts)."""
+    facts: list[NutrientFact] = []
+    for code, unit in MAPPED_NUTRIENT_SPECS:
+        value, status = classify_value(nutrition.get(code))
+        facts.append(
+            NutrientFact(
+                nutrient_code=code,
+                basis=basis,
+                value=value,
+                value_status=status,
+                unit=unit,
+                source_field=code,
+            )
+        )
+    return facts

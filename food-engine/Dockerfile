@@ -1,4 +1,4 @@
-# Trackwise Food Engine — Phase 3.1 (Railway-ready)
+# Trackwise Food Engine — Phase 4 (Railway-ready; COPY app includes all provider modules)
 FROM python:3.12-slim AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
