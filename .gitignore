@@ -34,6 +34,19 @@ Thumbs.db
 # local env files
 .env
 .env.*
+!.env.example
+!**/.env.example
+
+# Python
+**/__pycache__/
+**/.pytest_cache/
+**/.ruff_cache/
+**/.mypy_cache/
+**/.venv/
+**/venv/
+*.egg-info/
+.coverage
+htmlcov/
 
 # typescript
 *.tsbuildinfo

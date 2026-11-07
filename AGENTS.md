@@ -6,6 +6,8 @@ The Admin web console lives in `admin/` (own package + lockfile). Read `admin/AG
 
 The public marketing site (main web for trackwise.one) lives in `dashboard/` (own package + lockfile). Read `dashboard/AGENTS.md` and `dashboard/README.md` before changing public site content, SEO, legal drafts, or store/download configuration. This is not the Admin console (`admin/`).
 
+The Food Intelligence API lives in `food-engine/` (own Python package). Read `food-engine/README.md` before extending it. Spec: `docs/food-intelligence-phase-0.md`.
+
 These instructions apply throughout the repository. Read any more specific AGENTS.md in the area being changed. Follow the user's current requirements; this file supplies project defaults, not permission to expand a task.
 Start every task with the actual checkout
 

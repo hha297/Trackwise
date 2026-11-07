@@ -3,7 +3,7 @@
     "name": "Trackwise",
     "slug": "trackwise",
     "owner": "hha2907",
-    "version": "1.0.0",
+    "version": "1.1.1",
     "orientation": "portrait",
     "icon": "./assets/images/branding/icon.png",
     "scheme": "trackwise",
@@ -18,7 +18,7 @@
     },
     "android": {
       "package": "com.trackwise.app",
-      "versionCode": 2,
+      "versionCode": 3,
       "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "backgroundColor": "#0D110D",
