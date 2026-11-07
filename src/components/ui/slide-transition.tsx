@@ -1,5 +1,5 @@
 import { useIsFocused } from 'expo-router';
-import { type ReactNode, useLayoutEffect } from 'react';
+import { useLayoutEffect, type ReactNode } from 'react';
 import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, {
   cancelAnimation,

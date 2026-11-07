@@ -45,12 +45,12 @@ export function FloatingTabBar({
   const dockWidth = Math.min(width - horizontalGap * 2, 620);
   const dockElevation = isDark
     ? ({
-        shadowColor: colors.primary,
-        shadowOpacity: Platform.OS === 'ios' ? 0.18 : 0.22,
-        shadowRadius: 10,
-        shadowOffset: { width: 0, height: 3 },
-        elevation: 6,
-      } as const)
+      shadowColor: colors.primary,
+      shadowOpacity: Platform.OS === 'ios' ? 0.18 : 0.22,
+      shadowRadius: 10,
+      shadowOffset: { width: 0, height: 3 },
+      elevation: 6,
+    } as const)
     : elevation.tabBar('#202020');
   const dockBorder = isDark ? withAlpha(colors.primary, 0.16) : colors.border;
 
