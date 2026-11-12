@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import Constants from 'expo-constants';
 
 import { getSupabase } from '@/lib/supabase/client';
@@ -214,7 +215,7 @@ export async function wipeOwnUserData(): Promise<void> {
 
   const { error } = await supabase.rpc('wipe_own_user_data');
   if (error) {
-    throw new Error(error.message || 'Could not delete account data.');
+    throw new Error(error.message || i18n.t('errors.deleteAccountData'));
   }
 }
 
@@ -252,7 +253,7 @@ export async function deleteOwnAccount(): Promise<void> {
 
   if (error) {
     throw new Error(
-      await edgeFunctionErrorMessage(error, data, 'Could not delete account.'),
+      await edgeFunctionErrorMessage(error, data, i18n.t('errors.deleteAccount')),
     );
   }
 

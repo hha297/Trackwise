@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import type { FoodEntry } from '@/features/food/types';
 import type { WorkoutListItem } from '@/features/workout/hooks';
 import { getSupabase } from '@/lib/supabase/client';
@@ -47,7 +48,7 @@ export async function fetchFoodEntriesInRange(
     }
   }
 
-  throw new Error('Could not load food entries.');
+  throw new Error(i18n.t('errors.loadFoodEntries'));
 }
 
 export async function fetchWorkoutsInRange(

@@ -1,5 +1,6 @@
 import { Eye, EyeOff } from 'lucide-react-native';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, TextInput, View, type TextInputProps } from 'react-native';
 
 import { iconSizes, layout, radii, spacing } from '@/theme';
@@ -29,6 +30,7 @@ export function Input({
   defaultValue,
   ...props
 }: InputProps) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const [focused, setFocused] = useState(false);
   const [hidden, setHidden] = useState(true);
@@ -87,7 +89,7 @@ export function Input({
         {passwordToggle ? (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={hidden ? 'Show password' : 'Hide password'}
+            accessibilityLabel={hidden ? t('auth.showPassword') : t('auth.hidePassword')}
             hitSlop={8}
             onPress={() => setHidden((next) => !next)}
             style={{ paddingLeft: spacing[2] }}

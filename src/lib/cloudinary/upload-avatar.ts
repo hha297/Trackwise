@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import { AVATAR_FOLDER, type SelectedAvatarImage } from '@/features/account/avatar';
 
 import { getCloudinaryEnv, isCloudinaryConfigured } from './env';
@@ -35,33 +36,33 @@ export async function uploadAvatarToCloudinary(
   try {
     response = await fetch(endpoint, { method: 'POST', body: form });
   } catch {
-    throw new Error('Could not upload the avatar. Check your connection and try again.');
+    throw new Error(i18n.t('errors.avatarUploadNetwork'));
   }
 
   let json: CloudinaryUploadJson = {};
   try {
     json = (await response.json()) as CloudinaryUploadJson;
   } catch {
-    throw new Error('Cloudinary returned an unexpected response.');
+    throw new Error(i18n.t('errors.uploadUnexpected'));
   }
 
   if (!response.ok) {
     const message = json.error?.message?.trim();
     if (message?.toLowerCase().includes('preset')) {
-      throw new Error('Cloudinary upload preset is missing or invalid.');
+      throw new Error(i18n.t('errors.uploadPresetInvalid'));
     }
     if (message?.toLowerCase().includes('folder')) {
       throw new Error(
         'Cloudinary folder is not allowed by the upload preset. Allow folder trackwise/avatars (or remove folder restriction).',
       );
     }
-    throw new Error(message || 'Could not upload the avatar.');
+    throw new Error(message || i18n.t('errors.avatarUploadFailed'));
   }
 
   const secureUrl = json.secure_url?.trim();
   const publicId = json.public_id?.trim();
   if (!secureUrl || !publicId) {
-    throw new Error('Cloudinary did not return an image URL.');
+    throw new Error(i18n.t('errors.uploadNoUrl'));
   }
 
   return { secureUrl, publicId };

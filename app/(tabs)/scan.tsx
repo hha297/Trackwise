@@ -97,10 +97,10 @@ export default function ScanScreen() {
       const lookupError =
         error instanceof FoodLookupError
           ? error
-          : new FoodLookupError('network', 'Could not connect to Open Food Facts.');
+          : new FoodLookupError('network', t('scan.errors.network'));
       setResult({ kind: 'error', barcode, error: lookupError });
     }
-  }, []);
+  }, [t]);
 
   const handleBarcode = useCallback(
     ({ data, type }: BarcodeScanningResult) => {

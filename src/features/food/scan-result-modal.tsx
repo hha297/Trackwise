@@ -733,10 +733,8 @@ export function FoodLogContextPicker({
   const colors = useThemeColors();
   const { t, i18n } = useTranslation();
   const appLanguage = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0];
-  // Scan copy is currently localized in Vietnamese and English. FI/SV scan copy still
-  // falls back to English, so its calendar must stay English instead of leaking the
-  // device's Finnish/Swedish date labels into an otherwise English modal.
-  const locale = appLanguage === 'vi' ? 'vi' : 'en';
+  const locale =
+    appLanguage === 'vi' || appLanguage === 'fi' || appLanguage === 'sv' ? appLanguage : 'en';
   const selectedDate = parseDiaryDateKey(dateKey);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [visibleMonth, setVisibleMonth] = useState(startOfMonth(selectedDate));

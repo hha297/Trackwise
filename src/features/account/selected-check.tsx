@@ -1,5 +1,6 @@
 import { Check } from 'lucide-react-native';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -15,6 +16,7 @@ const ICON = 14;
 
 /** Primary circular check used for selected settings (e.g. language). */
 export function SelectedCheck({ visible }: { visible: boolean }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const progress = useSharedValue(visible ? 1 : 0);
 
@@ -34,7 +36,7 @@ export function SelectedCheck({ visible }: { visible: boolean }) {
       accessibilityElementsHidden={!visible}
       importantForAccessibility={visible ? 'yes' : 'no-hide-descendants'}
       accessibilityRole="image"
-      accessibilityLabel={visible ? 'Selected' : undefined}
+      accessibilityLabel={visible ? t('common.selected') : undefined}
     >
       <Check size={ICON} color={colors.textOnPrimary} strokeWidth={3.2} />
     </Animated.View>

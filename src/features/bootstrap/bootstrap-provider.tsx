@@ -13,6 +13,7 @@ import { useAuth } from '@/features/auth/auth-provider';
 import { isEmailConfirmed } from '@/features/auth/email-confirmed';
 import { fetchProfile } from '@/features/goals/api';
 import { getOnboardingCompleted, setOnboardingCompleted } from '@/features/onboarding/storage';
+import i18n from '@/i18n';
 import { reportError } from '@/lib/errors/report-error';
 import { queryClient } from '@/lib/query/query-client';
 
@@ -125,7 +126,7 @@ export function BootstrapProvider({ children }: { children: ReactNode }) {
     userId && bootstrapQuery.isError && !bootstrapQuery.isFetching
       ? bootstrapQuery.error instanceof Error && bootstrapQuery.error.message
         ? bootstrapQuery.error.message
-        : 'Could not load your data. Check your connection and try again.'
+        : i18n.t('bootstrap.loadFailed')
       : null;
 
   // After auth-failure recovery, query succeeds with null until session clears.

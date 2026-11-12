@@ -33,6 +33,9 @@ export function validateFoodImageSelection(input: {
   mimeType?: string | null;
   fileName?: string | null;
   fileSize?: number | null;
+  emptyUriMessage?: string;
+  invalidTypeMessage?: string;
+  tooLargeMessage?: string;
 }): SelectedFoodImage {
   const selected = validateUserImageSelection(input);
   return {
@@ -50,6 +53,7 @@ export async function resolveFoodImageByteSize(uri: string): Promise<number> {
 
 export async function assertFoodImageWithinSizeLimit(
   image: SelectedFoodImage,
+  tooLargeMessage?: string,
 ): Promise<SelectedFoodImage> {
-  return assertUserImageWithinSizeLimit(image);
+  return assertUserImageWithinSizeLimit(image, tooLargeMessage);
 }

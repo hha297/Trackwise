@@ -1,6 +1,7 @@
 import { usePathname } from 'expo-router';
 import { Check } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dimensions, Modal, Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
 
 import { Text } from '@/components/ui/text';
@@ -26,6 +27,7 @@ type MenuPosition = {
 
 /** Icon-only language control (flag); menu lists full language names. */
 export function LanguageDropdown() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const { scheme } = useTheme();
   const isDark = scheme === 'dark';
@@ -98,7 +100,7 @@ export function LanguageDropdown() {
           <Pressable
             style={StyleSheet.absoluteFill}
             accessibilityRole="button"
-            accessibilityLabel="Dismiss"
+            accessibilityLabel={t('common.dismiss')}
             onPress={closeMenu}
           />
           {menuPos ? (

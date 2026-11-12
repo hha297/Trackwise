@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
 import { Plus } from 'lucide-react-native';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
@@ -35,6 +36,7 @@ export function FoodListRow({
   disabled = false,
   loading = false,
 }: FoodListRowProps) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const [imageFailed, setImageFailed] = useState(false);
   const initial = (name.trim().charAt(0) || '?').toUpperCase();
@@ -45,7 +47,7 @@ export function FoodListRow({
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`Add ${name}`}
+      accessibilityLabel={t('food.add.addFoodA11y', { name })}
       accessibilityState={{ disabled: isDisabled, busy: loading }}
       disabled={isDisabled}
       onPress={onPress}
@@ -117,6 +119,7 @@ export function FoodListRow({
 export function formatFoodNutritionDetail(input: {
   calories?: number | null;
   servingLabel?: string | null;
+  unavailableLabel?: string;
 }): string {
   const parts: string[] = [];
   if (input.calories != null && Number.isFinite(input.calories)) {
@@ -124,7 +127,7 @@ export function formatFoodNutritionDetail(input: {
   }
   const serving = input.servingLabel?.trim();
   if (serving) parts.push(serving);
-  return parts.length > 0 ? parts.join(' · ') : 'Nutrition unavailable';
+  return parts.length > 0 ? parts.join(' · ') : (input.unavailableLabel ?? 'Nutrition unavailable');
 }
 
 const styles = StyleSheet.create({

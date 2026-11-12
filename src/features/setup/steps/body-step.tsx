@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
@@ -10,6 +11,7 @@ import { SetupShell } from '@/features/setup/setup-shell';
 import { cmToFtIn, ftInToCm, kgToLb, lbToKg, type UnitSystem } from '@/features/setup/units';
 
 export function BodyStep() {
+  const { t } = useTranslation();
   const { answers, progress, goNext, goBack, saving, error } = useSetup();
   const [units, setUnits] = useState<UnitSystem>(answers.units);
   const [age, setAge] = useState(answers.ageYears != null ? String(answers.ageYears) : '');
@@ -101,10 +103,16 @@ export function BodyStep() {
     (bfNum == null || (bfNum >= 3 && bfNum <= 60)) &&
     (!needsManual || (manualNum != null && manualNum >= 1200));
 
+  const sexOptions = [
+    { value: 'female' as const, label: t('setup.body.female') },
+    { value: 'male' as const, label: t('setup.body.male') },
+    { value: 'prefer_not_to_say' as const, label: t('setup.body.preferNotToSay') },
+  ];
+
   return (
     <SetupShell
-      title="Your body profile"
-      subtitle="Used for energy estimates. Prefer not to say sex? You’ll set calories manually."
+      title={t('setup.body.title')}
+      subtitle={t('setup.body.subtitle')}
       stepIndex={progress.index}
       stepTotal={progress.total}
       onBack={() => void goBack()}
@@ -129,19 +137,19 @@ export function BodyStep() {
       <View className="gap-4">
         <View className="gap-2">
           <Text variant="label" tone="secondary">
-            Units
+            {t('setup.body.units')}
           </Text>
           <View className="flex-row gap-2">
             <View className="flex-1">
               <SelectionCard
-                label="Metric"
+                label={t('setup.body.metric')}
                 selected={units === 'metric'}
                 onPress={() => switchUnits('metric')}
               />
             </View>
             <View className="flex-1">
               <SelectionCard
-                label="Imperial"
+                label={t('setup.body.imperial')}
                 selected={units === 'imperial'}
                 onPress={() => switchUnits('imperial')}
               />
@@ -150,79 +158,75 @@ export function BodyStep() {
         </View>
 
         <Input
-          label="Age"
+          label={t('setup.body.age')}
           value={age}
           onChangeText={setAge}
           keyboardType="number-pad"
-          placeholder="Years"
-          error={touched && !(ageNum >= 13 && ageNum <= 100) ? 'Enter a valid age' : undefined}
+          placeholder={t('setup.body.agePlaceholder')}
+          error={
+            touched && !(ageNum >= 13 && ageNum <= 100) ? t('setup.body.ageError') : undefined
+          }
         />
 
         <View className="gap-2">
           <Text variant="label" tone="secondary">
-            Biological sex (for energy estimation)
+            {t('setup.body.sexLabel')}
           </Text>
           <Text variant="caption" tone="muted">
-            Equations differ by sex. This isn’t shown publicly.
+            {t('setup.body.sexHint')}
           </Text>
-          {(
-            [
-              ['female', 'Female'],
-              ['male', 'Male'],
-              ['prefer_not_to_say', 'Prefer not to say'],
-            ] as const
-          ).map(([value, label]) => (
+          {sexOptions.map((option) => (
             <SelectionCard
-              key={value}
-              label={label}
-              selected={sex === value}
-              onPress={() => setSex(value)}
+              key={option.value}
+              label={option.label}
+              selected={sex === option.value}
+              onPress={() => setSex(option.value)}
             />
           ))}
         </View>
 
         {units === 'metric' ? (
           <Input
-            label="Height (cm)"
+            label={t('setup.body.heightCm')}
             value={heightMetric}
             onChangeText={(text) => {
               setHeightMetric(text);
               syncHeightFromInputs('metric', text, heightFt, heightIn);
             }}
             keyboardType="decimal-pad"
-            placeholder="e.g. 170"
+            placeholder={t('setup.body.heightCmPlaceholder')}
           />
         ) : (
           <View className="flex-row gap-3">
             <View className="flex-1">
               <Input
-                label="Height (ft)"
+                label={t('setup.body.heightFt')}
                 value={heightFt}
                 onChangeText={(text) => {
                   setHeightFt(text);
                   syncHeightFromInputs('imperial', heightMetric, text, heightIn);
                 }}
                 keyboardType="number-pad"
-                placeholder="ft"
+                placeholder={t('setup.body.heightFtPlaceholder')}
               />
             </View>
             <View className="flex-1">
               <Input
-                label="Height (in)"
+                label={t('setup.body.heightIn')}
                 value={heightIn}
                 onChangeText={(text) => {
                   setHeightIn(text);
                   syncHeightFromInputs('imperial', heightMetric, heightFt, text);
                 }}
                 keyboardType="decimal-pad"
-                placeholder="in"
+                placeholder={t('setup.body.heightInPlaceholder')}
               />
             </View>
           </View>
         )}
 
         <Input
-          label={units === 'metric' ? 'Current weight (kg)' : 'Current weight (lb)'}
+          label={units === 'metric' ? t('setup.body.weightKg') : t('setup.body.weightLb')}
           value={weightDisplay}
           onChangeText={(text) => {
             setWeightDisplay(text);
@@ -231,32 +235,35 @@ export function BodyStep() {
             setWeightKg(units === 'metric' ? n : lbToKg(n));
           }}
           keyboardType="decimal-pad"
-          placeholder={units === 'metric' ? 'e.g. 70' : 'e.g. 154'}
+          placeholder={
+            units === 'metric'
+              ? t('setup.body.weightKgPlaceholder')
+              : t('setup.body.weightLbPlaceholder')
+          }
         />
 
         <Input
-          label="Body fat % (optional)"
+          label={t('setup.body.bodyFat')}
           value={bodyFat}
           onChangeText={setBodyFat}
           keyboardType="decimal-pad"
-          placeholder="Skip if unsure"
+          placeholder={t('setup.body.bodyFatPlaceholder')}
         />
 
         {needsManual ? (
           <View className="gap-1.5">
             <Text variant="bodySmall" tone="secondary">
-              Automatic estimates need adult age and female/male sex. Enter a daily calorie target
-              instead — it will be used as your starting plan.
+              {t('setup.body.manualHint')}
             </Text>
             <Input
-              label="Daily calorie target"
+              label={t('setup.body.calorieLabel')}
               value={manualCalories}
               onChangeText={setManualCalories}
               keyboardType="number-pad"
-              placeholder="e.g. 2000"
+              placeholder={t('setup.body.caloriePlaceholder')}
               error={
                 touched && needsManual && !(manualNum != null && manualNum >= 1200)
-                  ? 'Enter at least 1200 calories'
+                  ? t('setup.body.calorieError')
                   : undefined
               }
             />
@@ -265,7 +272,7 @@ export function BodyStep() {
 
         {touched && !valid ? (
           <Text variant="caption" tone="error">
-            Check the highlighted fields
+            {t('setup.body.fieldsError')}
           </Text>
         ) : null}
         {error ? (

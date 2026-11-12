@@ -1,5 +1,6 @@
 import { ChevronDown } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -31,12 +32,14 @@ export function Select<T extends string = string>({
   value,
   options,
   onChange,
-  placeholder = 'Select an option',
+  placeholder,
   error,
   disabled = false,
 }: SelectProps<T>) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const [open, setOpen] = useState(false);
+  const resolvedPlaceholder = placeholder ?? t('common.selectOption');
 
   const selected = useMemo(
     () => options.find((option) => option.value === value) ?? null,
@@ -65,7 +68,7 @@ export function Select<T extends string = string>({
         }}
       >
         <View style={fieldShell.wrap}>
-          {showPlaceholder ? <FieldPlaceholder label={placeholder} /> : null}
+          {showPlaceholder ? <FieldPlaceholder label={resolvedPlaceholder} /> : null}
           {selected ? (
             <Text
               variant="body"
@@ -90,7 +93,7 @@ export function Select<T extends string = string>({
           <Pressable
             style={[styles.sheetBackdrop, { backgroundColor: colors.overlay }]}
             accessibilityRole="button"
-            accessibilityLabel="Dismiss"
+            accessibilityLabel={t('common.dismiss')}
             onPress={() => setOpen(false)}
           />
           <SafeAreaView

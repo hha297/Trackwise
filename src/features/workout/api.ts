@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import { expandLibraryPaths } from '@/features/workout/catalog/library-path-aliases';
 import { dedupeMuscleList } from '@/features/workout/exercise-display';
 import { getSupabase } from '@/lib/supabase/client';
@@ -233,7 +234,7 @@ export async function fetchWorkoutTemplates(): Promise<WorkoutTemplate[]> {
       .order('name');
     if (!result.error) return (result.data ?? []) as unknown as WorkoutTemplate[];
   }
-  throw new Error('Could not load workout templates.');
+  throw new Error(i18n.t('errors.loadTemplates'));
 }
 
 export type WorkoutTemplateExerciseInput = {
@@ -320,7 +321,7 @@ async function queryTemplateExercises(filter: {
       return ((result.data ?? []) as unknown as JoinedExerciseRow[]).map(mapJoinedExercise);
     }
   }
-  throw new Error('Could not load template exercises.');
+  throw new Error(i18n.t('errors.loadTemplateExercises'));
 }
 
 export async function fetchTemplateVariations(

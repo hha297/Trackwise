@@ -29,7 +29,7 @@ import {
   EXERCISE_IMAGE_PLACEHOLDER,
   resolveExerciseImage,
 } from '@/features/workout/catalog/exercise-images';
-import { formatMuscleList } from '@/features/workout/exercise-display';
+import { formatEquipmentLabel, formatMuscleList } from '@/features/workout/exercise-display';
 import { estimateTemplateDurationMinutes } from '@/features/workout/calculations';
 import {
   useCreateWorkoutTemplate,
@@ -767,7 +767,9 @@ function AvailableExerciseRow({
           {exercise.name}
         </Text>
         <Text variant="caption" tone="muted" numberOfLines={1}>
-          {[muscles, exercise.equipment].filter(Boolean).join(' · ')}
+          {[muscles, exercise.equipment ? formatEquipmentLabel(exercise.equipment, t) : '']
+            .filter(Boolean)
+            .join(' · ')}
         </Text>
       </View>
       <Pressable

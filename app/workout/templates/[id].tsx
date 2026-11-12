@@ -13,6 +13,12 @@ import {
   useWorkoutTemplates,
 } from '@/features/workout/hooks';
 import { getTemplateCover } from '@/features/workout/template-assets';
+import {
+  localizedEquipmentSummary,
+  localizedTemplateDescription,
+  localizedTemplateName,
+  localizedVariationDescription,
+} from '@/features/workout/template-i18n';
 import type { ExerciseDifficulty, WorkoutTemplateVariation } from '@/features/workout/types';
 import { TEMPLATE_TRAINING_LEVELS } from '@/features/workout/types';
 import { useActiveWorkoutStore } from '@/stores/active-workout-store';
@@ -102,7 +108,7 @@ export default function WorkoutTemplateDetailScreen() {
         <View className="flex-row items-start justify-between gap-3">
           <View className="min-w-0 flex-1 gap-1">
             <Text variant="headingLarge" numberOfLines={2}>
-              {template.name}
+              {localizedTemplateName(t, template.name, { isSystem: template.is_system })}
             </Text>
             <Text variant="caption" tone="secondary">
               {overviewParts.join(' · ')}
@@ -162,7 +168,9 @@ export default function WorkoutTemplateDetailScreen() {
           >
             {template.description ? (
               <Text variant="bodySmall" style={{ color: '#FFFFFF' }} numberOfLines={3}>
-                {template.description}
+                {localizedTemplateDescription(t, template.name, template.description, {
+                  isSystem: template.is_system,
+                })}
               </Text>
             ) : null}
           </View>
@@ -173,7 +181,9 @@ export default function WorkoutTemplateDetailScreen() {
             {t('workout.templateOverview')}
           </Text>
           <Text variant="bodySmall" tone="secondary">
-            {template.description || t('workout.templateOverviewFallback')}
+            {localizedTemplateDescription(t, template.name, template.description, {
+              isSystem: template.is_system,
+            }) || t('workout.templateOverviewFallback')}
           </Text>
         </View>
 
@@ -183,7 +193,9 @@ export default function WorkoutTemplateDetailScreen() {
               {t('workout.equipmentLabel')}
             </Text>
             <Text variant="bodySmall" tone="secondary">
-              {template.equipment_summary}
+              {localizedEquipmentSummary(t, template.equipment_summary, {
+                isSystem: template.is_system,
+              })}
             </Text>
           </View>
         ) : null}
@@ -244,7 +256,13 @@ export default function WorkoutTemplateDetailScreen() {
                 </View>
                 {variation.description ? (
                   <Text variant="caption" tone="secondary" numberOfLines={2}>
-                    {variation.description}
+                    {localizedVariationDescription(
+                      t,
+                      template.name,
+                      variation.training_level,
+                      variation.description,
+                      { isSystem: template.is_system },
+                    )}
                   </Text>
                 ) : (
                   <Text variant="caption" tone="muted">
@@ -287,6 +305,7 @@ export default function WorkoutTemplateDetailScreen() {
                   key={row.id}
                   exercise={row}
                   index={index}
+                  isSystem={template.is_system}
                   showImage
                   onPress={
                     row.exercise_id
@@ -309,7 +328,7 @@ export default function WorkoutTemplateDetailScreen() {
           onPress={() => {
             if (!selectedVariation || !list.length) return;
             start({
-              name: `${template.name} · ${t(`workout.difficulty.${selectedVariation.training_level}`)}`,
+              name: `${localizedTemplateName(t, template.name, { isSystem: template.is_system })} · ${t(`workout.difficulty.${selectedVariation.training_level}`)}`,
               sourceTemplateId: template.id,
               exercises: list.map((row) => ({
                 exerciseId: row.exercise_id,

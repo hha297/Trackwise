@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { LoadingState } from '@/components/ui/states';
@@ -13,13 +14,14 @@ import { TargetStep } from '@/features/setup/steps/target-step';
 import { useSetup } from '@/features/setup/setup-provider';
 
 export default function SetupScreen() {
+  const { t } = useTranslation();
   const { ready, step } = useSetup();
 
   if (!ready) {
     return (
       <Screen edges={['top', 'bottom', 'left', 'right']}>
         <View className="flex-1 justify-center">
-          <LoadingState label="Loading your setup…" />
+          <LoadingState label={t('setup.loading')} />
         </View>
       </Screen>
     );

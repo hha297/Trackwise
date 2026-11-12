@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import {
   assertUserImageWithinSizeLimit,
   type SelectedUserImage,
@@ -52,28 +53,28 @@ export async function uploadCustomExerciseImageToCloudinary(
       body: form,
     });
   } catch {
-    throw new Error('Could not upload the image. Check your connection and try again.');
+    throw new Error(i18n.t('errors.uploadNetwork'));
   }
 
   let json: CloudinaryUploadJson = {};
   try {
     json = (await response.json()) as CloudinaryUploadJson;
   } catch {
-    throw new Error('Cloudinary returned an unexpected response.');
+    throw new Error(i18n.t('errors.uploadUnexpected'));
   }
 
   if (!response.ok) {
     const message = json.error?.message?.trim();
     if (message?.toLowerCase().includes('preset')) {
-      throw new Error('Cloudinary upload preset is missing or invalid.');
+      throw new Error(i18n.t('errors.uploadPresetInvalid'));
     }
-    throw new Error(message || 'Could not upload the image. Try again.');
+    throw new Error(message || i18n.t('errors.uploadFailed'));
   }
 
   const secureUrl = json.secure_url?.trim();
   const publicId = json.public_id?.trim();
   if (!secureUrl || !publicId) {
-    throw new Error('Cloudinary did not return an image URL.');
+    throw new Error(i18n.t('errors.uploadNoUrl'));
   }
 
   return { secureUrl, publicId };

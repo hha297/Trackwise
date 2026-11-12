@@ -4,6 +4,7 @@ import {
   resolveFoodImageByteSize,
   type SelectedFoodImage,
 } from '@/features/food/food-image';
+import i18n from '@/i18n';
 
 import { AVATAR_FOLDER, MAX_AVATAR_SIZE_BYTES } from './constants';
 
@@ -21,12 +22,12 @@ export function validateAvatarSelection(input: {
 }): SelectedAvatarImage {
   const uri = input.uri.trim();
   if (!uri) {
-    throw new Error('Could not read the selected image. Try another photo.');
+    throw new Error(i18n.t('errors.imageReadFailed'));
   }
 
   const mimeType = normalizeImageMimeType(input.mimeType, uri);
   if (!mimeType || !isAllowedFoodImageMimeType(mimeType)) {
-    throw new Error('Use a JPEG, PNG, or WebP image.');
+    throw new Error(i18n.t('errors.imageTypeInvalid'));
   }
 
   const byteSize =
@@ -35,7 +36,7 @@ export function validateAvatarSelection(input: {
       : null;
 
   if (byteSize != null && byteSize > MAX_AVATAR_SIZE_BYTES) {
-    throw new Error(`Avatar must be ${formatAvatarSizeLimit()} or smaller.`);
+    throw new Error(i18n.t('errors.avatarTooLarge', { limit: formatAvatarSizeLimit() }));
   }
 
   const fileName = input.fileName?.trim() || `avatar.${mimeType === 'image/png' ? 'png' : 'jpg'}`;
@@ -47,7 +48,7 @@ export async function assertAvatarWithinSizeLimit(
 ): Promise<SelectedAvatarImage> {
   const byteSize = image.byteSize ?? (await resolveFoodImageByteSize(image.uri));
   if (byteSize > MAX_AVATAR_SIZE_BYTES) {
-    throw new Error(`Avatar must be ${formatAvatarSizeLimit()} or smaller.`);
+    throw new Error(i18n.t('errors.avatarTooLarge', { limit: formatAvatarSizeLimit() }));
   }
   return { ...image, byteSize };
 }

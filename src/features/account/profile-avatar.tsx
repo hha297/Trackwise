@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
@@ -21,6 +22,7 @@ export function ProfileAvatar({
   avatarUrl,
   size = 72,
 }: ProfileAvatarProps) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const [failed, setFailed] = useState(false);
   const showImage = Boolean(avatarUrl) && !failed;
@@ -40,7 +42,11 @@ export function ProfileAvatar({
         },
       ]}
       accessibilityRole="image"
-      accessibilityLabel={displayName ? `${displayName} avatar` : 'Profile avatar'}
+      accessibilityLabel={
+        displayName
+          ? t('account.avatarA11y', { name: displayName })
+          : t('account.profileAvatarA11y')
+      }
     >
       {showImage ? (
         <Image

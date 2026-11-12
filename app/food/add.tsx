@@ -12,6 +12,7 @@ import {
 } from 'lucide-react-native';
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
@@ -41,14 +42,8 @@ import { toDiaryDateKey } from '@/utils/date';
 
 type AddMode = 'search' | 'manual';
 
-const mealLabels: Record<MealType, string> = {
-  breakfast: 'Breakfast',
-  lunch: 'Lunch',
-  dinner: 'Dinner',
-  snacks: 'Snacks',
-};
-
 export default function AddFoodScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const params = useLocalSearchParams<{ date?: string; meal?: string; mode?: string }>();
   const [dateKey, setDateKey] = useState(params.date ?? toDiaryDateKey());
@@ -140,7 +135,7 @@ export default function AddFoodScreen() {
       });
       router.back();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not log food.');
+      setError(err instanceof Error ? err.message : t('food.add.logFailed'));
     } finally {
       setAddingKey(null);
     }
@@ -148,8 +143,8 @@ export default function AddFoodScreen() {
 
   function parseNutrition(value: string, label: string) {
     const parsed = Number(value.replace(',', '.'));
-    if (!value.trim()) throw new Error(`${label} is required.`);
-    if (!Number.isFinite(parsed) || parsed < 0) throw new Error(`${label} must be zero or more.`);
+    if (!value.trim()) throw new Error(t('food.add.fieldRequired', { label }));
+    if (!Number.isFinite(parsed) || parsed < 0) throw new Error(t('food.add.fieldNonNegative', { label }));
     return parsed;
   }
 
@@ -157,9 +152,9 @@ export default function AddFoodScreen() {
     if (savingManual) return;
     setError(null);
     try {
-      if (!name.trim()) throw new Error('Add a food name to continue.');
-      const servingGrams = parseNutrition(serving, 'Serving');
-      if (servingGrams <= 0) throw new Error('Serving must be greater than zero.');
+      if (!name.trim()) throw new Error(t('food.add.nameRequired'));
+      const servingGrams = parseNutrition(serving, t('food.add.servingA11y'));
+      if (servingGrams <= 0) throw new Error(t('food.add.servingPositive'));
       const factor = servingGrams / 100;
 
       let imageUrl: string | undefined;
@@ -184,10 +179,10 @@ export default function AddFoodScreen() {
         basisAmount: 100,
         nutritionUserEdited: true,
         imageUrl,
-        calories: parseNutrition(calories, 'Calories') * factor,
-        proteinG: parseNutrition(protein, 'Protein') * factor,
-        carbsG: parseNutrition(carbs, 'Carbs') * factor,
-        fatG: parseNutrition(fat, 'Fat') * factor,
+        calories: parseNutrition(calories, t('food.add.calories')) * factor,
+        proteinG: parseNutrition(protein, t('food.add.protein')) * factor,
+        carbsG: parseNutrition(carbs, t('food.add.carbs')) * factor,
+        fatG: parseNutrition(fat, t('food.add.fat')) * factor,
       });
       await logFood.mutateAsync({
         dateKey,
@@ -212,7 +207,7 @@ export default function AddFoodScreen() {
       router.dismissTo({ pathname: '/', params: { date: dateKey } });
     } catch (err) {
       setUploadingImage(false);
-      setError(err instanceof Error ? err.message : 'Could not save food.');
+      setError(err instanceof Error ? err.message : t('food.add.saveFailed'));
     }
   }
 
@@ -222,7 +217,7 @@ export default function AddFoodScreen() {
         <View className="flex-row items-center gap-3">
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Go back"
+            accessibilityLabel={t('common.goBack')}
             hitSlop={8}
             onPress={() => router.back()}
             style={({ pressed }) => [
@@ -234,9 +229,9 @@ export default function AddFoodScreen() {
             <ChevronLeft color={colors.textPrimary} size={22} />
           </Pressable>
           <View className="flex-1">
-            <Text variant="headingLarge">Add food</Text>
+            <Text variant="headingLarge">{t('food.add.title')}</Text>
             <Text variant="caption" tone="secondary">
-              {mealLabels[mealType]} · {dateKey}
+              {t(`meals.${mealType}`)} · {dateKey}
             </Text>
           </View>
         </View>
@@ -250,7 +245,7 @@ export default function AddFoodScreen() {
                 color={mode === 'search' ? colors.textOnPrimary : colors.textSecondary}
               />
             }
-            label="Search"
+            label={t('food.add.modeSearch')}
             onPress={() => {
               setError(null);
               setMode('search');
@@ -264,7 +259,7 @@ export default function AddFoodScreen() {
                 color={mode === 'manual' ? colors.textOnPrimary : colors.textSecondary}
               />
             }
-            label="Create food"
+            label={t('food.add.modeCreate')}
             onPress={() => {
               setError(null);
               setMode('manual');
@@ -283,17 +278,17 @@ export default function AddFoodScreen() {
         {mode === 'manual' ? (
           <View className="gap-4">
             <View>
-              <Text variant="headingSmall">Create your own food</Text>
+              <Text variant="headingSmall">{t('food.add.createTitle')}</Text>
               <Text variant="bodySmall" tone="secondary">
-                Enter nutrition per 100 g or 100 ml, then the amount you actually consumed.
+                {t('food.add.createSubtitle')}
               </Text>
             </View>
 
             <Card className="gap-4">
               <View>
-                <Text variant="headingSmall">Food details</Text>
+                <Text variant="headingSmall">{t('food.add.detailsTitle')}</Text>
                 <Text variant="caption" tone="secondary">
-                  Give this food a name you will recognize later.
+                  {t('food.add.detailsHint')}
                 </Text>
               </View>
               <FoodImageField
@@ -302,16 +297,16 @@ export default function AddFoodScreen() {
                 disabled={savingManual}
               />
               <Input
-                label="Food name *"
+                label={t('food.add.nameLabel')}
                 value={name}
                 onChangeText={setName}
-                placeholder="e.g. Chicken rice bowl"
+                placeholder={t('food.add.namePlaceholder')}
               />
               <Input
-                label="Brand (optional)"
+                label={t('food.add.brandLabel')}
                 value={brand}
                 onChangeText={setBrand}
-                placeholder="e.g. Homemade"
+                placeholder={t('food.add.brandPlaceholder')}
               />
               <UnitSwitch value={manualUnit} onChange={setManualUnit} />
               <ServingField unit={manualUnit} value={serving} onChangeText={setServing} />
@@ -319,15 +314,15 @@ export default function AddFoodScreen() {
 
             <Card className="gap-4">
               <View>
-                <Text variant="headingSmall">Nutrition per 100 {manualUnit}</Text>
+                <Text variant="headingSmall">{t('food.add.nutritionPer100', { unit: manualUnit })}</Text>
                 <Text variant="bodySmall" tone="secondary">
-                  Enter the values shown on the food label.
+                  {t('food.add.nutritionHint')}
                 </Text>
               </View>
               <MacroField
                 color={colors.macroCalories}
                 icon={<Flame color={colors.macroCalories} size={20} />}
-                label="Calories"
+                label={t('food.add.calories')}
                 unit="kcal"
                 value={calories}
                 onChangeText={setCalories}
@@ -335,7 +330,7 @@ export default function AddFoodScreen() {
               <MacroField
                 color={colors.macroProtein}
                 icon={<Beef color={colors.macroProtein} size={20} />}
-                label="Protein"
+                label={t('food.add.protein')}
                 unit="g"
                 value={protein}
                 onChangeText={setProtein}
@@ -343,7 +338,7 @@ export default function AddFoodScreen() {
               <MacroField
                 color={colors.macroCarbs}
                 icon={<Wheat color={colors.macroCarbs} size={20} />}
-                label="Carbs"
+                label={t('food.add.carbs')}
                 unit="g"
                 value={carbs}
                 onChangeText={setCarbs}
@@ -351,7 +346,7 @@ export default function AddFoodScreen() {
               <MacroField
                 color={colors.macroFat}
                 icon={<Droplets color={colors.macroFat} size={19} />}
-                label="Fat"
+                label={t('food.add.fat')}
                 unit="g"
                 value={fat}
                 onChangeText={setFat}
@@ -368,7 +363,7 @@ export default function AddFoodScreen() {
             />
 
             <Button
-              label={uploadingImage ? 'Uploading image…' : 'Save & add to meal'}
+              label={uploadingImage ? t('food.add.uploading') : t('food.add.saveAdd')}
               size="lg"
               disabled={!name.trim() || savingManual}
               loading={savingManual}
@@ -378,14 +373,14 @@ export default function AddFoodScreen() {
         ) : (
           <View className="gap-4">
             <Input
-              label="Search foods"
+              label={t('food.add.searchLabel')}
               value={term}
               onChangeText={setTerm}
               autoCapitalize="none"
-              placeholder="Name or brand"
+              placeholder={t('food.add.searchPlaceholder')}
             />
             <Button
-              label="Scan a barcode"
+              label={t('food.add.scanBarcode')}
               variant="secondary"
               iconStart={(color) => <ScanLine color={color} size={20} />}
               onPress={() =>
@@ -398,24 +393,24 @@ export default function AddFoodScreen() {
 
             {term.trim().length >= 2 ? (
               search.isLoading ? (
-                <LoadingState label="Searching…" />
+                <LoadingState label={t('food.add.searching')} />
               ) : search.error ? (
                 <ErrorState
-                  title="Search failed"
-                  body={search.error instanceof Error ? search.error.message : 'Try again.'}
+                  title={t('food.add.searchFailed')}
+                  body={search.error instanceof Error ? search.error.message : t('common.tryAgain')}
                   onRetry={() => void search.refetch()}
                 />
               ) : results.length === 0 ? (
                 <Card className="items-center gap-3 py-6">
                   <Search color={colors.textMuted} size={28} />
                   <View className="items-center">
-                    <Text variant="bodyStrong">No foods found</Text>
+                    <Text variant="bodyStrong">{t('food.add.noFoodsTitle')}</Text>
                     <Text variant="bodySmall" tone="secondary">
-                      Create it once, then find it here next time.
+                      {t('food.add.noFoodsBody')}
                     </Text>
                   </View>
                   <Button
-                    label="Create this food"
+                    label={t('food.add.createThisFood')}
                     variant="text"
                     onPress={() => {
                       setName(term.trim());
@@ -433,7 +428,7 @@ export default function AddFoodScreen() {
                         name={food.name}
                         brand={food.brand}
                         imageUrl={food.image_url}
-                        detail={formatFoodNutritionDetail({
+                        detail={formatFoodNutritionDetail({ unavailableLabel: t('food.add.nutritionUnavailable'),
                           calories: food.calories,
                           servingLabel: food.serving_label,
                         })}
@@ -447,7 +442,7 @@ export default function AddFoodScreen() {
                 </View>
               )
             ) : recent.isLoading ? (
-              <LoadingState label="Loading recent…" />
+              <LoadingState label={t('food.add.loadingRecent')} />
             ) : (
               <RecentFoodsList
                 entries={recent.data ?? []}
@@ -549,11 +544,12 @@ function ServingField({
   value: string;
   onChangeText: (value: string) => void;
 }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   return (
     <View className="gap-1.5">
       <Text variant="label" tone="secondary">
-        Amount consumed ({unit})
+        {t('food.add.amountConsumed', { unit })}
       </Text>
       <View
         style={[
@@ -562,7 +558,7 @@ function ServingField({
         ]}
       >
         <TextInput
-          accessibilityLabel="Serving size in grams"
+          accessibilityLabel={t('food.add.servingA11y')}
           value={value}
           onChangeText={onChangeText}
           keyboardType="decimal-pad"
@@ -634,6 +630,7 @@ function NutritionSummary({
   carbs: number;
   fat: number;
 }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const format = (value: number) => (value < 10 ? value.toFixed(1) : Math.round(value).toString());
 
@@ -645,7 +642,7 @@ function NutritionSummary({
       ]}
     >
       <View className="flex-row items-center justify-between gap-3">
-        <Text variant="headingSmall">Serving summary</Text>
+        <Text variant="headingSmall">{t('food.add.summaryTitle')}</Text>
         <View
           style={[
             styles.summaryServingBadge,
@@ -665,7 +662,7 @@ function NutritionSummary({
       >
         <View>
           <Text variant="caption" tone="primary">
-            TOTAL ENERGY
+            {t('food.add.totalEnergy')}
           </Text>
           <View className="flex-row items-end gap-2">
             <Text style={[styles.summaryCalories, { color: colors.textPrimary }]}>
@@ -679,9 +676,9 @@ function NutritionSummary({
         <Flame color={colors.primary} size={28} strokeWidth={2.2} />
       </View>
       <View className="flex-row gap-2">
-        <SummaryMacro label="Protein" value={`${format(protein)} g`} />
-        <SummaryMacro label="Carbs" value={`${format(carbs)} g`} />
-        <SummaryMacro label="Fat" value={`${format(fat)} g`} />
+        <SummaryMacro label={t('food.add.protein')} value={`${format(protein)} g`} />
+        <SummaryMacro label={t('food.add.carbs')} value={`${format(carbs)} g`} />
+        <SummaryMacro label={t('food.add.fat')} value={`${format(fat)} g`} />
       </View>
     </View>
   );
@@ -733,6 +730,7 @@ function RecentFoodsList({
   addingKey: string | null;
   loggingBusy: boolean;
 }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
 
   if (entries.length === 0) {
@@ -741,9 +739,9 @@ function RecentFoodsList({
         <View style={[styles.emptyIcon, { backgroundColor: colors.surfaceMuted }]}>
           <Utensils size={iconSizes.md} color={colors.textMuted} strokeWidth={2} />
         </View>
-        <Text variant="bodyStrong">No recent foods yet</Text>
+        <Text variant="bodyStrong">{t('food.add.noRecentTitle')}</Text>
         <Text variant="bodySmall" tone="secondary" style={styles.foodListEmptyCopy}>
-          Search or create a food — it will show up here next time.
+          {t('food.add.noRecentBody')}
         </Text>
       </View>
     );
@@ -753,7 +751,7 @@ function RecentFoodsList({
     <View style={styles.recentSection}>
       <View style={styles.recentHeader}>
         <Text variant="label" tone="secondary">
-          Recently added
+          {t('food.add.recentTitle')}
         </Text>
         <Text variant="caption" tone="muted">
           {entries.length}
@@ -766,7 +764,7 @@ function RecentFoodsList({
             name={entry.food_name}
             brand={entry.brand}
             imageUrl={entry.image_url}
-            detail={formatFoodNutritionDetail({
+            detail={formatFoodNutritionDetail({ unavailableLabel: t('food.add.nutritionUnavailable'),
               calories: entry.calories,
               servingLabel: entry.serving_label,
             })}

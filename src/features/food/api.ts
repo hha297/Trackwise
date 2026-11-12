@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import { getSupabase } from '@/lib/supabase/client';
 
 import type { FoodEntry } from './types';
@@ -38,5 +39,5 @@ export async function fetchFoodEntries(userId: string, dateKey: string): Promise
     }
   }
 
-  throw new Error('Could not load food entries.');
+  throw new Error(i18n.t('errors.loadFoodEntries'));
 }

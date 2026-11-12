@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@/features/auth/auth-provider';
 import { fetchProfile } from '@/features/goals/api';
@@ -42,6 +43,7 @@ type SetupContextValue = {
 const SetupContext = createContext<SetupContextValue | null>(null);
 
 export function SetupProvider({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
   const { session } = useAuth();
   const userId = session?.user.id;
   const [ready, setReady] = useState(false);
@@ -88,7 +90,7 @@ export function SetupProvider({ children }: { children: ReactNode }) {
   const persist = useCallback(
     async (nextStep: SetupStepId, nextAnswers: SetupAnswers) => {
       if (!userId) {
-        throw new Error('You need to be signed in to save setup.');
+        throw new Error(t('goalsEdit.signInRequired'));
       }
       setSaving(true);
       setError(null);
@@ -96,13 +98,13 @@ export function SetupProvider({ children }: { children: ReactNode }) {
         await saveSetupProgress(userId, nextStep, nextAnswers);
       } catch (err) {
         reportError(err, { area: 'setup', action: 'save-progress' });
-        setError(err instanceof Error ? err.message : 'Could not save. Try again.');
+        setError(err instanceof Error ? err.message : t('setup.saveFailed'));
         throw err;
       } finally {
         setSaving(false);
       }
     },
-    [userId],
+    [t, userId],
   );
 
   const patchAnswers = useCallback((patch: Partial<SetupAnswers>) => {
@@ -148,7 +150,7 @@ export function SetupProvider({ children }: { children: ReactNode }) {
 
   const finish = useCallback(async () => {
     if (!userId) {
-      throw new Error('You need to be signed in to finish setup.');
+      throw new Error(t('goalsEdit.signInRequired'));
     }
     setCompleting(true);
     setError(null);
@@ -164,12 +166,12 @@ export function SetupProvider({ children }: { children: ReactNode }) {
       ]);
     } catch (err) {
       reportError(err, { area: 'setup', action: 'complete' });
-      setError(err instanceof Error ? err.message : 'Could not finish setup. Try again.');
+      setError(err instanceof Error ? err.message : t('setup.finishFailed'));
       throw err;
     } finally {
       setCompleting(false);
     }
-  }, [answers, userId]);
+  }, [answers, t, userId]);
 
   const progress = stepIndex(step, answers);
 

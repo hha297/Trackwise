@@ -3,6 +3,11 @@ import { useTranslation } from 'react-i18next';
 
 import { Text } from '@/components/ui/text';
 import { getTemplateCover } from '@/features/workout/template-assets';
+import {
+  localizedEquipmentSummary,
+  localizedTemplateDescription,
+  localizedTemplateName,
+} from '@/features/workout/template-i18n';
 import type { WorkoutTemplate } from '@/features/workout/types';
 import { radii, withAlpha } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
@@ -29,11 +34,17 @@ export function TemplateCard({ template, onPress, wide = false }: TemplateCardPr
     metaParts.push(t(`workout.templateGoal.${template.goal}`, { defaultValue: template.goal }));
   }
   const meta = metaParts.join(' · ');
+  const displayName = localizedTemplateName(t, template.name, {
+    isSystem: template.is_system,
+  });
+  const categoryLabel = template.category
+    ? t(`workout.category.${template.category}`, { defaultValue: template.category })
+    : null;
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={template.name}
+      accessibilityLabel={displayName}
       onPress={onPress}
       className="overflow-hidden"
       style={{
@@ -74,10 +85,10 @@ export function TemplateCard({ template, onPress, wide = false }: TemplateCardPr
           >
             <Text variant="caption" style={{ color: withAlpha('#FFFFFF', 0.85) }} numberOfLines={1}>
               {template.is_system ? t('workout.systemTemplate') : t('workout.custom')}
-              {template.category ? ` · ${template.category}` : ''}
+              {categoryLabel ? ` · ${categoryLabel}` : ''}
             </Text>
             <Text variant="headingSmall" style={{ color: '#FFFFFF' }} numberOfLines={2}>
-              {template.name}
+              {displayName}
             </Text>
             {meta ? (
               <Text variant="caption" style={{ color: colors.primary }} numberOfLines={1}>
@@ -90,7 +101,9 @@ export function TemplateCard({ template, onPress, wide = false }: TemplateCardPr
                 style={{ color: withAlpha('#FFFFFF', 0.78) }}
                 numberOfLines={1}
               >
-                {template.equipment_summary}
+                {localizedEquipmentSummary(t, template.equipment_summary, {
+                  isSystem: template.is_system,
+                })}
               </Text>
             ) : template.description ? (
               <Text
@@ -98,7 +111,9 @@ export function TemplateCard({ template, onPress, wide = false }: TemplateCardPr
                 style={{ color: withAlpha('#FFFFFF', 0.78) }}
                 numberOfLines={2}
               >
-                {template.description}
+                {localizedTemplateDescription(t, template.name, template.description, {
+                  isSystem: template.is_system,
+                })}
               </Text>
             ) : null}
           </View>

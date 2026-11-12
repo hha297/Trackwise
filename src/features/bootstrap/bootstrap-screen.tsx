@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -19,6 +20,7 @@ type BootstrapScreenProps = {
  * Happy-path startup keeps the native splash visible instead of this screen.
  */
 export function BootstrapScreen({ error, onRetry, onSignIn }: BootstrapScreenProps) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
 
   return (
@@ -33,7 +35,7 @@ export function BootstrapScreen({ error, onRetry, onSignIn }: BootstrapScreenPro
                 variant="headingSmall"
                 style={[styles.centerText, { color: colors.textPrimary }]}
               >
-                Couldn’t prepare your data
+                {t('bootstrap.prepareFailed')}
               </Text>
               <Text
                 variant="bodySmall"
@@ -43,11 +45,11 @@ export function BootstrapScreen({ error, onRetry, onSignIn }: BootstrapScreenPro
               </Text>
               <View style={styles.actions}>
                 {onRetry ? (
-                  <Button label="Retry" variant="primary" size="md" onPress={onRetry} />
+                  <Button label={t('bootstrap.retry')} variant="primary" size="md" onPress={onRetry} />
                 ) : null}
                 {onSignIn ? (
                   <Button
-                    label="Back to sign in"
+                    label={t('bootstrap.backToSignIn')}
                     variant="secondary"
                     size="md"
                     onPress={onSignIn}
@@ -56,10 +58,10 @@ export function BootstrapScreen({ error, onRetry, onSignIn }: BootstrapScreenPro
               </View>
             </View>
           ) : (
-            <View style={styles.loading} accessibilityLabel="Getting things ready">
+            <View style={styles.loading} accessibilityLabel={t('bootstrap.gettingReadyA11y')}>
               <ActivityIndicator color={colors.primary} size="small" />
               <Text variant="caption" style={{ color: colors.textMuted }}>
-                Getting things ready…
+                {t('bootstrap.gettingReady')}
               </Text>
             </View>
           )}

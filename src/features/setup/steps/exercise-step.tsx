@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
@@ -9,31 +10,11 @@ import { SelectionCard } from '@/features/setup/selection-card';
 import { useSetup } from '@/features/setup/setup-provider';
 import { SetupShell } from '@/features/setup/setup-shell';
 
-const SESSION_OPTIONS = [
-  { value: '0', label: 'None' },
-  { value: '1', label: '1 session / week' },
-  { value: '2', label: '2 sessions / week' },
-  { value: '3', label: '3 sessions / week' },
-  { value: '4', label: '4 sessions / week' },
-  { value: '5', label: '5 sessions / week' },
-  { value: '6', label: '6+ sessions / week' },
-];
-
-const TYPES: { value: ExerciseType; label: string }[] = [
-  { value: 'strength', label: 'Strength training' },
-  { value: 'cardio', label: 'Cardio' },
-  { value: 'sports', label: 'Sports' },
-  { value: 'mixed', label: 'Mixed' },
-  { value: 'other', label: 'Other' },
-];
-
-const INTENSITIES: { value: Intensity; label: string; description: string }[] = [
-  { value: 'easy', label: 'Easy', description: 'Conversational pace' },
-  { value: 'moderate', label: 'Moderate', description: 'Working but sustainable' },
-  { value: 'hard', label: 'Hard', description: 'Breathing heavy, tough sets' },
-];
+const TYPES: ExerciseType[] = ['strength', 'cardio', 'sports', 'mixed', 'other'];
+const INTENSITIES: Intensity[] = ['easy', 'moderate', 'hard'];
 
 export function ExerciseStep() {
+  const { t } = useTranslation();
   const { answers, progress, goNext, goBack, saving, error } = useSetup();
   const [sessions, setSessions] = useState<number | null>(answers.sessionsPerWeek);
   const [type, setType] = useState<ExerciseType | null>(
@@ -46,6 +27,18 @@ export function ExerciseStep() {
   const [intensity, setIntensity] = useState<Intensity | null>(answers.intensity);
   const [touched, setTouched] = useState(false);
 
+  const sessionOptions = useMemo(
+    () => [
+      { value: '0', label: t('setup.exercise.sessionsNone') },
+      ...[1, 2, 3, 4, 5].map((count) => ({
+        value: String(count),
+        label: t('setup.exercise.sessionsCount', { count }),
+      })),
+      { value: '6', label: t('setup.exercise.sessionsSixPlus') },
+    ],
+    [t],
+  );
+
   const noExercise = sessions === 0 || type === 'none';
   const minutesNum = Number(minutes);
   const detailsOk =
@@ -57,8 +50,8 @@ export function ExerciseStep() {
 
   return (
     <SetupShell
-      title="Exercise habits"
-      subtitle="We’ll add a share of workout energy on top of daily activity — not double-count steps at work."
+      title={t('setup.exercise.title')}
+      subtitle={t('setup.exercise.subtitle')}
       stepIndex={progress.index}
       stepTotal={progress.total}
       onBack={() => void goBack()}
@@ -80,10 +73,10 @@ export function ExerciseStep() {
     >
       <View className="gap-4">
         <Select
-          label="Sessions per week"
+          label={t('setup.exercise.sessionsLabel')}
           value={sessions == null ? null : String(sessions)}
-          options={SESSION_OPTIONS}
-          placeholder="Select how often you train"
+          options={sessionOptions}
+          placeholder={t('setup.exercise.sessionsPlaceholder')}
           onChange={(value) => {
             const count = Number(value);
             setSessions(count);
@@ -93,67 +86,89 @@ export function ExerciseStep() {
               setType('mixed');
             }
           }}
-          error={touched && sessions == null ? 'Choose sessions per week' : undefined}
+          error={touched && sessions == null ? t('setup.exercise.sessionsError') : undefined}
         />
 
         {!noExercise ? (
           <>
             <View className="gap-2">
               <Text variant="label" tone="secondary">
-                Main activity type
+                {t('setup.exercise.typeLabel')}
               </Text>
-              {TYPES.map((option) => (
+              {TYPES.map((value) => (
                 <SelectionCard
-                  key={option.value}
-                  label={option.label}
-                  selected={type === option.value}
-                  onPress={() => setType(option.value)}
+                  key={value}
+                  label={t(
+                    value === 'strength'
+                      ? 'setup.exercise.typeStrength'
+                      : value === 'cardio'
+                        ? 'setup.exercise.typeCardio'
+                        : value === 'sports'
+                          ? 'setup.exercise.typeSports'
+                          : value === 'mixed'
+                            ? 'setup.exercise.typeMixed'
+                            : 'setup.exercise.typeOther',
+                  )}
+                  selected={type === value}
+                  onPress={() => setType(value)}
                 />
               ))}
             </View>
 
             {type === 'other' ? (
               <Input
-                label="Describe your activity (optional)"
+                label={t('setup.exercise.otherLabel')}
                 value={typeOther}
                 onChangeText={setTypeOther}
-                placeholder="e.g. climbing, dance, martial arts"
+                placeholder={t('setup.exercise.otherPlaceholder')}
                 autoCapitalize="sentences"
               />
             ) : null}
 
             <Input
-              label="Average session length (minutes)"
+              label={t('setup.exercise.minutesLabel')}
               value={minutes}
               onChangeText={setMinutes}
               keyboardType="number-pad"
-              placeholder="e.g. 45"
+              placeholder={t('setup.exercise.minutesPlaceholder')}
             />
 
             <View className="gap-2">
               <Text variant="label" tone="secondary">
-                Typical intensity
+                {t('setup.exercise.intensityLabel')}
               </Text>
-              {INTENSITIES.map((option) => (
+              {INTENSITIES.map((value) => (
                 <SelectionCard
-                  key={option.value}
-                  label={option.label}
-                  description={option.description}
-                  selected={intensity === option.value}
-                  onPress={() => setIntensity(option.value)}
+                  key={value}
+                  label={t(
+                    value === 'easy'
+                      ? 'setup.exercise.intensityEasy'
+                      : value === 'moderate'
+                        ? 'setup.exercise.intensityModerate'
+                        : 'setup.exercise.intensityHard',
+                  )}
+                  description={t(
+                    value === 'easy'
+                      ? 'setup.exercise.intensityEasyDesc'
+                      : value === 'moderate'
+                        ? 'setup.exercise.intensityModerateDesc'
+                        : 'setup.exercise.intensityHardDesc',
+                  )}
+                  selected={intensity === value}
+                  onPress={() => setIntensity(value)}
                 />
               ))}
             </View>
           </>
         ) : (
           <Text variant="bodySmall" tone="muted">
-            No problem — your plan will focus on daily activity and food.
+            {t('setup.exercise.noExerciseNote')}
           </Text>
         )}
 
         {touched && !valid ? (
           <Text variant="caption" tone="error">
-            Complete the exercise details to continue
+            {t('setup.exercise.detailsError')}
           </Text>
         ) : null}
         {error ? (
