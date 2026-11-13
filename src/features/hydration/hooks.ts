@@ -5,17 +5,19 @@ import { weekDateKeys } from '@/features/diary/aggregations';
 
 import { addHydration, deleteHydration, fetchHydration, setHydrationTarget, updateHydration } from './api';
 
-export function useHydration(dateKey: string) {
+export function useHydrationInRange(fromDate: string, toDate: string) {
   const { session } = useAuth();
   const userId = session?.user.id;
-  const week = weekDateKeys(dateKey);
-  const fromDate = week[0]!;
-  const toDate = week[week.length - 1]!;
   return useQuery({
     queryKey: ['hydration', userId, fromDate, toDate],
-    enabled: Boolean(userId),
+    enabled: Boolean(userId) && Boolean(fromDate) && Boolean(toDate) && fromDate <= toDate,
     queryFn: () => fetchHydration(userId!, fromDate, toDate),
   });
+}
+
+export function useHydration(dateKey: string) {
+  const week = weekDateKeys(dateKey);
+  return useHydrationInRange(week[0]!, week[week.length - 1]!);
 }
 
 export function useHydrationMutations(dateKey: string) {

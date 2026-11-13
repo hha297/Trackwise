@@ -189,6 +189,9 @@ export function useLogFoodEntry() {
       await queryClient.invalidateQueries({
         queryKey: ['food-entries', 'range', session?.user.id],
       });
+      await queryClient.invalidateQueries({
+        queryKey: ['food-entries', 'logged-days', session?.user.id],
+      });
       await queryClient.invalidateQueries({ queryKey: ['foods', 'recent', session?.user.id] });
     },
   });
@@ -242,6 +245,9 @@ export function useUpdateFoodEntryAmount() {
       await queryClient.invalidateQueries({
         queryKey: ['food-entries', 'range', session?.user.id],
       });
+      await queryClient.invalidateQueries({
+        queryKey: ['food-entries', 'logged-days', session?.user.id],
+      });
       await queryClient.invalidateQueries({ queryKey: ['foods', 'recent', session?.user.id] });
     },
   });
@@ -264,6 +270,9 @@ export function useDeleteFoodEntry() {
       });
       await queryClient.invalidateQueries({
         queryKey: ['food-entries', 'range', session?.user.id],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['food-entries', 'logged-days', session?.user.id],
       });
     },
   });

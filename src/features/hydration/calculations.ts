@@ -11,6 +11,8 @@ export type HydrationEntry = {
   id: string;
   loggedOn: string;
   amountMl: number;
+  /** ISO timestamptz from insert — used for HH:mm in the day log. */
+  createdAt: string;
 };
 
 export function isValidIntakeMl(amountMl: number): boolean {
@@ -47,4 +49,38 @@ export function weekIntake(
 export function progressRatio(amountMl: number, targetMl: number): number {
   if (!(targetMl > 0)) return 0;
   return amountMl / targetMl;
+}
+
+/** Fixed chart plot height (px) — bars scale inside this, never grow the layout. */
+export const HYDRATION_CHART_HEIGHT = 140;
+
+/** Empty-week Y scale (2 L) so axes stay visible with no intake yet. */
+export const EMPTY_WEEK_CHART_SCALE_ML = 2000;
+
+/** Y-axis scale from the week's peak day; never below 2 L. */
+export function weekChartScaleMax(
+  amountsMl: number[],
+  minScaleMl = EMPTY_WEEK_CHART_SCALE_ML,
+): number {
+  const peak = Math.max(0, ...amountsMl);
+  if (peak <= 0) return minScaleMl;
+  return Math.max(minScaleMl, niceCeilMl(peak));
+}
+
+/** Round up to a clean ml tick so the tallest bar fits under a fixed chart height. */
+export function niceCeilMl(value: number): number {
+  if (!(value > 0)) return 500;
+  if (value <= 500) return 500;
+  if (value <= 1000) return 1000;
+  if (value <= 2000) return 2000;
+  if (value <= 3000) return 3000;
+  if (value <= 4000) return 4000;
+  if (value <= 5000) return 5000;
+  const step = value <= 10000 ? 1000 : 2000;
+  return Math.ceil(value / step) * step;
+}
+
+export function weekChartYTicks(scaleMaxMl: number): number[] {
+  const max = Math.max(1, scaleMaxMl);
+  return [0, Math.round(max / 2), max];
 }

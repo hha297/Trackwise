@@ -18,6 +18,7 @@ import {
   type AppDestination,
 } from '@/features/bootstrap/bootstrap-provider';
 import { BootstrapScreen } from '@/features/bootstrap/bootstrap-screen';
+import { NotificationsBootstrap } from '@/features/notifications/notifications-bootstrap';
 import { reportError } from '@/lib/errors/report-error';
 import { queryClient } from '@/lib/query/query-client';
 import { useAppFonts } from '@/theme/fonts';
@@ -157,6 +158,7 @@ function RootNavigator() {
   return (
     <>
       <StatusBar style={statusStyle} />
+      {showMain ? <NotificationsBootstrap /> : null}
       {showAuth ? <AuthDestinationSync destination={destination} /> : null}
       <Stack
         screenOptions={{

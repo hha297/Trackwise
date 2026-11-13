@@ -210,6 +210,8 @@
     "language": "Language",
     "appearance": "Appearance",
     "units": "Units",
+    "reminders": "Reminders",
+    "remindersSubtitle": "Workout, meals, and hydration",
     "metric": "Metric",
     "imperial": "Imperial",
     "email": "Email",
@@ -346,6 +348,106 @@
     "cloudinaryRestartHint": "Restart Expo with a cleared cache so Cloudinary env vars load from .env.local.",
     "avatarA11y": "{{name}} avatar",
     "profileAvatarA11y": "Profile avatar"
+  },
+  "notifications": {
+    "title": "Reminders",
+    "subtitle": "Gentle local reminders to log workouts, meals, and water. Nothing is sent from a server.",
+    "loading": "Loading reminders…",
+    "saving": "Updating schedule…",
+    "saveError": "Could not save reminder settings.",
+    "permission": {
+      "section": "Notification access",
+      "checking": "Checking permission…",
+      "granted": "Notifications allowed",
+      "grantedHint": "Reminders can be delivered on this device.",
+      "denied": "Notifications blocked",
+      "deniedHint": "Enable notifications in system settings to receive reminders.",
+      "undetermined": "Permission not requested yet",
+      "undeterminedHint": "Turn on a reminder below to allow notifications when prompted.",
+      "unavailable": "Notifications unavailable on this platform",
+      "openSettings": "Open system settings",
+      "savedButBlocked": "Your preferences were saved, but reminders cannot be delivered until notifications are allowed."
+    },
+    "workout": {
+      "section": "Workout",
+      "title": "Workout reminder",
+      "hint": "Choose weekdays and a time. Empty weekday selection schedules nothing.",
+      "time": "Reminder time",
+      "days": "Weekdays",
+      "noDays": "Select at least one weekday to schedule workout reminders."
+    },
+    "meals": {
+      "section": "Meals",
+      "title": "Meal logging reminders",
+      "hint": "Suggested times you can edit. Each meal can be toggled on its own.",
+      "time": "Time"
+    },
+    "hydration": {
+      "section": "Hydration",
+      "title": "Water reminders",
+      "hint": "Reminders stay inside your start–end window and are capped per day.",
+      "start": "Start",
+      "end": "End",
+      "interval": "Interval",
+      "intervalOption": "Every {{minutes}} min"
+    },
+    "time": {
+      "hour": "Hour",
+      "minute": "Minute",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "push": {
+      "workoutTitle": "Workout reminder",
+      "workoutBody": "A good time for today’s session when you’re ready.",
+      "breakfastTitle": "Breakfast",
+      "breakfastBody": "Log breakfast when you have a moment.",
+      "lunchTitle": "Lunch",
+      "lunchBody": "Log lunch when you have a moment.",
+      "dinnerTitle": "Dinner",
+      "dinnerBody": "Log dinner when you have a moment.",
+      "hydrationTitle": "Hydration",
+      "hydrationBody": "A quick sip of water helps you stay on track."
+    }
+  },
+  "engagement": {
+    "streaks": {
+      "title": "Streaks",
+      "subtitle": "Logging consistency — goals are not required.",
+      "empty": "Log food, water, or a workout to start a streak.",
+      "loading": "Loading streaks…",
+      "loadError": "Could not load streaks.",
+      "retry": "Try again",
+      "nutrition": "Nutrition",
+      "hydration": "Hydration",
+      "workout": "Workouts",
+      "longest": "Longest {{count}}",
+      "daysAlive": "day streak",
+      "daysIdle": "not active",
+      "a11yNutrition": "Nutrition streak {{current}} days, longest {{longest}}",
+      "a11yHydration": "Hydration streak {{current}} days, longest {{longest}}",
+      "a11yWorkout": "Workout streak {{current}} completed days, longest {{longest}}"
+    },
+    "weekly": {
+      "title": "This week",
+      "subtitle": "Calendar week summary from your logs.",
+      "loading": "Loading week…",
+      "loadError": "Could not load this week.",
+      "retry": "Try again",
+      "prevWeek": "Previous week",
+      "nextWeek": "Next week",
+      "nutritionDays": "Nutrition days",
+      "hydrationDays": "Hydration days",
+      "workoutDays": "Workout days",
+      "avgCalories": "Avg calories",
+      "daysLoggedHint": "Days with at least one food log",
+      "noHydration": "No water logged",
+      "hydrationTotal": "{{value}} total",
+      "sessionsHint": "{{count}} sessions",
+      "avgProteinHint": "Avg protein {{value}} g",
+      "noNutritionAvg": "No food logs this week",
+      "hydrationProgress": "Avg daily water vs target: {{percent}}%"
+    }
   },
   "progress": {
     "title": "Progress",
@@ -773,6 +875,8 @@
     "saveTemplate": "Save template",
     "saveTemplateChanges": "Save changes",
     "recent": "Recent workouts",
+    "recentSubtitle": "Your latest finished sessions.",
+    "seeAll": "See all",
     "library": "Exercise library",
     "emptyHistory": "No workouts yet",
     "emptyHistoryBody": "Start empty or pick a template, then finish to see history here.",
@@ -1680,6 +1784,7 @@
     "saveIntake": "Save",
     "add": "Add",
     "deleteIntake": "Delete",
+    "intakeLog": "Today's drinks",
     "emptyDay": "Nothing logged for this day.",
     "weekTotal": "This week",
     "targetLabel": "Daily goal",

@@ -267,7 +267,7 @@ export async function uploadExerciseImage(formData: FormData) {
   if (!id || !(file instanceof File)) {
     redirect(`/exercises/${id}?error=image`);
   }
-  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+  if (!['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(file.type)) {
     redirect(`/exercises/${id}?error=image-type`);
   }
   if (file.size > 5 * 1024 * 1024) {
@@ -283,7 +283,14 @@ export async function uploadExerciseImage(formData: FormData) {
     .maybeSingle();
   if (!exercise) redirect('/exercises?error=notfound');
 
-  const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
+  const ext =
+    file.type === 'image/png'
+      ? 'png'
+      : file.type === 'image/webp'
+        ? 'webp'
+        : file.type === 'image/avif'
+          ? 'avif'
+          : 'jpg';
   const path = `exercises/shared/${exercise.slug || id}.${ext}`;
   const bytes = new Uint8Array(await file.arrayBuffer());
 

@@ -12,6 +12,7 @@ import {
   buildProgressOverview,
   buildWorkoutTrends,
 } from '@/features/progress/aggregations';
+import { WeeklySummaryCard } from '@/features/engagement/weekly-summary-card';
 import { BodyProgressSection } from '@/features/progress/components/body-progress-section';
 import { NutritionTrendsSection } from '@/features/progress/components/nutrition-trends-section';
 import { OverviewSection } from '@/features/progress/components/overview-section';
@@ -118,6 +119,7 @@ export function ProgressDashboard() {
 
       {!loading && !error ? (
         <View style={styles.sections}>
+          <WeeklySummaryCard todayKey={todayKey} />
           <OverviewSection overview={overview} goal={goal.data} />
           <NutritionTrendsSection
             series={nutrition}

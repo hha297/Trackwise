@@ -63,7 +63,15 @@
       "expo-web-browser",
       "expo-font",
       "expo-localization",
-      "expo-sharing"
+      "expo-sharing",
+      [
+        "expo-notifications",
+        {
+          "color": "#00D95F",
+          "defaultChannel": "trackwise-reminders",
+          "enableRemoteNotifications": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

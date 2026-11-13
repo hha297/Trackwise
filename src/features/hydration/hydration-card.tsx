@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { Image } from 'expo-image';
+import { Droplets, Trash2 } from 'lucide-react-native';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 
@@ -15,16 +17,36 @@ import {
   mlToFlOz,
   progressRatio,
   weekIntake,
+  type HydrationEntry,
 } from '@/features/hydration/calculations';
+import { HydrationWeekChart } from '@/features/hydration/hydration-week-chart';
 import { useHydration, useHydrationMutations } from '@/features/hydration/hooks';
 import { useAppLanguage } from '@/i18n';
-import { radii } from '@/theme';
+import { iconSizes, radii, spacing } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 import { parseDiaryDateKey } from '@/utils/date';
+
+const WATER_IMAGE = require('../../../assets/images/branding/images/water.jpg');
 
 function formatAmount(ml: number, imperial: boolean): string {
   if (imperial) return `${mlToFlOz(ml)} fl oz`;
   return `${ml} ml`;
+}
+
+function formatAxis(ml: number, imperial: boolean): string {
+  if (imperial) return String(Math.round(mlToFlOz(ml)));
+  if (ml >= 1000) return `${Math.round(ml / 100) / 10}L`;
+  return String(ml);
+}
+
+function formatLoggedTime(iso: string, locale: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return '—';
+  return new Intl.DateTimeFormat(locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(date);
 }
 
 export function HydrationCard({ dateKey }: { dateKey: string }) {
@@ -38,14 +60,24 @@ export function HydrationCard({ dateKey }: { dateKey: string }) {
   const [custom, setCustom] = useState('');
   const [target, setTarget] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
-  const weekday = new Intl.DateTimeFormat(locale, { weekday: 'narrow' });
+  const weekday = useMemo(
+    () => new Intl.DateTimeFormat(locale, { weekday: 'short' }),
+    [locale],
+  );
 
   const entries = query.data?.entries ?? [];
   const dayEntries = entries.filter((entry) => entry.loggedOn === dateKey);
   const total = intakeForDate(entries, dateKey);
   const targetMl = query.data?.targetMl ?? 2500;
   const ratio = Math.min(1, progressRatio(total, targetMl));
-  const week = weekIntake(entries, weekDateKeys(dateKey));
+  const weekKeys = weekDateKeys(dateKey);
+  const week = weekIntake(entries, weekKeys);
+  const chartDays = week.map((day) => ({
+    dateKey: day.dateKey,
+    amountMl: day.amountMl,
+    label: weekday.format(parseDiaryDateKey(day.dateKey)),
+    isToday: day.dateKey === dateKey,
+  }));
 
   function parseAmount(raw: string): number | null {
     const value = Number(raw.replace(',', '.'));
@@ -65,16 +97,31 @@ export function HydrationCard({ dateKey }: { dateKey: string }) {
     setCustom('');
   }
 
+  function beginEdit(entry: HydrationEntry) {
+    setEditingId(entry.id);
+    setCustom(imperial ? String(mlToFlOz(entry.amountMl)) : String(entry.amountMl));
+  }
+
   return (
     <Card className="gap-3">
-      <View className="flex-row items-center justify-between gap-3">
-        <Text variant="headingSmall">{t('phase1.hydrationTitle')}</Text>
-        <Text variant="caption" tone="secondary">
-          {formatAmount(total, imperial)}
-        </Text>
+      <View className="flex-row items-center gap-3">
+        <Image
+          source={WATER_IMAGE}
+          style={{ width: 48, height: 48, borderRadius: radii.sm }}
+          contentFit="cover"
+          accessibilityIgnoresInvertColors
+        />
+        <View className="min-w-0 flex-1 gap-0.5">
+          <Text variant="headingSmall">{t('phase1.hydrationTitle')}</Text>
+          <Text variant="headingMedium" tone="brand">
+            {formatAmount(total, imperial)}
+          </Text>
+        </View>
       </View>
       {query.isError ? (
-        <Text variant="caption" tone="error">{t('phase1.loadError')}</Text>
+        <Text variant="caption" tone="error">
+          {t('phase1.loadError')}
+        </Text>
       ) : (
         <>
           <Text variant="bodySmall" tone="secondary">
@@ -83,13 +130,20 @@ export function HydrationCard({ dateKey }: { dateKey: string }) {
               goal: formatAmount(targetMl, imperial),
             })}
           </Text>
-          <View style={{ height: 8, borderRadius: radii.pill, backgroundColor: colors.surfaceMuted, overflow: 'hidden' }}>
+          <View
+            style={{
+              height: 8,
+              borderRadius: radii.pill,
+              backgroundColor: colors.surfaceMuted,
+              overflow: 'hidden',
+            }}
+          >
             <View
               style={{
                 width: `${Math.round(ratio * 100)}%`,
                 height: 8,
                 borderRadius: radii.pill,
-                backgroundColor: colors.primary,
+                backgroundColor: colors.info,
               }}
             />
           </View>
@@ -126,46 +180,90 @@ export function HydrationCard({ dateKey }: { dateKey: string }) {
             onPress={saveCustom}
             loading={mutations.add.isPending || mutations.update.isPending}
           />
-          {dayEntries.length ? (
-            dayEntries.map((entry) => (
-              <View key={entry.id} className="flex-row items-center justify-between gap-3">
-                <Pressable
-                  onPress={() => {
-                    setEditingId(entry.id);
-                    setCustom(imperial ? String(mlToFlOz(entry.amountMl)) : String(entry.amountMl));
+
+          <View className="gap-2">
+            <Text variant="label" tone="secondary">
+              {t('phase1.intakeLog')}
+            </Text>
+            {dayEntries.length ? (
+              dayEntries.map((entry) => (
+                <View
+                  key={entry.id}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: spacing[3],
+                    paddingVertical: spacing[2],
+                    paddingHorizontal: spacing[3],
+                    borderRadius: radii.md,
+                    backgroundColor: colors.surfaceMuted,
                   }}
                 >
-                  <Text variant="bodySmall">{formatAmount(entry.amountMl, imperial)}</Text>
-                </Pressable>
-                <Pressable onPress={() => mutations.remove.mutate(entry.id)} hitSlop={8}>
-                  <Text variant="caption" tone="error">{t('phase1.deleteIntake')}</Text>
-                </Pressable>
-              </View>
-            ))
-          ) : (
-            <Text variant="caption" tone="muted">{t('phase1.emptyDay')}</Text>
-          )}
-          <Text variant="label" tone="secondary">{t('phase1.weekTotal')}</Text>
-          <View className="flex-row justify-between gap-1">
-            {week.map((day) => {
-              const filled = day.amountMl > 0;
-              return (
-                <View key={day.dateKey} style={{ flex: 1, alignItems: 'center', gap: 4 }}>
-                  <Text variant="caption" tone="secondary">
-                    {weekday.format(parseDiaryDateKey(day.dateKey))}
-                  </Text>
                   <View
                     style={{
-                      width: '100%',
-                      height: 6,
-                      borderRadius: radii.pill,
-                      backgroundColor: filled ? colors.primary : colors.surfaceMuted,
+                      width: 36,
+                      height: 36,
+                      borderRadius: radii.sm,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: colors.surface,
                     }}
-                  />
+                  >
+                    <Droplets size={18} color={colors.info} strokeWidth={1.75} />
+                  </View>
+                  <Pressable
+                    accessibilityRole="button"
+                    onPress={() => beginEdit(entry)}
+                    style={{ flex: 1, minWidth: 0, gap: 2 }}
+                  >
+                    <Text variant="bodyStrong" numberOfLines={1}>
+                      {formatAmount(entry.amountMl, imperial)}
+                    </Text>
+                    <Text variant="fine" tone="secondary" numberOfLines={1}>
+                      {formatLoggedTime(entry.createdAt, locale)}
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t('phase1.deleteIntake')}
+                    onPress={() => mutations.remove.mutate(entry.id)}
+                    hitSlop={8}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: radii.sm,
+                    }}
+                  >
+                    <Trash2 size={iconSizes.sm} color={colors.error} strokeWidth={1.75} />
+                  </Pressable>
                 </View>
-              );
-            })}
+              ))
+            ) : (
+              <View
+                style={{
+                  paddingVertical: spacing[4],
+                  paddingHorizontal: spacing[3],
+                  borderRadius: radii.md,
+                  backgroundColor: colors.surfaceMuted,
+                  alignItems: 'center',
+                }}
+              >
+                <Text variant="bodySmall" tone="muted" style={{ textAlign: 'center' }}>
+                  {t('phase1.emptyDay')}
+                </Text>
+              </View>
+            )}
           </View>
+
+          <Text variant="label" tone="secondary">
+            {t('phase1.weekTotal')}
+          </Text>
+          <HydrationWeekChart
+            days={chartDays}
+            formatY={(ml) => formatAxis(ml, imperial)}
+          />
           <Input
             label={t('phase1.targetLabel')}
             value={target}

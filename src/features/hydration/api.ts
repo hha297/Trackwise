@@ -11,6 +11,7 @@ type HydrationRow = {
   id: string;
   logged_on: string;
   amount_ml: number;
+  created_at: string;
 };
 
 export async function fetchHydration(userId: string, fromDate: string, toDate: string): Promise<{
@@ -23,11 +24,11 @@ export async function fetchHydration(userId: string, fromDate: string, toDate: s
   const [entriesResult, targetResult] = await Promise.all([
     supabase
       .from('hydration_entries')
-      .select('id, logged_on, amount_ml')
+      .select('id, logged_on, amount_ml, created_at')
       .eq('user_id', userId)
       .gte('logged_on', fromDate)
       .lte('logged_on', toDate)
-      .order('created_at', { ascending: true }),
+      .order('created_at', { ascending: false }),
     supabase.from('hydration_targets').select('target_ml').eq('user_id', userId).maybeSingle(),
   ]);
   if (entriesResult.error) throw entriesResult.error;
@@ -38,6 +39,7 @@ export async function fetchHydration(userId: string, fromDate: string, toDate: s
       id: row.id,
       loggedOn: row.logged_on,
       amountMl: row.amount_ml,
+      createdAt: row.created_at,
     })),
     targetMl: targetResult.data?.target_ml ?? DEFAULT_HYDRATION_TARGET_ML,
   };

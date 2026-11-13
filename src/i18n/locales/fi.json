@@ -210,6 +210,8 @@
     "language": "Kieli",
     "appearance": "Ulkoasu",
     "units": "Yksiköt",
+    "reminders": "Muistutukset",
+    "remindersSubtitle": "Treeni, ateriat ja nesteytys",
     "metric": "Metrijärjestelmä",
     "imperial": "Imperial",
     "email": "Sähköposti",
@@ -346,6 +348,106 @@
     "cloudinaryRestartHint": "Käynnistä Expo uudelleen --clear-lipulla, jotta Cloudinary-ympäristömuuttujat latautuvat .env.localista.",
     "avatarA11y": "{{name}} profiilikuva",
     "profileAvatarA11y": "Profiilikuva"
+  },
+  "notifications": {
+    "title": "Muistutukset",
+    "subtitle": "Lempeät paikalliset muistutukset treeneistä, aterioista ja vedestä. Mitään ei lähetetä palvelimelta.",
+    "loading": "Ladataan muistutuksia…",
+    "saving": "Päivitetään aikataulua…",
+    "saveError": "Muistutusasetuksia ei voitu tallentaa.",
+    "permission": {
+      "section": "Ilmoitusoikeus",
+      "checking": "Tarkistetaan oikeutta…",
+      "granted": "Ilmoitukset sallittu",
+      "grantedHint": "Muistutukset voidaan näyttää tällä laitteella.",
+      "denied": "Ilmoitukset estetty",
+      "deniedHint": "Salli ilmoitukset järjestelmäasetuksista, jotta saat muistutuksia.",
+      "undetermined": "Oikeutta ei ole vielä pyydetty",
+      "undeterminedHint": "Ota jokin muistutus käyttöön alla, niin saat kehotteen sallia ilmoitukset.",
+      "unavailable": "Ilmoitukset eivät ole käytettävissä tällä alustalla",
+      "openSettings": "Avaa järjestelmäasetukset",
+      "savedButBlocked": "Asetukset tallennettiin, mutta muistutuksia ei voida näyttää ennen kuin ilmoitukset on sallittu."
+    },
+    "workout": {
+      "section": "Treeni",
+      "title": "Treenimuistutus",
+      "hint": "Valitse viikonpäivät ja aika. Tyhjä valinta ei ajoita mitään.",
+      "time": "Muistutusaika",
+      "days": "Viikonpäivät",
+      "noDays": "Valitse vähintään yksi viikonpäivä treenimuistutuksille."
+    },
+    "meals": {
+      "section": "Ateriat",
+      "title": "Ateriakirjausmuistutukset",
+      "hint": "Ehdotetut ajat, joita voit muokata. Jokaisen aterian voi kytkeä erikseen.",
+      "time": "Aika"
+    },
+    "hydration": {
+      "section": "Nesteytys",
+      "title": "Vesimuistutukset",
+      "hint": "Muistutukset pysyvät alku–loppuikkunassa ja niitä rajoitetaan päivässä.",
+      "start": "Alku",
+      "end": "Loppu",
+      "interval": "Väli",
+      "intervalOption": "{{minutes}} min välein"
+    },
+    "time": {
+      "hour": "Tunti",
+      "minute": "Minuutti",
+      "cancel": "Peruuta",
+      "save": "Tallenna"
+    },
+    "push": {
+      "workoutTitle": "Treenimuistutus",
+      "workoutBody": "Hyvä hetki päivän treenille, kun olet valmis.",
+      "breakfastTitle": "Aamiainen",
+      "breakfastBody": "Kirjaa aamiainen, kun ehdit.",
+      "lunchTitle": "Lounas",
+      "lunchBody": "Kirjaa lounas, kun ehdit.",
+      "dinnerTitle": "Päivällinen",
+      "dinnerBody": "Kirjaa päivällinen, kun ehdit.",
+      "hydrationTitle": "Nesteytys",
+      "hydrationBody": "Pieni hörppy vettä auttaa pysymään tavoitteessa."
+    }
+  },
+  "engagement": {
+    "streaks": {
+      "title": "Putket",
+      "subtitle": "Kirjaamisen säännöllisyys — tavoitteita ei tarvita.",
+      "empty": "Kirjaa ruokaa, vettä tai treeni aloittaaksesi putken.",
+      "loading": "Ladataan putkia…",
+      "loadError": "Putkia ei voitu ladata.",
+      "retry": "Yritä uudelleen",
+      "nutrition": "Ravinto",
+      "hydration": "Nesteytys",
+      "workout": "Treenit",
+      "longest": "Pisin {{count}}",
+      "daysAlive": "pv putki",
+      "daysIdle": "ei aktiivinen",
+      "a11yNutrition": "Ravintoputki {{current}} päivää, pisin {{longest}}",
+      "a11yHydration": "Nesteytysputki {{current}} päivää, pisin {{longest}}",
+      "a11yWorkout": "Treeniputki {{current}} treenipäivää, pisin {{longest}}"
+    },
+    "weekly": {
+      "title": "Tämä viikko",
+      "subtitle": "Kalenteriviikon yhteenveto kirjauksistasi.",
+      "loading": "Ladataan viikkoa…",
+      "loadError": "Viikkoa ei voitu ladata.",
+      "retry": "Yritä uudelleen",
+      "prevWeek": "Edellinen viikko",
+      "nextWeek": "Seuraava viikko",
+      "nutritionDays": "Ravintopäivät",
+      "hydrationDays": "Nesteytyspäivät",
+      "workoutDays": "Treenipäivät",
+      "avgCalories": "Keskim. kalorit",
+      "daysLoggedHint": "Päivät, joilla on vähintään yksi ruokakirjaus",
+      "noHydration": "Ei vesikirjauksia",
+      "hydrationTotal": "{{value}} yhteensä",
+      "sessionsHint": "{{count}} treeniä",
+      "avgProteinHint": "Keskim. proteiini {{value}} g",
+      "noNutritionAvg": "Ei ruokakirjauksia tällä viikolla",
+      "hydrationProgress": "Keskim. päivittäinen vesi vs tavoite: {{percent}} %"
+    }
   },
   "progress": {
     "title": "Edistyminen",
@@ -773,6 +875,8 @@
     "saveTemplateChanges": "Tallenna muutokset",
     "saveTemplate": "Tallenna pohja",
     "recent": "Viimeisimmät treenit",
+    "recentSubtitle": "Viimeisimmät valmiit treenit.",
+    "seeAll": "Näytä kaikki",
     "library": "Liikekirjasto",
     "emptyHistory": "Ei vielä treenejä",
     "emptyHistoryBody": "Aloita tyhjänä tai valitse pohja, tallenna nähdäksesi historian.",
@@ -1680,6 +1784,7 @@
     "saveIntake": "Tallenna",
     "add": "Lisää",
     "deleteIntake": "Poista",
+    "intakeLog": "Tämän päivän juomat",
     "emptyDay": "Tälle päivälle ei ole merkintöjä.",
     "weekTotal": "Tämä viikko",
     "targetLabel": "Päivätavoite",

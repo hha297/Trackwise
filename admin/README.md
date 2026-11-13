@@ -150,15 +150,9 @@ select public.admin_bootstrap_grant('00000000-0000-0000-0000-000000000000');
 
 After bootstrap, promote/demote via **Admin → Users** (`admin_set_role`). The **last** admin cannot be demoted.
 
-### Sync system exercise content (local)
+### System exercise images
 
-After migrations, local catalog rows may still be stubs. From the **repo root**, with local Supabase env available:
-
-```bash
-npm run sync:exercises
-```
-
-Upserts coaching copy, sets `image_key` / `image_storage_path`, and uploads art from `assets/images/workout/exercises/` into the `exercise-images` bucket.
+Upload or replace system exercise artwork from **Admin → Exercises** (Storage bucket `exercise-images`). Keep matching files under `assets/images/workout/exercises/` for the mobile offline fallback map in `exercise-local-images.ts`.
 
 ---
 

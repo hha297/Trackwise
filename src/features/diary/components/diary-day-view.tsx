@@ -9,6 +9,7 @@ import {
 } from '@/features/diary/components/nutrition-dashboard';
 import { WeekFoodList } from '@/features/diary/components/week-food-list';
 import { WorkoutSection } from '@/features/diary/components/workout-section';
+import { StreakOverview } from '@/features/engagement/streak-overview';
 import { HydrationCard } from '@/features/hydration/hydration-card';
 import { MEAL_ORDER, weekDateKeys } from '@/features/diary/aggregations';
 import type { MacroTotals } from '@/features/diary/balance';
@@ -61,6 +62,8 @@ export function DiaryDayView({
         dayEntries={entries}
         dayBurned={burned}
       />
+
+      <StreakOverview todayKey={todayKey} />
 
       {period === 'week' ? (
         <WeekFoodList

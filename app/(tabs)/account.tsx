@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   Lock,
   LogOut,
+  Bell,
   Moon,
   Ruler,
   Scale,
@@ -283,6 +284,12 @@ export default function AccountScreen() {
               profile.data?.units === 'imperial' ? t('account.imperial') : t('account.metric')
             }
             onPress={() => router.push('/account/units')}
+          />
+          <SettingsRow
+            icon={Bell}
+            title={t('account.reminders')}
+            subtitle={t('account.remindersSubtitle')}
+            onPress={() => router.push('/account/reminders')}
           />
         </SettingsSection>
 

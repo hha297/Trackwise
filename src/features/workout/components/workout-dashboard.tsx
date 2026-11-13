@@ -28,10 +28,13 @@ import {
   WORKOUT_IMAGE_CATEGORIES,
   type ImageWorkoutCategory,
 } from '@/features/workout/category-assets';
+import { ExerciseArtwork } from '@/features/workout/components/exercise-artwork';
 import { formatElapsed, useWorkouts } from '@/features/workout/hooks';
 import { draftSetIsLogged } from '@/features/workout/logged-set';
 import { formatWorkoutDay, resolveWorkoutName } from '@/features/workout/session-display';
+import type { WorkoutListItem } from '@/features/workout/types';
 import { useActiveWorkoutStore } from '@/stores/active-workout-store';
+import { fonts } from '@/theme/fonts';
 import { iconSizes, layout, radii, spacing, withAlpha } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 import { toDiaryDateKey } from '@/utils/date';
@@ -244,6 +247,13 @@ export function WorkoutDashboard() {
         ) : null}
       </Card>
 
+      <RecentWorkoutsSection
+        recent={recent}
+        loading={history.isLoading}
+        error={history.error}
+        onRetry={() => void history.refetch()}
+      />
+
       <View style={styles.section}>
         <Text variant="headingSmall">{t('workout.categories')}</Text>
         <View style={styles.categoryGrid}>
@@ -291,62 +301,173 @@ export function WorkoutDashboard() {
         </View>
       </View>
 
-      <View style={styles.section}>
-        <View style={styles.sectionHead}>
-          <Text variant="headingSmall" style={styles.flexShrink}>
+    </View>
+  );
+}
+
+function RecentWorkoutsSection({
+  recent,
+  loading,
+  error,
+  onRetry,
+}: {
+  recent: WorkoutListItem[];
+  loading: boolean;
+  error: unknown;
+  onRetry: () => void;
+}) {
+  const { t } = useTranslation();
+  const colors = useThemeColors();
+
+  return (
+    <View style={styles.section}>
+      <View style={styles.sectionHead}>
+        <View style={styles.sectionHeadCopy}>
+          <Text variant="headingSmall" numberOfLines={1}>
             {t('workout.recent')}
           </Text>
-          {recent.length > 0 ? (
-            <Pressable onPress={() => router.push('/workout/history')} hitSlop={10}>
-              <Text variant="caption" tone="secondary">
-                {t('workout.historyEntry')}
-              </Text>
-            </Pressable>
-          ) : null}
+          <Text variant="caption" tone="muted" numberOfLines={2}>
+            {t('workout.recentSubtitle')}
+          </Text>
         </View>
-        {recent.length === 0 ? (
-          <Card style={styles.emptyRecent}>
+        {recent.length > 0 ? (
+          <Pressable
+            cssInterop={false}
+            accessibilityRole="button"
+            onPress={() => router.push('/workout/history')}
+            hitSlop={10}
+            style={styles.seeAll}
+          >
+            <Text variant="caption" tone="brand">
+              {t('workout.seeAll')}
+            </Text>
+            <ChevronRight size={14} color={colors.primary} strokeWidth={2.4} />
+          </Pressable>
+        ) : null}
+      </View>
+
+      {loading ? <LoadingState /> : null}
+      {error ? (
+        <ErrorState
+          title={t('workout.historyLoadError')}
+          body={error instanceof Error ? error.message : t('workout.retry')}
+          onRetry={onRetry}
+        />
+      ) : null}
+
+      {!loading && !error && recent.length === 0 ? (
+        <Card style={styles.emptyRecent}>
+          <View style={[styles.recentLeadIcon, { backgroundColor: withAlpha(colors.primary, 0.14) }]}>
+            <History size={20} color={colors.primary} strokeWidth={2.2} />
+          </View>
+          <View style={styles.emptyRecentCopy}>
             <Text variant="bodyStrong">{t('workout.emptyHistory')}</Text>
             <Text variant="bodySmall" tone="muted">
               {t('workout.emptyHistoryBody')}
             </Text>
-          </Card>
-        ) : (
-          <View style={styles.recentStack}>
-            {recent.map((workout) => (
+          </View>
+        </Card>
+      ) : null}
+
+      {!loading && !error && recent.length > 0 ? (
+        <Card style={styles.recentCard}>
+          {recent.map((workout, index) => {
+            const thumbs = (workout.previews ?? []).slice(0, 3);
+            const kcal = Math.round(Number(workout.estimated_calories ?? 0));
+            const meta = [
+              formatWorkoutDay(workout.started_at),
+              workout.active_duration_sec
+                ? formatElapsed(workout.active_duration_sec)
+                : null,
+              (workout.set_count ?? 0) > 0
+                ? t('diary.workout.sets', { count: workout.set_count })
+                : null,
+            ]
+              .filter(Boolean)
+              .join(' · ');
+
+            return (
               <Pressable
                 key={workout.id}
+                cssInterop={false}
                 accessibilityRole="button"
+                accessibilityLabel={resolveWorkoutName(workout.name, t('workout.defaultName'))}
                 onPress={() =>
                   router.push({ pathname: '/workout/[id]', params: { id: workout.id } })
                 }
+                style={({ pressed }) => [
+                  styles.recentRow,
+                  index > 0
+                    ? { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }
+                    : null,
+                  pressed ? { opacity: 0.88 } : null,
+                ]}
               >
-                {({ pressed }) => (
-                  <Card style={[styles.recentCard, { opacity: pressed ? 0.92 : 1 }]}>
-                    <View style={styles.recentRow}>
-                      <View style={styles.recentCopy}>
-                        <Text variant="bodyStrong" numberOfLines={1}>
-                          {resolveWorkoutName(workout.name, t('workout.defaultName'))}
-                        </Text>
-                        <Text variant="caption" tone="secondary" numberOfLines={1}>
-                          {formatWorkoutDay(workout.started_at)}
-                          {workout.active_duration_sec
-                            ? ` · ${formatElapsed(workout.active_duration_sec)}`
-                            : ''}
-                          {Number(workout.estimated_calories) > 0
-                            ? ` · ~${Math.round(workout.estimated_calories)} ${t('diary.meals.kcalUnit')}`
-                            : ''}
-                        </Text>
+                <View style={styles.recentThumbs}>
+                  {thumbs.length > 0 ? (
+                    thumbs.map((exercise, thumbIndex) => (
+                      <View
+                        key={`${workout.id}-${exercise.slug ?? exercise.name}-${thumbIndex}`}
+                        style={[
+                          styles.recentThumb,
+                          {
+                            marginLeft: thumbIndex === 0 ? 0 : -10,
+                            zIndex: thumbs.length - thumbIndex,
+                            borderColor: colors.surface,
+                          },
+                        ]}
+                      >
+                        <ExerciseArtwork
+                          imageUrl={exercise.image_url}
+                          imageStoragePath={exercise.image_storage_path}
+                          imageKey={exercise.image_key}
+                          slug={exercise.slug}
+                          name={exercise.name}
+                          size={40}
+                          recyclingKey={`${workout.id}-${exercise.slug ?? exercise.name}`}
+                        />
                       </View>
-                      <ChevronRight size={iconSizes.md} color={colors.textMuted} />
+                    ))
+                  ) : (
+                    <View
+                      style={[
+                        styles.recentLeadIcon,
+                        { backgroundColor: withAlpha(colors.primary, 0.14) },
+                      ]}
+                    >
+                      <Dumbbell size={18} color={colors.primary} strokeWidth={2.2} />
                     </View>
-                  </Card>
-                )}
+                  )}
+                </View>
+
+                <View style={styles.recentCopy}>
+                  <Text variant="bodyStrong" numberOfLines={1}>
+                    {resolveWorkoutName(workout.name, t('workout.defaultName'))}
+                  </Text>
+                  {meta ? (
+                    <Text variant="caption" tone="secondary" numberOfLines={1}>
+                      {meta}
+                    </Text>
+                  ) : null}
+                </View>
+
+                {kcal > 0 ? (
+                  <View style={styles.recentKcal}>
+                    <Text style={styles.recentKcalValue} tone="brand">
+                      {kcal}
+                    </Text>
+                    <Text variant="caption" tone="muted">
+                      {t('diary.meals.kcalUnit')}
+                    </Text>
+                  </View>
+                ) : null}
+
+                <ChevronRight size={iconSizes.md} color={colors.textMuted} strokeWidth={2.2} />
               </Pressable>
-            ))}
-          </View>
-        )}
-      </View>
+            );
+          })}
+        </Card>
+      ) : null}
     </View>
   );
 }
@@ -524,13 +645,23 @@ const styles = StyleSheet.create({
   },
   sectionHead: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
     gap: spacing[3],
   },
-  flexShrink: {
+  sectionHeadCopy: {
+    flexGrow: 1,
     flexShrink: 1,
+    flexBasis: 0,
     minWidth: 0,
+    gap: 2,
+  },
+  seeAll: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    paddingTop: 2,
+    flexShrink: 0,
   },
   categoryGrid: {
     gap: CATEGORY_GAP,
@@ -586,19 +717,50 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   emptyRecent: {
-    gap: spacing[1],
-  },
-  recentStack: {
-    gap: spacing[2],
-  },
-  recentCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing[3],
     paddingVertical: spacing[3],
     paddingHorizontal: spacing[3],
+  },
+  emptyRecentCopy: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+    minWidth: 0,
+    gap: 2,
+  },
+  recentCard: {
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    overflow: 'hidden',
   },
   recentRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing[3],
+    paddingVertical: spacing[3],
+    paddingHorizontal: spacing[3],
+    minHeight: 72,
+  },
+  recentThumbs: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexShrink: 0,
+    width: 72,
+  },
+  recentThumb: {
+    borderRadius: radii.md,
+    borderWidth: 2,
+    overflow: 'hidden',
+  },
+  recentLeadIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: radii.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
   },
   recentCopy: {
     flexGrow: 1,
@@ -606,5 +768,14 @@ const styles = StyleSheet.create({
     flexBasis: 0,
     minWidth: 0,
     gap: 2,
+  },
+  recentKcal: {
+    alignItems: 'flex-end',
+    flexShrink: 0,
+  },
+  recentKcalValue: {
+    fontFamily: fonts.monoBold,
+    fontSize: 18,
+    lineHeight: 22,
   },
 });

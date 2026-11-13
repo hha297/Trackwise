@@ -208,7 +208,13 @@ export function ExerciseForm({
               <input type="hidden" name="id" value={exercise.id} />
               <div>
                 <Label htmlFor="file">Upload</Label>
-                <Input id="file" name="file" type="file" accept="image/png,image/jpeg,image/webp" required />
+                <Input
+                  id="file"
+                  name="file"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/avif"
+                  required
+                />
               </div>
               <Button type="submit" variant="secondary">
                 Upload image

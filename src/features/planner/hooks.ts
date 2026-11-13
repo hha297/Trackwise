@@ -6,17 +6,19 @@ import { weekDateKeys } from '@/features/diary/aggregations';
 import { createPlan, deletePlan, fetchPlans, updatePlan, type PlannedWorkout } from './api';
 import type { PlanKind } from './status';
 
-export function useWeekPlans(anchorKey: string) {
+export function usePlansInRange(fromDate: string, toDate: string) {
   const { session } = useAuth();
   const userId = session?.user.id;
-  const week = weekDateKeys(anchorKey);
-  const fromDate = week[0]!;
-  const toDate = week[week.length - 1]!;
   return useQuery({
     queryKey: ['plans', userId, fromDate, toDate],
-    enabled: Boolean(userId),
+    enabled: Boolean(userId) && Boolean(fromDate) && Boolean(toDate) && fromDate <= toDate,
     queryFn: () => fetchPlans(userId!, fromDate, toDate),
   });
+}
+
+export function useWeekPlans(anchorKey: string) {
+  const week = weekDateKeys(anchorKey);
+  return usePlansInRange(week[0]!, week[week.length - 1]!);
 }
 
 export function usePlanMutations() {

@@ -210,6 +210,8 @@
     "language": "Språk",
     "appearance": "Utseende",
     "units": "Enheter",
+    "reminders": "Påminnelser",
+    "remindersSubtitle": "Träning, måltider och vätska",
     "metric": "Meter",
     "imperial": "Imperial",
     "email": "E-post",
@@ -346,6 +348,106 @@
     "cloudinaryRestartHint": "Starta om Expo med --clear så att Cloudinary-miljövariabler laddas från .env.local.",
     "avatarA11y": "{{name}} profilbild",
     "profileAvatarA11y": "Profilbild"
+  },
+  "notifications": {
+    "title": "Påminnelser",
+    "subtitle": "Varsamma lokala påminnelser för träning, måltider och vatten. Ingenting skickas från en server.",
+    "loading": "Laddar påminnelser…",
+    "saving": "Uppdaterar schemat…",
+    "saveError": "Kunde inte spara påminnelseinställningar.",
+    "permission": {
+      "section": "Aviseringsbehörighet",
+      "checking": "Kontrollerar behörighet…",
+      "granted": "Aviseringar tillåtna",
+      "grantedHint": "Påminnelser kan levereras på den här enheten.",
+      "denied": "Aviseringar blockerade",
+      "deniedHint": "Tillåt aviseringar i systeminställningarna för att få påminnelser.",
+      "undetermined": "Behörighet har inte begärts ännu",
+      "undeterminedHint": "Slå på en påminnelse nedan för att tillåta aviseringar när du får frågan.",
+      "unavailable": "Aviseringar är inte tillgängliga på den här plattformen",
+      "openSettings": "Öppna systeminställningar",
+      "savedButBlocked": "Dina val sparades, men påminnelser kan inte levereras förrän aviseringar tillåts."
+    },
+    "workout": {
+      "section": "Träning",
+      "title": "Träningspåminnelse",
+      "hint": "Välj veckodagar och tid. Tomt urval schemalägger ingenting.",
+      "time": "Påminnelsetid",
+      "days": "Veckodagar",
+      "noDays": "Välj minst en veckodag för träningspåminnelser."
+    },
+    "meals": {
+      "section": "Måltider",
+      "title": "Påminnelser om måltidsloggning",
+      "hint": "Föreslagna tider du kan ändra. Varje måltid kan slås på separat.",
+      "time": "Tid"
+    },
+    "hydration": {
+      "section": "Vätska",
+      "title": "Vattenpåminnelser",
+      "hint": "Påminnelser hålls inom start–slut och begränsas per dag.",
+      "start": "Start",
+      "end": "Slut",
+      "interval": "Intervall",
+      "intervalOption": "Var {{minutes}} min"
+    },
+    "time": {
+      "hour": "Timme",
+      "minute": "Minut",
+      "cancel": "Avbryt",
+      "save": "Spara"
+    },
+    "push": {
+      "workoutTitle": "Träningspåminnelse",
+      "workoutBody": "En bra tid för dagens pass när du är redo.",
+      "breakfastTitle": "Frukost",
+      "breakfastBody": "Logga frukost när du har en stund.",
+      "lunchTitle": "Lunch",
+      "lunchBody": "Logga lunch när du har en stund.",
+      "dinnerTitle": "Middag",
+      "dinnerBody": "Logga middag när du har en stund.",
+      "hydrationTitle": "Vätska",
+      "hydrationBody": "En klunk vatten hjälper dig hålla dig på spåret."
+    }
+  },
+  "engagement": {
+    "streaks": {
+      "title": "Streaks",
+      "subtitle": "Loggningskonsistens — mål krävs inte.",
+      "empty": "Logga mat, vatten eller ett pass för att starta en streak.",
+      "loading": "Laddar streaks…",
+      "loadError": "Kunde inte ladda streaks.",
+      "retry": "Försök igen",
+      "nutrition": "Kost",
+      "hydration": "Vätska",
+      "workout": "Träning",
+      "longest": "Längsta {{count}}",
+      "daysAlive": "dagars streak",
+      "daysIdle": "inte aktiv",
+      "a11yNutrition": "Koststreak {{current}} dagar, längsta {{longest}}",
+      "a11yHydration": "Vätskestreak {{current}} dagar, längsta {{longest}}",
+      "a11yWorkout": "Träningsstreak {{current}} träningsdagar, längsta {{longest}}"
+    },
+    "weekly": {
+      "title": "Denna vecka",
+      "subtitle": "Sammanfattning av kalenderveckan från dina loggar.",
+      "loading": "Laddar vecka…",
+      "loadError": "Kunde inte ladda veckan.",
+      "retry": "Försök igen",
+      "prevWeek": "Föregående vecka",
+      "nextWeek": "Nästa vecka",
+      "nutritionDays": "Kostdagar",
+      "hydrationDays": "Vätskedagar",
+      "workoutDays": "Träningsdagar",
+      "avgCalories": "Snittkalorier",
+      "daysLoggedHint": "Dagar med minst en matlogg",
+      "noHydration": "Inget vatten loggat",
+      "hydrationTotal": "{{value}} totalt",
+      "sessionsHint": "{{count}} pass",
+      "avgProteinHint": "Snittprotein {{value}} g",
+      "noNutritionAvg": "Inga matloggar denna vecka",
+      "hydrationProgress": "Snitt vatten per dag vs mål: {{percent}} %"
+    }
   },
   "progress": {
     "title": "Framsteg",
@@ -773,6 +875,8 @@
     "saveTemplateChanges": "Spara ändringar",
     "saveTemplate": "Spara mall",
     "recent": "Senaste pass",
+    "recentSubtitle": "Dina senaste avslutade pass.",
+    "seeAll": "Visa alla",
     "library": "Övningsbibliotek",
     "emptyHistory": "Inga pass ännu",
     "emptyHistoryBody": "Starta tomt eller välj en mall, slutför för att se historik.",
@@ -1680,6 +1784,7 @@
     "saveIntake": "Spara",
     "add": "Lägg till",
     "deleteIntake": "Ta bort",
+    "intakeLog": "Dagens drycker",
     "emptyDay": "Inget loggat den här dagen.",
     "weekTotal": "Den här veckan",
     "targetLabel": "Dagsmål",

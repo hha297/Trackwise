@@ -210,6 +210,8 @@
     "language": "Ngôn ngữ",
     "appearance": "Giao diện",
     "units": "Đơn vị",
+    "reminders": "Nhắc nhở",
+    "remindersSubtitle": "Tập luyện, bữa ăn và nước uống",
     "metric": "Mét",
     "imperial": "Anh",
     "email": "Email",
@@ -346,6 +348,106 @@
     "cloudinaryRestartHint": "Khởi động lại Expo với --clear để tải biến Cloudinary từ .env.local.",
     "avatarA11y": "Ảnh đại diện {{name}}",
     "profileAvatarA11y": "Ảnh đại diện"
+  },
+  "notifications": {
+    "title": "Nhắc nhở",
+    "subtitle": "Nhắc nhở cục bộ nhẹ nhàng để ghi buổi tập, bữa ăn và nước. Không gửi từ máy chủ.",
+    "loading": "Đang tải nhắc nhở…",
+    "saving": "Đang cập nhật lịch…",
+    "saveError": "Không thể lưu cài đặt nhắc nhở.",
+    "permission": {
+      "section": "Quyền thông báo",
+      "checking": "Đang kiểm tra quyền…",
+      "granted": "Đã cho phép thông báo",
+      "grantedHint": "Nhắc nhở có thể hiện trên thiết bị này.",
+      "denied": "Thông báo bị chặn",
+      "deniedHint": "Bật thông báo trong cài đặt hệ thống để nhận nhắc nhở.",
+      "undetermined": "Chưa yêu cầu quyền",
+      "undeterminedHint": "Bật một nhắc nhở bên dưới để hệ thống hỏi quyền thông báo.",
+      "unavailable": "Thông báo không khả dụng trên nền tảng này",
+      "openSettings": "Mở cài đặt hệ thống",
+      "savedButBlocked": "Đã lưu tùy chọn, nhưng không thể gửi nhắc nhở cho đến khi cho phép thông báo."
+    },
+    "workout": {
+      "section": "Tập luyện",
+      "title": "Nhắc buổi tập",
+      "hint": "Chọn ngày trong tuần và giờ. Không chọn ngày thì không lên lịch.",
+      "time": "Giờ nhắc",
+      "days": "Ngày trong tuần",
+      "noDays": "Chọn ít nhất một ngày để nhắc buổi tập."
+    },
+    "meals": {
+      "section": "Bữa ăn",
+      "title": "Nhắc ghi nhật ký bữa ăn",
+      "hint": "Giờ gợi ý có thể chỉnh. Mỗi bữa bật/tắt riêng.",
+      "time": "Giờ"
+    },
+    "hydration": {
+      "section": "Nước uống",
+      "title": "Nhắc uống nước",
+      "hint": "Nhắc trong khung giờ bắt đầu–kết thúc và có giới hạn mỗi ngày.",
+      "start": "Bắt đầu",
+      "end": "Kết thúc",
+      "interval": "Khoảng cách",
+      "intervalOption": "Mỗi {{minutes}} phút"
+    },
+    "time": {
+      "hour": "Giờ",
+      "minute": "Phút",
+      "cancel": "Hủy",
+      "save": "Lưu"
+    },
+    "push": {
+      "workoutTitle": "Nhắc buổi tập",
+      "workoutBody": "Đây là lúc phù hợp cho buổi tập hôm nay khi bạn sẵn sàng.",
+      "breakfastTitle": "Bữa sáng",
+      "breakfastBody": "Ghi bữa sáng khi bạn rảnh.",
+      "lunchTitle": "Bữa trưa",
+      "lunchBody": "Ghi bữa trưa khi bạn rảnh.",
+      "dinnerTitle": "Bữa tối",
+      "dinnerBody": "Ghi bữa tối khi bạn rảnh.",
+      "hydrationTitle": "Uống nước",
+      "hydrationBody": "Uống một ngụm nước giúp bạn duy trì nhịp độ."
+    }
+  },
+  "engagement": {
+    "streaks": {
+      "title": "Chuỗi ngày",
+      "subtitle": "Tính đều đặn khi ghi nhật ký — không cần đạt mục tiêu.",
+      "empty": "Ghi món ăn, nước hoặc buổi tập để bắt đầu chuỗi.",
+      "loading": "Đang tải chuỗi ngày…",
+      "loadError": "Không thể tải chuỗi ngày.",
+      "retry": "Thử lại",
+      "nutrition": "Dinh dưỡng",
+      "hydration": "Nước uống",
+      "workout": "Tập luyện",
+      "longest": "Dài nhất {{count}}",
+      "daysAlive": "ngày liên tiếp",
+      "daysIdle": "chưa hoạt động",
+      "a11yNutrition": "Chuỗi dinh dưỡng {{current}} ngày, dài nhất {{longest}}",
+      "a11yHydration": "Chuỗi nước uống {{current}} ngày, dài nhất {{longest}}",
+      "a11yWorkout": "Chuỗi tập {{current}} ngày có buổi tập, dài nhất {{longest}}"
+    },
+    "weekly": {
+      "title": "Tuần này",
+      "subtitle": "Tóm tắt tuần lịch từ nhật ký của bạn.",
+      "loading": "Đang tải tuần…",
+      "loadError": "Không thể tải tuần này.",
+      "retry": "Thử lại",
+      "prevWeek": "Tuần trước",
+      "nextWeek": "Tuần sau",
+      "nutritionDays": "Ngày dinh dưỡng",
+      "hydrationDays": "Ngày uống nước",
+      "workoutDays": "Ngày tập",
+      "avgCalories": "Calo trung bình",
+      "daysLoggedHint": "Ngày có ít nhất một món đã ghi",
+      "noHydration": "Chưa ghi nước",
+      "hydrationTotal": "Tổng {{value}}",
+      "sessionsHint": "{{count}} buổi",
+      "avgProteinHint": "Protein TB {{value}} g",
+      "noNutritionAvg": "Chưa có nhật ký ăn tuần này",
+      "hydrationProgress": "TB nước mỗi ngày so với mục tiêu: {{percent}}%"
+    }
   },
   "progress": {
     "title": "Tiến độ",
@@ -773,6 +875,8 @@
     "saveTemplate": "Lưu mẫu",
     "saveTemplateChanges": "Lưu thay đổi",
     "recent": "Buổi tập gần đây",
+    "recentSubtitle": "Các buổi tập vừa hoàn thành.",
+    "seeAll": "Xem tất cả",
     "library": "Thư viện bài tập",
     "emptyHistory": "Chưa có buổi tập",
     "emptyHistoryBody": "Bắt đầu trống hoặc chọn mẫu, hoàn thành để xem lịch sử.",
@@ -1680,6 +1784,7 @@
     "saveIntake": "Lưu",
     "add": "Thêm",
     "deleteIntake": "Xóa",
+    "intakeLog": "Đã uống hôm nay",
     "emptyDay": "Ngày này chưa có ghi nhận.",
     "weekTotal": "Tuần này",
     "targetLabel": "Mục tiêu ngày",

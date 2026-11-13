@@ -18,7 +18,7 @@ const TEMPLATE_COVERS: Record<string, ImageSourcePropType> = {
   'core-workout': require('../../../assets/images/workout/exercises/bodyweight/templates/core-workout.jpg'),
 
   // Muscle-focus templates — exercise stills not used as muscle hub / subcategory covers
-  'chest-builder': require('../../../assets/images/workout/exercises/strength/chest/incline-dumbbell-bench-press.jpg'),
+  'chest-builder': require('../../../assets/images/workout/exercises/strength/chest/incline-dumbbell-bench-press.webp'),
   'back-builder': require('../../../assets/images/workout/exercises/strength/back/lat-pulldown.webp'),
   'shoulder-pump': require('../../../assets/images/workout/exercises/strength/shoulders/overhead-press.webp'),
   'glute-focus': require('../../../assets/images/workout/exercises/strength/glutes/hip-thrust.webp'),
@@ -31,12 +31,12 @@ const TEMPLATE_COVERS: Record<string, ImageSourcePropType> = {
   'calisthenics-starter': require('../../../assets/images/workout/exercises/bodyweight/calisthenics/pull-up.jpg'),
   'core-crusher': require('../../../assets/images/workout/exercises/bodyweight/core/hanging-leg-raise.jpg'),
   'mobility-flow': require('../../../assets/images/workout/exercises/flexibility/mobility/world-greatest-stretch.webp'),
-  'yoga-essentials': require('../../../assets/images/workout/exercises/flexibility/yoga/downward-facing-dog.jpeg'),
+  'yoga-essentials': require('../../../assets/images/workout/exercises/flexibility/yoga/downward-facing-dog.avif'),
   'desk-reset': require('../../../assets/images/workout/exercises/flexibility/stretching/neck-side-stretch.webp'),
 
   // Quality-refresh additions — stills not used as muscle/subcategory hub tiles
   'push-hypertrophy': require('../../../assets/images/workout/exercises/strength/chest/dumbbell-bench-press.jpg'),
-  'pull-hypertrophy': require('../../../assets/images/workout/exercises/strength/back/seated-cable-row.png'),
+  'pull-hypertrophy': require('../../../assets/images/workout/exercises/strength/back/seated-cable-row.avif'),
   'posterior-chain': require('../../../assets/images/workout/exercises/strength/back/conventional-deadlift.jpg'),
   'quads-builder': require('../../../assets/images/workout/exercises/strength/glutes/bulgarian-split-squat.jpg'),
   'home-dumbbell': require('../../../assets/images/workout/exercises/strength/shoulders/seated-dumbbell-shoulder-press.jpg'),
