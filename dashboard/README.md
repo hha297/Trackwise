@@ -39,7 +39,7 @@ The **main public web** for Trackwise — product marketing, feature detail, FAQ
 
 |                                                                                                                                      |                                                                                                                                          |                                                                                                                                     |                                                                                                                                   |
 | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public](https://img.shields.io/badge/Public_site-00D95F?style=for-the-badge&labelColor=202020) Prospects & users — not operators     | ![Honest](https://img.shields.io/badge/Ship_what_exists-3B82F6?style=for-the-badge&labelColor=202020) Advertise only mobile features that ship | ![Config](https://img.shields.io/badge/Config_driven_links-C47F1A?style=for-the-badge&labelColor=202020) Empty store URLs → Coming soon | ![Brand](https://img.shields.io/badge/Trackwise_design-635BFF?style=for-the-badge&labelColor=202020) `#00D95F` · Bricolage / Geist / Mono |
+| ![Public](https://img.shields.io/badge/Public_site-00D95F?style=for-the-badge&labelColor=202020) Prospects & users — not operators     | ![Honest](https://img.shields.io/badge/Ship_what_exists-3B82F6?style=for-the-badge&labelColor=202020) Advertise only mobile features that ship | ![Config](https://img.shields.io/badge/Config_driven_links-C47F1A?style=for-the-badge&labelColor=202020) Empty store URLs → Coming soon | ![Brand](https://img.shields.io/badge/Trackwise_design-635BFF?style=for-the-badge&labelColor=202020) `#00D95F` · Bricolage / Mono |
 
 This package is **separate** from:
 
@@ -79,7 +79,7 @@ It does **not** need the mobile app or Admin console running.
 | ----- | ------ |
 | **App** | Next.js 15 (App Router), React 19, TypeScript |
 | **UI** | Tailwind CSS v4, Lucide |
-| **Fonts** | Bricolage Grotesque (display), Geist (body), JetBrains Mono (metrics) |
+| **Fonts** | Bricolage Grotesque (display + body), JetBrains Mono (metrics) |
 | **i18n** | Client locale dictionaries — EN / FI / SV / VI |
 | **Theme** | Light / dark / system (CSS variables + `data-theme`) |
 | **Config** | `src/config/site.ts` (hard-coded public constants) |

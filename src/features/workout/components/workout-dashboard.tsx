@@ -1,10 +1,10 @@
-import { formatDistanceToNow } from 'date-fns';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useMemo, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { router } from 'expo-router';
 import {
   BookOpen,
+  CalendarDays,
   ChevronRight,
   Dumbbell,
   Flame,
@@ -18,8 +18,9 @@ import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Text } from '@/components/ui/text';
+import { Input } from '@/components/ui/input';
 import { ErrorState, LoadingState } from '@/components/ui/states';
+import { Text } from '@/components/ui/text';
 import { weekDateKeys } from '@/features/diary/aggregations';
 import { useWorkoutsInRange } from '@/features/diary/hooks';
 import {
@@ -28,13 +29,14 @@ import {
   type ImageWorkoutCategory,
 } from '@/features/workout/category-assets';
 import { formatElapsed, useWorkouts } from '@/features/workout/hooks';
+import { draftSetIsLogged } from '@/features/workout/logged-set';
+import { formatWorkoutDay, resolveWorkoutName } from '@/features/workout/session-display';
 import { useActiveWorkoutStore } from '@/stores/active-workout-store';
 import { iconSizes, layout, radii, spacing, withAlpha } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 import { toDiaryDateKey } from '@/utils/date';
 
-/** Width / height — avoid Yoga flex+aspectRatio collapse on Android. */
-const CATEGORY_ASPECT = 1.05;
+const CATEGORY_ASPECT = 1.15;
 const CATEGORY_GAP = spacing[3];
 
 function weeklyDurationSec(
@@ -76,18 +78,18 @@ export function WorkoutDashboard() {
   const categoryTileSize = useMemo(() => {
     const contentWidth = Math.max(0, windowWidth - layout.screenPaddingX * 2);
     const width = Math.floor((contentWidth - CATEGORY_GAP) / 2);
-    const height = Math.max(112, Math.round(width / CATEGORY_ASPECT));
+    const height = Math.max(100, Math.round(width / CATEGORY_ASPECT));
     return { width, height };
   }, [windowWidth]);
 
   const hasActive = Boolean(active.startedAt);
   const totalExercises = active.exercises.length;
   const completedExercises = active.exercises.filter((exercise) =>
-    exercise.sets.some((set) => set.completed),
+    exercise.sets.some((set) => draftSetIsLogged(set)),
   ).length;
   const totalSets = active.exercises.reduce((sum, exercise) => sum + exercise.sets.length, 0);
   const completedSets = active.exercises.reduce(
-    (sum, exercise) => sum + exercise.sets.filter((set) => set.completed).length,
+    (sum, exercise) => sum + exercise.sets.filter((set) => draftSetIsLogged(set)).length,
     0,
   );
   const progressPct = Math.round(
@@ -119,9 +121,12 @@ export function WorkoutDashboard() {
   const categoryRows = useMemo(() => pairsOf(WORKOUT_IMAGE_CATEGORIES), []);
   const weekReady = !weekWorkouts.isLoading && !weekWorkouts.error;
   const weekEmpty = weekReady && weekStats.sessions === 0;
+  const [sessionName, setSessionName] = useState('');
 
   const startQuick = () => {
-    active.start({ name: t('workout.defaultName') });
+    active.start({
+      name: resolveWorkoutName(sessionName, t('workout.defaultName')),
+    });
     router.push('/workout/active');
   };
 
@@ -134,59 +139,31 @@ export function WorkoutDashboard() {
         </Text>
       </View>
 
-      {/* Compact primary + secondary CTAs */}
-      <View style={styles.ctaColumn}>
-        <Button
-          label={t('workout.quickWorkout')}
-          iconStart={(color) => <Play size={17} color={color} fill={color} />}
-          onPress={startQuick}
-        />
-        <Button
-          label={t('workout.templatesEntry')}
-          variant="secondary"
-          iconStart={(color) => <LayoutTemplate size={17} color={color} />}
-          onPress={() => router.push('/workout/templates')}
-        />
-      </View>
-
       {hasActive ? (
-        <Card
-          style={[
-            styles.resumeCard,
-            {
-              borderColor: withAlpha(colors.primary, 0.45),
-              backgroundColor: withAlpha(colors.primary, 0.1),
-            },
-          ]}
-        >
-          <View style={styles.resumeTop}>
-            <View style={styles.resumeCopy}>
-              <Text variant="label" tone="brand">
-                {t('workout.continueSection')}
-              </Text>
-              <Text variant="headingSmall" numberOfLines={1}>
-                {active.name || t('workout.defaultName')}
-              </Text>
-              <Text variant="caption" tone="secondary" numberOfLines={2}>
-                {t('workout.continueProgress', {
-                  completed: completedExercises,
-                  total: Math.max(totalExercises, 1),
-                })}
-                {totalSets > 0
-                  ? ` · ${t('workout.continueSets', {
-                      completed: completedSets,
-                      total: totalSets,
-                    })}`
-                  : ''}
-              </Text>
-            </View>
+        <Card style={styles.resumeCard}>
+          <View style={styles.resumeCopy}>
+            <Text variant="label" tone="secondary">
+              {t('workout.continueSection')}
+            </Text>
+            <Text variant="headingSmall" numberOfLines={1}>
+              {active.name || t('workout.defaultName')}
+            </Text>
+            <Text variant="caption" tone="secondary" numberOfLines={2}>
+              {t('workout.continueProgress', {
+                completed: completedExercises,
+                total: Math.max(totalExercises, 1),
+              })}
+              {totalSets > 0
+                ? ` · ${t('workout.continueSets', {
+                    completed: completedSets,
+                    total: totalSets,
+                  })}`
+                : ''}
+            </Text>
           </View>
-          <View style={[styles.track, { backgroundColor: withAlpha(colors.textPrimary, 0.12) }]}>
+          <View style={[styles.track, { backgroundColor: colors.surfaceMuted }]}>
             <View
-              style={[
-                styles.fill,
-                { width: `${progressPct}%`, backgroundColor: colors.primary },
-              ]}
+              style={[styles.fill, { width: `${progressPct}%`, backgroundColor: colors.primary }]}
             />
           </View>
           <Button
@@ -194,10 +171,36 @@ export function WorkoutDashboard() {
             iconStart={(color) => <Play size={16} color={color} fill={color} />}
             onPress={() => router.push('/workout/active')}
           />
+          <Button
+            label={t('workout.templatesEntry')}
+            variant="secondary"
+            iconStart={(color) => <LayoutTemplate size={17} color={color} />}
+            onPress={() => router.push('/workout/templates')}
+          />
         </Card>
-      ) : null}
+      ) : (
+        <Card style={styles.startCard}>
+          <Input
+            label={t('workout.sessionName')}
+            value={sessionName}
+            onChangeText={setSessionName}
+            placeholder={t('workout.sessionNamePlaceholder')}
+            autoCapitalize="words"
+          />
+          <Button
+            label={t('workout.quickWorkout')}
+            iconStart={(color) => <Play size={17} color={color} fill={color} />}
+            onPress={startQuick}
+          />
+          <Button
+            label={t('workout.templatesEntry')}
+            variant="secondary"
+            iconStart={(color) => <LayoutTemplate size={17} color={color} />}
+            onPress={() => router.push('/workout/templates')}
+          />
+        </Card>
+      )}
 
-      {/* This week — compact metric strip */}
       <Card style={styles.weekCard}>
         <Text variant="headingSmall">{t('workout.weeklyActivity')}</Text>
         {weekWorkouts.isLoading ? <LoadingState /> : null}
@@ -241,7 +244,6 @@ export function WorkoutDashboard() {
         ) : null}
       </Card>
 
-      {/* Categories — fixed px sizes so tiles never collapse to 0 height */}
       <View style={styles.section}>
         <Text variant="headingSmall">{t('workout.categories')}</Text>
         <View style={styles.categoryGrid}>
@@ -263,7 +265,6 @@ export function WorkoutDashboard() {
         </View>
       </View>
 
-      {/* Explore — two polished nav cards */}
       <View style={styles.section}>
         <Text variant="headingSmall">{t('workout.explore')}</Text>
         <View style={styles.exploreStack}>
@@ -281,20 +282,27 @@ export function WorkoutDashboard() {
             icon={<History size={20} color={colors.primary} strokeWidth={2.2} />}
             onPress={() => router.push('/workout/history')}
           />
+          <ExploreCard
+            title={t('phase1.planTitle')}
+            body={t('phase1.planHint')}
+            icon={<CalendarDays size={20} color={colors.primary} strokeWidth={2.2} />}
+            onPress={() => router.push('/workout/plan')}
+          />
         </View>
       </View>
 
-      {/* Recent */}
       <View style={styles.section}>
         <View style={styles.sectionHead}>
           <Text variant="headingSmall" style={styles.flexShrink}>
             {t('workout.recent')}
           </Text>
-          <Pressable onPress={() => router.push('/workout/history')} hitSlop={10}>
-            <Text variant="caption" tone="brand" numberOfLines={1}>
-              {t('workout.historyEntry')}
-            </Text>
-          </Pressable>
+          {recent.length > 0 ? (
+            <Pressable onPress={() => router.push('/workout/history')} hitSlop={10}>
+              <Text variant="caption" tone="secondary">
+                {t('workout.historyEntry')}
+              </Text>
+            </Pressable>
+          ) : null}
         </View>
         {recent.length === 0 ? (
           <Card style={styles.emptyRecent}>
@@ -314,20 +322,20 @@ export function WorkoutDashboard() {
                 }
               >
                 {({ pressed }) => (
-                  <Card style={[styles.recentCard, { opacity: pressed ? 0.9 : 1 }]}>
+                  <Card style={[styles.recentCard, { opacity: pressed ? 0.92 : 1 }]}>
                     <View style={styles.recentRow}>
                       <View style={styles.recentCopy}>
                         <Text variant="bodyStrong" numberOfLines={1}>
-                          {workout.name}
+                          {resolveWorkoutName(workout.name, t('workout.defaultName'))}
                         </Text>
-                        <Text variant="caption" tone="secondary" numberOfLines={2}>
-                          {formatDistanceToNow(new Date(workout.started_at), {
-                            addSuffix: true,
-                          })}
+                        <Text variant="caption" tone="secondary" numberOfLines={1}>
+                          {formatWorkoutDay(workout.started_at)}
                           {workout.active_duration_sec
                             ? ` · ${formatElapsed(workout.active_duration_sec)}`
                             : ''}
-                          {` · ~${Math.round(workout.estimated_calories)} ${t('workout.kcalEst')}`}
+                          {Number(workout.estimated_calories) > 0
+                            ? ` · ~${Math.round(workout.estimated_calories)} ${t('diary.meals.kcalUnit')}`
+                            : ''}
                         </Text>
                       </View>
                       <ChevronRight size={iconSizes.md} color={colors.textMuted} />
@@ -354,9 +362,7 @@ function MetricCell({
 }) {
   return (
     <View style={styles.metricCell}>
-      <View style={styles.metricIconRow}>
-        {icon}
-      </View>
+      <View style={styles.metricIconRow}>{icon}</View>
       <Text variant="metric" numberOfLines={1} style={styles.metricValue}>
         {value}
       </Text>
@@ -364,57 +370,6 @@ function MetricCell({
         {label}
       </Text>
     </View>
-  );
-}
-
-function CategoryTile({
-  category,
-  width,
-  height,
-}: {
-  category: ImageWorkoutCategory;
-  width: number;
-  height: number;
-}) {
-  const { t } = useTranslation();
-
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={t(`workout.category.${category}`)}
-      onPress={() =>
-        router.push({
-          pathname: '/workout/library',
-          params: { top: category },
-        })
-      }
-      style={({ pressed }) => [
-        styles.categoryTile,
-        { width, height, opacity: pressed ? 0.94 : 1 },
-      ]}
-    >
-      <Image
-        source={WORKOUT_CATEGORY_IMAGES[category]}
-        style={{ width, height }}
-        contentFit="cover"
-        transition={120}
-        accessibilityIgnoresInvertColors
-      />
-      <LinearGradient
-        pointerEvents="none"
-        colors={['transparent', 'rgba(0,0,0,0.35)', 'rgba(0,0,0,0.82)']}
-        locations={[0.35, 0.65, 1]}
-        style={StyleSheet.absoluteFill}
-      />
-      <View pointerEvents="none" style={styles.categoryFooter}>
-        <Text variant="bodyStrong" numberOfLines={1} style={styles.onImageTitle}>
-          {t(`workout.category.${category}`)}
-        </Text>
-        <Text variant="caption" numberOfLines={2} style={styles.onImageBody}>
-          {t(`workout.categorySubtitle.${category}`)}
-        </Text>
-      </View>
-    </Pressable>
   );
 }
 
@@ -456,6 +411,54 @@ function ExploreCard({
   );
 }
 
+function CategoryTile({
+  category,
+  width,
+  height,
+}: {
+  category: ImageWorkoutCategory;
+  width: number;
+  height: number;
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={t(`workout.category.${category}`)}
+      onPress={() =>
+        router.push({
+          pathname: '/workout/library',
+          params: { top: category },
+        })
+      }
+      style={({ pressed }) => [
+        styles.categoryTile,
+        { width, height, opacity: pressed ? 0.94 : 1 },
+      ]}
+    >
+      <Image
+        source={WORKOUT_CATEGORY_IMAGES[category]}
+        style={{ width, height }}
+        contentFit="cover"
+        transition={120}
+        accessibilityIgnoresInvertColors
+      />
+      <LinearGradient
+        pointerEvents="none"
+        colors={['transparent', withAlpha('#000000', 0.55)]}
+        locations={[0.45, 1]}
+        style={StyleSheet.absoluteFill}
+      />
+      <View pointerEvents="none" style={styles.categoryFooter}>
+        <Text variant="bodyStrong" numberOfLines={1} style={styles.onImageTitle}>
+          {t(`workout.category.${category}`)}
+        </Text>
+      </View>
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   root: {
     gap: spacing[5],
@@ -463,21 +466,18 @@ const styles = StyleSheet.create({
   header: {
     gap: spacing[1],
   },
-  ctaColumn: {
-    gap: spacing[2],
-  },
   resumeCard: {
     gap: spacing[3],
   },
-  resumeTop: {
-    gap: spacing[1],
+  startCard: {
+    gap: spacing[3],
   },
   resumeCopy: {
     gap: spacing[1],
     minWidth: 0,
   },
   track: {
-    height: 7,
+    height: 6,
     borderRadius: radii.pill,
     overflow: 'hidden',
   },
@@ -541,9 +541,9 @@ const styles = StyleSheet.create({
     gap: CATEGORY_GAP,
   },
   categoryTile: {
-    borderRadius: radii.lg,
+    borderRadius: radii.md,
     overflow: 'hidden',
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#202020',
     position: 'relative',
   },
   categoryFooter: {
@@ -553,16 +553,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     paddingHorizontal: spacing[3],
     paddingBottom: spacing[3],
-    paddingTop: spacing[6],
-    gap: 2,
+    paddingTop: spacing[5],
   },
   onImageTitle: {
     color: '#FFFFFF',
-  },
-  onImageBody: {
-    color: 'rgba(255,255,255,0.86)',
-    fontSize: 11,
-    lineHeight: 14,
   },
   exploreStack: {
     gap: spacing[2],

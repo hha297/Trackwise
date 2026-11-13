@@ -257,7 +257,7 @@ export function WeekFoodList({
 function Metric({ label, value }: { label: string; value: number }) {
   return (
     <View className="min-w-0 flex-1 items-center gap-0.5">
-      <Text variant="caption" tone="secondary" numberOfLines={1} style={{ fontSize: 10 }}>
+      <Text variant="fine" tone="secondary" numberOfLines={1}>
         {label}
       </Text>
       <Text variant="bodyStrong" numberOfLines={1}>

@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Polyline } from 'react-native-svg';
 
 import { Text } from '@/components/ui/text';
-import { spacing } from '@/theme';
+import { spacing, typography } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 
 export type LineSeries = {
@@ -150,8 +150,8 @@ const styles = StyleSheet.create({
     gap: spacing[2],
   },
   axisLabel: {
-    fontSize: 10,
-    lineHeight: 12,
+    fontSize: typography.fine.size,
+    lineHeight: typography.fine.lineHeight,
     minWidth: 0,
   },
   legend: {

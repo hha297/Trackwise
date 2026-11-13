@@ -7,6 +7,8 @@ import {
 import { parseISO } from 'date-fns';
 
 import { useAuth } from '@/features/auth/auth-provider';
+import { linkPlanToWorkout } from '@/features/planner/api';
+import { toDiaryDateKey } from '@/utils/date';
 import {
   createCustomExercise,
   createWorkoutTemplate,
@@ -21,12 +23,18 @@ import {
   fetchWorkoutTemplates,
   fetchWorkouts,
   finishWorkoutSession,
+  renameWorkout,
+  reorderSavedWorkoutSets,
+  reviseSavedWorkoutSet,
   toggleExerciseFavorite,
   updateWorkoutTemplate,
   type WorkoutTemplateWriteInput,
 } from '@/features/workout/api';
 import { totalVolumeKg } from '@/features/workout/calculations';
+import { draftSetIsLogged } from '@/features/workout/logged-set';
 import { estimateWorkoutCalories } from '@/features/workout/exercise-calorie-engine';
+import { fetchCompletedSetHistory } from '@/features/workout/history-sets';
+import { detectNewPersonalRecords, type NewPersonalRecord } from '@/features/workout/personal-records';
 import type { ExerciseType } from '@/features/workout/types';
 import type { DraftExercise } from '@/stores/active-workout-store';
 
@@ -298,6 +306,24 @@ export function useFinishWorkout() {
 
       const endedAt = new Date().toISOString();
       const durationMin = Math.max(1, Math.round(input.activeDurationSec / 60));
+      let personalRecords: NewPersonalRecord[] = [];
+      try {
+        const history = await fetchCompletedSetHistory(userId);
+        const sessionSets = input.exercises.flatMap((exercise) =>
+          exercise.sets.map((set) => ({
+            exerciseKey: exercise.exerciseId ?? exercise.name,
+            exerciseName: exercise.name,
+            exerciseType: exercise.exerciseType,
+            weightKg: set.weightKg ? Number(set.weightKg) : null,
+            reps: set.reps ? Number(set.reps) : null,
+            completed: draftSetIsLogged(set),
+            sessionId: 'current',
+          })),
+        );
+        personalRecords = detectNewPersonalRecords(history, sessionSets);
+      } catch {
+        personalRecords = [];
+      }
 
       if (!(input.bodyWeightKg > 0)) {
         throw new Error('BODY_WEIGHT_REQUIRED');
@@ -318,7 +344,7 @@ export function useFinishWorkout() {
             durationSec: set.durationSec ? Number(set.durationSec) : null,
             distanceM: set.distanceM ? Number(set.distanceM) : null,
             restSec: set.restSec ? Number(set.restSec) : null,
-            completed: set.completed,
+            completed: draftSetIsLogged(set),
           })),
         })),
       });
@@ -351,24 +377,37 @@ export function useFinishWorkout() {
             estimateDurationSec: row?.durationSec ?? null,
             estimateActivityKey: row?.activityKey ?? null,
             estimateBodyWeightKg: row?.bodyWeightKg ?? null,
-            sets: exercise.sets.map((set) => ({
-              setNumber: set.setNumber,
+            sets: exercise.sets.filter(draftSetIsLogged).map((set, index) => ({
+              setNumber: index + 1,
               weightKg: set.weightKg ? Number(set.weightKg) : null,
               reps: set.reps ? Number(set.reps) : null,
               durationSec: set.durationSec ? Number(set.durationSec) : null,
               distanceM: set.distanceM ? Number(set.distanceM) : null,
               restSec: set.restSec ? Number(set.restSec) : null,
-              completed: set.completed,
+              completed: true,
               notes: set.notes || null,
             })),
           };
         }),
       });
 
+      if (input.sourceTemplateId) {
+        try {
+          await linkPlanToWorkout({
+            userId,
+            planDate: toDiaryDateKey(),
+            templateId: input.sourceTemplateId,
+            workoutId,
+          });
+        } catch {
+          // Saving the session is the source of truth. Plan linking can be retried.
+        }
+      }
+
       const volume = totalVolumeKg(
         input.exercises.flatMap((exercise) =>
           exercise.sets
-            .filter((set) => set.completed && set.weightKg && set.reps)
+            .filter((set) => draftSetIsLogged(set) && set.weightKg && set.reps)
             .map((set) => ({
               weightKg: Number(set.weightKg),
               reps: Number(set.reps),
@@ -386,10 +425,183 @@ export function useFinishWorkout() {
         exerciseEstimates: workoutEstimate.exercises,
         endedAt,
         startedAt: input.startedAt,
+        personalRecords,
       };
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['workouts'] });
+      await queryClient.invalidateQueries({ queryKey: ['plans'] });
+      await queryClient.invalidateQueries({ queryKey: ['exercise-history'] });
+    },
+  });
+}
+
+export function useRenameWorkout() {
+  const { session } = useAuth();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: { id: string; name: string }) => {
+      const userId = session?.user.id;
+      if (!userId) throw new Error('Sign in required.');
+      await renameWorkout(input.id, userId, input.name);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['workouts'] });
+    },
+  });
+}
+
+export function useReviseSavedSet() {
+  const { session } = useAuth();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (
+      input: Omit<Parameters<typeof reviseSavedWorkoutSet>[0], 'userId'>,
+    ) => {
+      const userId = session?.user.id;
+      if (!userId) throw new Error('Sign in required.');
+      await reviseSavedWorkoutSet({ ...input, userId });
+      return input;
+    },
+    onMutate: async (input) => {
+      const userId = session?.user.id;
+      if (!userId) return;
+      const detailKey = ['workouts', 'detail', userId, input.workoutId] as const;
+      await queryClient.cancelQueries({ queryKey: detailKey });
+      const previous = queryClient.getQueryData(detailKey);
+
+      const weightKg = input.weightKg != null && Number(input.weightKg) > 0 ? Number(input.weightKg) : null;
+      const reps = input.reps != null && Number(input.reps) > 0 ? Number(input.reps) : null;
+      const durationSec =
+        input.durationSec != null && Number(input.durationSec) > 0 ? Number(input.durationSec) : null;
+      const distanceM =
+        input.distanceM != null && Number(input.distanceM) > 0 ? Number(input.distanceM) : null;
+      const clearing =
+        input.mode === 'delete' ||
+        (weightKg == null && reps == null && durationSec == null && distanceM == null);
+
+      queryClient.setQueryData(detailKey, (current: unknown) => {
+        if (!current || typeof current !== 'object') return current;
+        const detail = current as {
+          exercises?: {
+            id: string;
+            sets: {
+              id: string;
+              set_number: number;
+              weight_kg: number | null;
+              reps: number | null;
+              duration_sec: number | null;
+              distance_m: number | null;
+              completed: boolean;
+            }[];
+          }[];
+        };
+        if (!detail.exercises) return current;
+        return {
+          ...detail,
+          exercises: detail.exercises.map((exercise) => {
+            if (!exercise.sets.some((set) => set.id === input.setId)) return exercise;
+            const sets = clearing
+              ? exercise.sets
+                  .filter((set) => set.id !== input.setId)
+                  .map((set, index) => ({ ...set, set_number: index + 1 }))
+              : exercise.sets.map((set) =>
+                  set.id === input.setId
+                    ? {
+                        ...set,
+                        weight_kg: weightKg,
+                        reps,
+                        duration_sec: durationSec,
+                        distance_m: distanceM,
+                        completed: true,
+                      }
+                    : set,
+                );
+            return { ...exercise, sets };
+          }),
+        };
+      });
+
+      return { previous, detailKey };
+    },
+    onError: (_error, _input, context) => {
+      if (context?.previous !== undefined && context.detailKey) {
+        queryClient.setQueryData(context.detailKey, context.previous);
+      }
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['workouts'] });
+      await queryClient.invalidateQueries({ queryKey: ['exercise-history'] });
+    },
+  });
+}
+
+function patchWorkoutSetOrder(
+  current: unknown,
+  input: { exerciseId: string; orderedSetIds: string[] },
+): unknown {
+  if (!current || typeof current !== 'object') return current;
+  const detail = current as {
+    exercises?: {
+      id: string;
+      sets: { id: string; set_number: number }[];
+    }[];
+  };
+  if (!detail.exercises) return current;
+  return {
+    ...detail,
+    exercises: detail.exercises.map((exercise) => {
+      if (exercise.id !== input.exerciseId) return exercise;
+      const byId = new Map(exercise.sets.map((set) => [set.id, set]));
+      const sets = input.orderedSetIds
+        .map((id, index) => {
+          const row = byId.get(id);
+          return row ? { ...row, set_number: index + 1 } : null;
+        })
+        .filter((row): row is NonNullable<typeof row> => row != null);
+      return { ...exercise, sets };
+    }),
+  };
+}
+
+export function useReorderSavedSets() {
+  const { session } = useAuth();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (
+      input: Omit<Parameters<typeof reorderSavedWorkoutSets>[0], 'userId'>,
+    ) => {
+      const userId = session?.user.id;
+      if (!userId) throw new Error('Sign in required.');
+      await reorderSavedWorkoutSets({ ...input, userId });
+      return input;
+    },
+    onMutate: async (input) => {
+      const userId = session?.user.id;
+      if (!userId) return;
+      const detailKey = ['workouts', 'detail', userId, input.workoutId] as const;
+      await queryClient.cancelQueries({ queryKey: detailKey });
+      const previous = queryClient.getQueryData(detailKey);
+      // Optimistic: detail order matches the drop immediately (no post-save flash).
+      queryClient.setQueryData(detailKey, (current) => patchWorkoutSetOrder(current, input));
+      return { previous, detailKey };
+    },
+    onError: (_error, _input, context) => {
+      if (context?.previous !== undefined && context.detailKey) {
+        queryClient.setQueryData(context.detailKey, context.previous);
+      }
+    },
+    onSuccess: async (input) => {
+      const userId = session?.user.id;
+      if (!userId) return;
+      queryClient.setQueryData(['workouts', 'detail', userId, input.workoutId], (current) =>
+        patchWorkoutSetOrder(current, input),
+      );
+      // List only — do not refetch detail (avoids a stale-order blink).
+      await queryClient.invalidateQueries({
+        queryKey: ['workouts', userId],
+        exact: true,
+      });
     },
   });
 }

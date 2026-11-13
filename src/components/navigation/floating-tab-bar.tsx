@@ -3,7 +3,7 @@ import { Tabs } from 'expo-router';
 import type { ComponentProps } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
-import { elevation, iconSizes, radii, withAlpha } from '@/theme';
+import { elevation, iconSizes, radii, typography, withAlpha } from '@/theme';
 import { fonts } from '@/theme/fonts';
 import { useTheme, useThemeColors } from '@/theme/theme-provider';
 
@@ -241,8 +241,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: fonts.bodyMedium,
-    fontSize: 13,
-    lineHeight: 16,
+    fontSize: typography.fine.size,
+    lineHeight: typography.fine.lineHeight,
     textAlign: 'center',
     width: '100%',
   },

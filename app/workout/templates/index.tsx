@@ -9,10 +9,9 @@ import { Screen } from '@/components/ui/screen';
 import { ErrorState, LoadingState } from '@/components/ui/states';
 import { Text } from '@/components/ui/text';
 import { TemplateCard } from '@/features/workout/components/template-card';
+import { WorkoutFilterChip } from '@/features/workout/components/workout-filter-chip';
 import { useWorkoutTemplates } from '@/features/workout/hooks';
 import type { ExerciseDifficulty } from '@/features/workout/types';
-import { radii } from '@/theme';
-import { useThemeColors } from '@/theme/theme-provider';
 
 const DIFFICULTIES: (ExerciseDifficulty | 'all')[] = [
   'all',
@@ -23,7 +22,6 @@ const DIFFICULTIES: (ExerciseDifficulty | 'all')[] = [
 
 export default function WorkoutTemplatesScreen() {
   const { t } = useTranslation();
-  const colors = useThemeColors();
   const templates = useWorkoutTemplates();
   const [difficulty, setDifficulty] = useState<ExerciseDifficulty | 'all'>('all');
 
@@ -44,39 +42,23 @@ export default function WorkoutTemplatesScreen() {
             </Text>
           </View>
           <Pressable accessibilityRole="button" onPress={() => router.back()}>
-            <Text variant="bodyStrong" tone="brand">
+            <Text variant="bodyStrong" tone="secondary">
               {t('workout.back')}
             </Text>
           </Pressable>
         </View>
 
         <View className="flex-row flex-wrap" style={{ gap: 8 }}>
-          {DIFFICULTIES.map((item) => {
-            const selected = difficulty === item;
-            return (
-              <Pressable
-                key={item}
-                onPress={() => setDifficulty(item)}
-                className="px-3 py-2"
-                style={{
-                  borderRadius: radii.pill,
-                  backgroundColor: selected ? colors.primary : colors.surfaceMuted,
-                  borderWidth: selected ? 0 : 1,
-                  borderColor: colors.border,
-                }}
-              >
-                <Text
-                  variant="caption"
-                  style={selected ? { color: colors.textOnPrimary } : undefined}
-                  tone={selected ? undefined : 'secondary'}
-                >
-                  {item === 'all'
-                    ? t('workout.filterAll')
-                    : t(`workout.difficulty.${item}`)}
-                </Text>
-              </Pressable>
-            );
-          })}
+          {DIFFICULTIES.map((item) => (
+            <WorkoutFilterChip
+              key={item}
+              selected={difficulty === item}
+              onPress={() => setDifficulty(item)}
+              label={
+                item === 'all' ? t('workout.filterAll') : t(`workout.difficulty.${item}`)
+              }
+            />
+          ))}
         </View>
 
         <Button

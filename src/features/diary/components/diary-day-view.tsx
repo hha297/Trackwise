@@ -9,6 +9,7 @@ import {
 } from '@/features/diary/components/nutrition-dashboard';
 import { WeekFoodList } from '@/features/diary/components/week-food-list';
 import { WorkoutSection } from '@/features/diary/components/workout-section';
+import { HydrationCard } from '@/features/hydration/hydration-card';
 import { MEAL_ORDER, weekDateKeys } from '@/features/diary/aggregations';
 import type { MacroTotals } from '@/features/diary/balance';
 import type { FoodEntry } from '@/features/food/types';
@@ -83,6 +84,7 @@ export function DiaryDayView({
               onDelete={onDeleteEntry}
             />
           ))}
+          <HydrationCard dateKey={dateKey} />
           <WorkoutSection
             workouts={workouts}
             locale={locale}

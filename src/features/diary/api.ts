@@ -1,5 +1,6 @@
 import i18n from '@/i18n';
 import type { FoodEntry } from '@/features/food/types';
+import { mapWorkoutListRows, type WorkoutListJoinRow } from '@/features/workout/api';
 import type { WorkoutListItem } from '@/features/workout/hooks';
 import { getSupabase } from '@/lib/supabase/client';
 
@@ -61,16 +62,27 @@ export async function fetchWorkoutsInRange(
 
   const start = `${startKey}T00:00:00`;
   const end = `${endKey}T23:59:59`;
-  const { data, error } = await supabase
-    .from('workouts')
-    .select('id, name, started_at, ended_at, estimated_calories, status, active_duration_sec')
-    .eq('user_id', userId)
-    .gte('started_at', start)
-    .lte('started_at', end)
-    .order('started_at', { ascending: true });
+  const selects = [
+    'id, name, started_at, ended_at, estimated_calories, status, active_duration_sec, workout_exercises(position, exercise_name, exercise:exercises(image_url, image_storage_path, image_key, slug), workout_sets(weight_kg, reps, duration_sec, distance_m))',
+    'id, name, started_at, ended_at, estimated_calories, status, active_duration_sec, workout_exercises(position, exercise_name, exercise:exercises(image_url, image_storage_path, image_key, slug))',
+    'id, name, started_at, ended_at, estimated_calories, status, active_duration_sec',
+  ];
 
-  if (error) throw error;
-  return data ?? [];
+  let lastError: { message: string } | null = null;
+  for (const columns of selects) {
+    const { data, error } = await supabase
+      .from('workouts')
+      .select(columns)
+      .eq('user_id', userId)
+      .neq('status', 'discarded')
+      .gte('started_at', start)
+      .lte('started_at', end)
+      .order('started_at', { ascending: true });
+    if (!error) return mapWorkoutListRows((data ?? []) as unknown as WorkoutListJoinRow[]);
+    lastError = error;
+  }
+
+  throw lastError ?? new Error('Could not load workouts.');
 }
 
 export async function fetchDayWorkouts(

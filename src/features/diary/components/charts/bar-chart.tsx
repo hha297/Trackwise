@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
-import { spacing } from '@/theme';
+import { spacing, typography } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 
 export type BarChartItem = {
@@ -136,12 +136,12 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   valueLabel: {
-    fontSize: 10,
-    lineHeight: 12,
+    fontSize: typography.fine.size,
+    lineHeight: typography.fine.lineHeight,
   },
   axisLabel: {
-    fontSize: 10,
-    lineHeight: 12,
+    fontSize: typography.fine.size,
+    lineHeight: typography.fine.lineHeight,
     maxWidth: '100%',
   },
   bar: {

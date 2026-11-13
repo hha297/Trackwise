@@ -41,11 +41,10 @@ export function PeriodControl({ value, labels, onChange }: PeriodControlProps) {
             ]}
           >
             <Text
-              variant="label"
+              variant="fine"
               numberOfLines={1}
               style={{
                 color: selected ? colors.textOnPrimary : colors.textSecondary,
-                fontSize: 13,
               }}
             >
               {labels[period]}

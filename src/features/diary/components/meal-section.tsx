@@ -69,7 +69,7 @@ export function MealSection({ meal, dateKey, entries, onAdd, onDelete }: MealSec
             borderRadius: radii.pill,
           }}
         >
-          <Plus size={20} color="#FFFFFF" strokeWidth={2.5} />
+          <Plus size={20} color={colors.textOnPrimary} strokeWidth={2.5} />
         </Pressable>
       </View>
 

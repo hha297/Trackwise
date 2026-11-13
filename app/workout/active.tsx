@@ -1,14 +1,24 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { Check, Pause, Play, Plus, TimerReset, X } from 'lucide-react-native';
+import {
+  ArrowDown,
+  ArrowUp,
+  Dumbbell,
+  Pause,
+  Play,
+  Plus,
+  TimerReset,
+  Trash2,
+  X,
+} from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { Alert, Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { CompactInput } from '@/components/ui/compact-input';
 import { DeleteConfirmDialog } from '@/components/ui/delete-confirm-dialog';
+import { Input } from '@/components/ui/input';
 import { Screen } from '@/components/ui/screen';
 import { Text } from '@/components/ui/text';
 import { useLatestWeight } from '@/features/measurements/hooks';
@@ -17,11 +27,15 @@ import {
   EXERCISE_IMAGE_PLACEHOLDER,
   resolveExerciseImage,
 } from '@/features/workout/catalog/exercise-images';
-import { estimateWorkoutCalories } from '@/features/workout/exercise-calorie-engine';
+import { SetMetricField } from '@/features/workout/components/set-metric-field';
+import { WorkoutIconButton } from '@/features/workout/components/workout-icon-button';
 import { formatElapsed, useFinishWorkout } from '@/features/workout/hooks';
-import { radii } from '@/theme';
-import { useThemeColors } from '@/theme/theme-provider';
+import { draftSetIsLogged } from '@/features/workout/logged-set';
+import { resolveWorkoutName } from '@/features/workout/session-display';
 import { useActiveWorkoutStore, type DraftExercise } from '@/stores/active-workout-store';
+import { iconSizes, radii, spacing } from '@/theme';
+import { fonts } from '@/theme/fonts';
+import { useThemeColors } from '@/theme/theme-provider';
 
 export default function ActiveWorkoutScreen() {
   const { t } = useTranslation();
@@ -29,63 +43,51 @@ export default function ActiveWorkoutScreen() {
   const store = useActiveWorkoutStore();
   const finish = useFinishWorkout();
   const weight = useLatestWeight();
-  const [nowMs, setNowMs] = useState(() => Date.now());
   const [discardOpen, setDiscardOpen] = useState(false);
-
-  useEffect(() => {
-    const id = setInterval(() => setNowMs(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  useEffect(() => {
-    if (!store.restEndsAt) return;
-    const left = Math.ceil((new Date(store.restEndsAt).getTime() - nowMs) / 1000);
-    if (left <= 0) store.clearRest();
-  }, [nowMs, store]);
+  const [nameOpen, setNameOpen] = useState(false);
 
   if (!store.startedAt) {
     return (
-      <Screen>
-        <Text variant="body">{t('workout.noActive')}</Text>
-        <Button label={t('workout.back')} onPress={() => router.back()} />
+      <Screen edges={['top', 'bottom', 'left', 'right']}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingHorizontal: spacing[8],
+            gap: spacing[4],
+          }}
+        >
+          <View
+            style={{
+              width: 88,
+              height: 88,
+              borderRadius: 44,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: colors.surfaceMuted,
+            }}
+          >
+            <Dumbbell size={36} color={colors.primary} />
+          </View>
+          <Text variant="headingMedium" style={{ textAlign: 'center' }}>
+            {t('workout.noActive')}
+          </Text>
+          <Text variant="bodySmall" tone="secondary" style={{ textAlign: 'center' }}>
+            {t('workout.noActiveBody')}
+          </Text>
+          <View style={{ alignSelf: 'stretch', marginTop: spacing[2] }}>
+            <Button label={t('workout.back')} onPress={() => router.back()} />
+          </View>
+        </View>
       </Screen>
     );
   }
 
-  const elapsed = store.getActiveDurationSec();
-  const restLeft = store.restEndsAt
-    ? Math.max(0, Math.ceil((new Date(store.restEndsAt).getTime() - nowMs) / 1000))
-    : 0;
-
-  const liveEstimate =
-    weight.weightKg && weight.weightKg > 0
-      ? estimateWorkoutCalories({
-          activeDurationSec: elapsed,
-          bodyWeightKg: weight.weightKg,
-          exercises: store.exercises.map((exercise) => ({
-            localId: exercise.localId,
-            name: exercise.name,
-            exerciseType: exercise.exerciseType,
-            metValue: exercise.metValue,
-            sets: exercise.sets.map((set) => ({
-              weightKg: set.weightKg ? Number(set.weightKg) : null,
-              reps: set.reps ? Number(set.reps) : null,
-              durationSec: set.durationSec ? Number(set.durationSec) : null,
-              distanceM: set.distanceM ? Number(set.distanceM) : null,
-              restSec: set.restSec ? Number(set.restSec) : null,
-              completed: set.completed,
-            })),
-          })),
-        })
-      : null;
-  const liveById = new Map(
-    (liveEstimate?.exercises ?? []).map((row) => [row.localId, row] as const),
-  );
-
   const volume = totalVolumeKg(
     store.exercises.flatMap((exercise) =>
       exercise.sets
-        .filter((set) => set.completed && set.weightKg && set.reps)
+        .filter((set) => draftSetIsLogged(set) && set.weightKg && set.reps)
         .map((set) => ({ weightKg: Number(set.weightKg), reps: Number(set.reps) })),
     ),
   );
@@ -97,7 +99,7 @@ export default function ActiveWorkoutScreen() {
     }
     try {
       const result = await finish.mutateAsync({
-        name: store.name,
+        name: resolveWorkoutName(store.name, t('workout.defaultName')),
         startedAt: store.startedAt!,
         activeDurationSec: store.getActiveDurationSec(),
         notes: store.notes,
@@ -114,6 +116,7 @@ export default function ActiveWorkoutScreen() {
           volume: String(result.volume),
           durationMin: String(result.durationMin),
           intensity: result.intensity,
+          prs: JSON.stringify(result.personalRecords),
         },
       });
     } catch (error) {
@@ -129,42 +132,50 @@ export default function ActiveWorkoutScreen() {
 
   return (
     <Screen scroll keyboard edges={['top', 'bottom', 'left', 'right']}>
-      <View className="gap-4">
-        <View className="flex-row items-start justify-between gap-3">
-          <View className="min-w-0 flex-1 gap-1">
-            <Text variant="headingLarge" numberOfLines={1}>
-              {store.name}
-            </Text>
-            <Text variant="headingSmall" tone="brand">
-              {formatElapsed(elapsed)}
-              {store.paused ? ` · ${t('workout.paused')}` : ''}
-            </Text>
-          </View>
-          <View className="flex-row items-center gap-2">
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={store.paused ? t('workout.resume') : t('workout.paused')}
-              onPress={() => (store.paused ? store.resume() : store.pause())}
-              className="h-10 w-10 items-center justify-center"
-              style={{ backgroundColor: colors.surfaceMuted, borderRadius: radii.md }}
-            >
-              {store.paused ? (
-                <Play size={18} color={colors.primary} />
-              ) : (
-                <Pause size={18} color={colors.textPrimary} />
-              )}
+      <View style={{ gap: spacing[4] }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing[3] }}>
+          <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
+            <Pressable onPress={() => setNameOpen((open) => !open)} hitSlop={8}>
+              <Text variant="headingSmall" numberOfLines={1}>
+                {resolveWorkoutName(store.name, t('workout.defaultName'))}
+              </Text>
             </Pressable>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('workout.discard')}
-              onPress={() => setDiscardOpen(true)}
-              className="h-10 w-10 items-center justify-center"
-              style={{ backgroundColor: colors.surfaceMuted, borderRadius: radii.md }}
-            >
-              <X size={18} color={colors.error} />
-            </Pressable>
+            <ActiveElapsedLabel paused={store.paused} />
+            {volume > 0 ? (
+              <Text variant="caption" tone="secondary">
+                {t('workout.volumeSoFar', { value: volume })}
+              </Text>
+            ) : null}
           </View>
+          <WorkoutIconButton
+            accessibilityLabel={store.paused ? t('workout.resume') : t('workout.paused')}
+            onPress={() => (store.paused ? store.resume() : store.pause())}
+          >
+            {store.paused ? (
+              <Play size={18} color={colors.primary} />
+            ) : (
+              <Pause size={18} color={colors.textPrimary} />
+            )}
+          </WorkoutIconButton>
+          <WorkoutIconButton
+            accessibilityLabel={t('workout.discard')}
+            tone="danger"
+            onPress={() => setDiscardOpen(true)}
+          >
+            <X size={18} color={colors.error} />
+          </WorkoutIconButton>
         </View>
+
+        {nameOpen ? (
+          <Input
+            label={t('workout.sessionName')}
+            value={store.name}
+            onChangeText={store.setName}
+            placeholder={t('workout.sessionNamePlaceholder')}
+            autoCapitalize="words"
+            autoFocus
+          />
+        ) : null}
 
         <DeleteConfirmDialog
           visible={discardOpen}
@@ -180,39 +191,12 @@ export default function ActiveWorkoutScreen() {
           }}
         />
 
-        <Text variant="caption" tone="secondary">
-          {t('workout.volumeSoFar', { value: volume })}
-        </Text>
-
-        {restLeft > 0 ? (
-          <Card className="flex-row items-center gap-3">
-            <TimerReset size={18} color={colors.primary} />
-            <View className="min-w-0 flex-1">
-              <Text variant="bodyStrong">{t('workout.restTimer')}</Text>
-              <Text variant="headingSmall" tone="brand">
-                {formatElapsed(restLeft)}
-              </Text>
-            </View>
-            <Pressable onPress={() => store.adjustRest(-15)}>
-              <Text variant="caption" tone="secondary">
-                −15s
-              </Text>
-            </Pressable>
-            <Pressable onPress={() => store.adjustRest(15)}>
-              <Text variant="caption" tone="secondary">
-                +15s
-              </Text>
-            </Pressable>
-            <Pressable onPress={() => store.clearRest()}>
-              <Text variant="caption" tone="brand">
-                {t('workout.skipRest')}
-              </Text>
-            </Pressable>
-          </Card>
-        ) : null}
+        <ActiveRestBanner />
 
         <Button
           label={t('workout.addExercise')}
+          variant="secondary"
+          iconStart={(color) => <Plus size={18} color={color} />}
           onPress={() =>
             router.push({ pathname: '/workout/exercises', params: { mode: 'pick' } })
           }
@@ -225,118 +209,145 @@ export default function ActiveWorkoutScreen() {
         ) : null}
 
         {store.exercises.map((exercise, index) => (
-          <Card key={exercise.localId} className="gap-2">
-            <View className="flex-row items-center justify-between gap-2">
+          <Card key={exercise.localId} style={{ gap: spacing[3] }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing[3] }}>
               <ActiveExerciseThumb exercise={exercise} />
-              <View className="min-w-0 flex-1">
+              <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
                 <Text variant="headingSmall" numberOfLines={1}>
                   {exercise.name}
                 </Text>
-                <Text variant="caption" tone="secondary">
+                <Text variant="caption" tone="secondary" numberOfLines={1}>
                   {t(`workout.type.${exercise.exerciseType}`)}
-                  {liveById.get(exercise.localId)?.estimatedCalories
-                    ? ` · ${t('workout.summaryCalories', {
-                        value: liveById.get(exercise.localId)!.estimatedCalories,
-                      })}`
+                  {exercise.plannedReps
+                    ? ` · ${t('workout.plannedReps', { value: exercise.plannedReps })}`
                     : ''}
                 </Text>
-                {liveById.get(exercise.localId)?.method === 'allocated' ? (
-                  <Text variant="caption" tone="muted">
-                    {t('workout.estimateMethodAllocated')}
-                  </Text>
-                ) : null}
               </View>
-              <Pressable onPress={() => store.reorderExercise(exercise.localId, 'up')}>
-                <Text variant="caption" tone="secondary">
-                  ↑
-                </Text>
-              </Pressable>
-              <Pressable onPress={() => store.reorderExercise(exercise.localId, 'down')}>
-                <Text variant="caption" tone="secondary">
-                  ↓
-                </Text>
-              </Pressable>
-              <Pressable onPress={() => store.removeExercise(exercise.localId)}>
-                <Text variant="caption" tone="error">
-                  {t('workout.remove')}
-                </Text>
-              </Pressable>
+              <View style={{ flexDirection: 'row', gap: spacing[1] }}>
+                <WorkoutIconButton
+                  size={36}
+                  accessibilityLabel={t('workout.moveUp')}
+                  onPress={() => store.reorderExercise(exercise.localId, 'up')}
+                >
+                  <ArrowUp size={16} color={colors.textSecondary} />
+                </WorkoutIconButton>
+                <WorkoutIconButton
+                  size={36}
+                  accessibilityLabel={t('workout.moveDown')}
+                  onPress={() => store.reorderExercise(exercise.localId, 'down')}
+                >
+                  <ArrowDown size={16} color={colors.textSecondary} />
+                </WorkoutIconButton>
+                <WorkoutIconButton
+                  size={36}
+                  tone="danger"
+                  accessibilityLabel={t('workout.remove')}
+                  onPress={() => store.removeExercise(exercise.localId)}
+                >
+                  <Trash2 size={16} color={colors.error} />
+                </WorkoutIconButton>
+              </View>
             </View>
 
-            {exercise.sets.map((set) => (
-              <View key={set.localId} className="flex-row items-center gap-2">
-                <Text variant="caption" tone="secondary" className="w-6">
-                  {set.setNumber}
-                </Text>
-                {(exercise.exerciseType === 'strength' ||
-                  exercise.exerciseType === 'bodyweight') && (
-                  <>
-                    {exercise.exerciseType === 'strength' ? (
-                      <CompactInput
-                        value={set.weightKg}
-                        placeholder={t('workout.kg')}
-                        keyboardType="decimal-pad"
-                        onChangeText={(value) =>
-                          store.updateSet(exercise.localId, set.localId, { weightKg: value })
-                        }
-                      />
-                    ) : null}
-                    <CompactInput
+            <View style={{ gap: spacing[2] }}>
+              {exercise.sets.map((set) => (
+                <View
+                  key={set.localId}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: spacing[2] }}
+                >
+                  <View
+                    style={{
+                      width: 32,
+                      height: 56,
+                      borderRadius: radii.md,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: draftSetIsLogged(set)
+                        ? colors.primaryMuted
+                        : colors.surfaceMuted,
+                    }}
+                  >
+                    <Text variant="metric">{set.setNumber}</Text>
+                  </View>
+                  {exercise.exerciseType === 'strength' ? (
+                    <SetMetricField
+                      unit={t('workout.kg')}
+                      value={set.weightKg}
+                      keyboardType="decimal-pad"
+                      accessibilityLabel={t('workout.kg')}
+                      onChangeText={(value) =>
+                        store.updateSet(exercise.localId, set.localId, { weightKg: value })
+                      }
+                    />
+                  ) : null}
+                  {exercise.exerciseType === 'strength' ||
+                  exercise.exerciseType === 'bodyweight' ? (
+                    <SetMetricField
+                      unit={t('workout.reps')}
                       value={set.reps}
-                      placeholder={t('workout.reps')}
                       keyboardType="number-pad"
+                      accessibilityLabel={t('workout.reps')}
                       onChangeText={(value) =>
                         store.updateSet(exercise.localId, set.localId, { reps: value })
                       }
                     />
-                  </>
-                )}
-                {(exercise.exerciseType === 'cardio' || exercise.exerciseType === 'other') && (
-                  <>
-                    <CompactInput
+                  ) : null}
+                  {exercise.exerciseType === 'cardio' || exercise.exerciseType === 'other' ? (
+                    <SetMetricField
+                      unit={t('workout.sec')}
                       value={set.durationSec}
-                      placeholder={t('workout.sec')}
                       keyboardType="number-pad"
+                      accessibilityLabel={t('workout.sec')}
                       onChangeText={(value) =>
                         store.updateSet(exercise.localId, set.localId, { durationSec: value })
                       }
                     />
-                    {exercise.exerciseType === 'cardio' ? (
-                      <CompactInput
-                        value={set.distanceM}
-                        placeholder={t('workout.meters')}
-                        keyboardType="decimal-pad"
-                        onChangeText={(value) =>
-                          store.updateSet(exercise.localId, set.localId, { distanceM: value })
-                        }
-                      />
-                    ) : null}
-                  </>
-                )}
-                <Pressable
-                  accessibilityRole="button"
-                  onPress={() => store.toggleSetCompleted(exercise.localId, set.localId)}
-                  className="h-9 w-9 items-center justify-center"
-                  style={{
-                    borderRadius: radii.pill,
-                    backgroundColor: set.completed ? colors.primary : colors.surfaceMuted,
-                  }}
-                >
-                  <Check
-                    size={16}
-                    color={set.completed ? '#FFFFFF' : colors.textMuted}
-                    strokeWidth={2.5}
-                  />
-                </Pressable>
-              </View>
-            ))}
+                  ) : null}
+                  {exercise.exerciseType === 'cardio' ? (
+                    <SetMetricField
+                      unit={t('workout.meters')}
+                      value={set.distanceM}
+                      keyboardType="decimal-pad"
+                      accessibilityLabel={t('workout.meters')}
+                      onChangeText={(value) =>
+                        store.updateSet(exercise.localId, set.localId, { distanceM: value })
+                      }
+                    />
+                  ) : null}
+                  {exercise.sets.length > 1 ? (
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel={t('workout.deleteSet')}
+                      onPress={() => store.removeSet(exercise.localId, set.localId)}
+                      style={{
+                        width: 36,
+                        height: 56,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: radii.md,
+                        backgroundColor: colors.surfaceMuted,
+                      }}
+                    >
+                      <Trash2 size={iconSizes.sm} color={colors.error} />
+                    </Pressable>
+                  ) : null}
+                </View>
+              ))}
+            </View>
 
             <Pressable
+              accessibilityRole="button"
               onPress={() => store.addSet(exercise.localId)}
-              className="flex-row items-center gap-1 py-1"
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: spacing[1],
+                alignSelf: 'flex-start',
+                paddingVertical: spacing[1],
+              }}
             >
-              <Plus size={14} color={colors.primary} />
-              <Text variant="caption" tone="brand">
+              <Plus size={16} color={colors.primary} />
+              <Text variant="bodyStrong" tone="brand">
                 {t('workout.addSet')}
               </Text>
             </Pressable>
@@ -357,6 +368,111 @@ export default function ActiveWorkoutScreen() {
   );
 }
 
+/** Owns the 1s tick so set metric TextInputs are not re-rendered every second. */
+function ActiveElapsedLabel({ paused }: { paused: boolean }) {
+  const { t } = useTranslation();
+  const getActiveDurationSec = useActiveWorkoutStore((state) => state.getActiveDurationSec);
+  const [nowMs, setNowMs] = useState(() => Date.now());
+
+  useEffect(() => {
+    const id = setInterval(() => setNowMs(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  void nowMs;
+  const elapsed = getActiveDurationSec();
+
+  return (
+    <Text tone="brand" style={{ fontFamily: fonts.monoBold, fontSize: 28, lineHeight: 34 }}>
+      {formatElapsed(elapsed)}
+      {paused ? ` · ${t('workout.paused')}` : ''}
+    </Text>
+  );
+}
+
+function ActiveRestBanner() {
+  const { t } = useTranslation();
+  const colors = useThemeColors();
+  const restEndsAt = useActiveWorkoutStore((state) => state.restEndsAt);
+  const adjustRest = useActiveWorkoutStore((state) => state.adjustRest);
+  const clearRest = useActiveWorkoutStore((state) => state.clearRest);
+  const [nowMs, setNowMs] = useState(() => Date.now());
+
+  useEffect(() => {
+    if (!restEndsAt) return;
+    const id = setInterval(() => setNowMs(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [restEndsAt]);
+
+  useEffect(() => {
+    if (!restEndsAt) return;
+    const left = Math.ceil((new Date(restEndsAt).getTime() - nowMs) / 1000);
+    if (left <= 0) clearRest();
+  }, [nowMs, restEndsAt, clearRest]);
+
+  if (!restEndsAt) return null;
+
+  const restLeft = Math.max(0, Math.ceil((new Date(restEndsAt).getTime() - nowMs) / 1000));
+  if (restLeft <= 0) return null;
+
+  return (
+    <Card
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing[3],
+        backgroundColor: colors.primaryMuted,
+        borderColor: colors.primary,
+      }}
+    >
+      <TimerReset size={20} color={colors.primary} />
+      <View style={{ flex: 1, minWidth: 0 }}>
+        <Text variant="label" tone="secondary">
+          {t('workout.restTimer')}
+        </Text>
+        <Text
+          style={{
+            fontFamily: fonts.monoBold,
+            fontSize: 24,
+            lineHeight: 30,
+            color: colors.textPrimary,
+          }}
+        >
+          {formatElapsed(restLeft)}
+        </Text>
+      </View>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t('workout.restMinus')}
+        onPress={() => adjustRest(-15)}
+        hitSlop={8}
+      >
+        <Text variant="caption" tone="secondary">
+          {t('workout.restMinus')}
+        </Text>
+      </Pressable>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t('workout.restPlus')}
+        onPress={() => adjustRest(15)}
+        hitSlop={8}
+      >
+        <Text variant="caption" tone="secondary">
+          {t('workout.restPlus')}
+        </Text>
+      </Pressable>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t('workout.skipRest')}
+        onPress={() => clearRest()}
+        hitSlop={8}
+      >
+        <Text variant="bodyStrong">{t('workout.skipRest')}</Text>
+      </Pressable>
+    </Card>
+  );
+}
+
 function ActiveExerciseThumb({ exercise }: { exercise: DraftExercise }) {
   const colors = useThemeColors();
   const [failed, setFailed] = useState(false);
@@ -372,8 +488,8 @@ function ActiveExerciseThumb({ exercise }: { exercise: DraftExercise }) {
   return (
     <View
       style={{
-        width: 56,
-        height: 56,
+        width: 48,
+        height: 48,
         borderRadius: radii.md,
         overflow: 'hidden',
         backgroundColor: colors.surfaceMuted,

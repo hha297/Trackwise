@@ -1,12 +1,57 @@
 {
-  "display": { "size": 36, "lineHeight": 40, "weight": "800" },
-  "headingLarge": { "size": 28, "lineHeight": 32, "weight": "700" },
-  "headingMedium": { "size": 22, "lineHeight": 28, "weight": "600" },
-  "headingSmall": { "size": 18, "lineHeight": 24, "weight": "600" },
-  "body": { "size": 16, "lineHeight": 24, "weight": "400" },
-  "bodySmall": { "size": 14, "lineHeight": 20, "weight": "400" },
-  "caption": { "size": 13, "lineHeight": 18, "weight": "500" },
-  "label": { "size": 14, "lineHeight": 18, "weight": "600" },
-  "button": { "size": 16, "lineHeight": 20, "weight": "600" },
-  "metric": { "size": 18, "lineHeight": 24, "weight": "600" }
+  "display": {
+    "size": 36,
+    "lineHeight": 40,
+    "weight": "800"
+  },
+  "headingLarge": {
+    "size": 28,
+    "lineHeight": 32,
+    "weight": "700"
+  },
+  "headingMedium": {
+    "size": 22,
+    "lineHeight": 28,
+    "weight": "600"
+  },
+  "headingSmall": {
+    "size": 18,
+    "lineHeight": 24,
+    "weight": "600"
+  },
+  "body": {
+    "size": 16,
+    "lineHeight": 24,
+    "weight": "400"
+  },
+  "bodySmall": {
+    "size": 16,
+    "lineHeight": 22,
+    "weight": "400"
+  },
+  "caption": {
+    "size": 16,
+    "lineHeight": 22,
+    "weight": "500"
+  },
+  "fine": {
+    "size": 12,
+    "lineHeight": 18,
+    "weight": "500"
+  },
+  "label": {
+    "size": 16,
+    "lineHeight": 20,
+    "weight": "600"
+  },
+  "button": {
+    "size": 16,
+    "lineHeight": 20,
+    "weight": "600"
+  },
+  "metric": {
+    "size": 18,
+    "lineHeight": 24,
+    "weight": "600"
+  }
 }

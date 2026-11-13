@@ -32,7 +32,8 @@ export function TextArea({
   const [innerValue, setInnerValue] = useState(defaultValue ?? '');
 
   const resolvedValue = value !== undefined ? value : innerValue;
-  const showPlaceholder = Boolean(placeholder) && String(resolvedValue ?? '').length === 0;
+  const showPlaceholder =
+    Boolean(placeholder) && !focused && String(resolvedValue ?? '').length === 0;
   const borderColor = error ? colors.error : focused ? colors.borderFocus : colors.border;
 
   return (

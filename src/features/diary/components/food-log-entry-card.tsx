@@ -125,10 +125,7 @@ export function FoodLogEntryCard({ entry, mealImage, onEdit }: FoodLogEntryCardP
                 backgroundColor: withAlpha(colors.primary, 0.16),
               }}
             >
-              <Text
-                variant="caption"
-                style={{ color: colors.primary, fontSize: 11, lineHeight: 14 }}
-              >
+              <Text variant="fine" style={{ color: colors.primary }}>
                 {t('diary.meals.barcodeMatched')}
               </Text>
             </View>
@@ -139,7 +136,7 @@ export function FoodLogEntryCard({ entry, mealImage, onEdit }: FoodLogEntryCardP
           <Text variant="bodyStrong" tone="brand" style={{ fontSize: 15, lineHeight: 18 }}>
             {Math.round(entry.calories)}
           </Text>
-          <Text variant="caption" tone="brand" style={{ fontSize: 11, lineHeight: 13 }}>
+          <Text variant="fine" tone="brand">
             {t('diary.meals.kcalUnit')}
           </Text>
         </View>
@@ -180,7 +177,7 @@ function MacroStat({ value, label }: { value: string; label: string }) {
       <Text variant="bodySmall" style={{ fontWeight: '600' }}>
         {value}
       </Text>
-      <Text variant="caption" tone="secondary" style={{ fontSize: 11, lineHeight: 13 }}>
+      <Text variant="fine" tone="secondary">
         {label}
       </Text>
     </View>

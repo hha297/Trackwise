@@ -55,8 +55,8 @@ html.dark {
   --color-error: var(--error);
   --color-warning: var(--warning);
   --color-info: var(--info);
-  --font-display: var(--font-display);
-  --font-sans: var(--font-geist);
+  --font-display: var(--font-bricolage);
+  --font-sans: var(--font-bricolage);
   --font-mono: var(--font-mono);
 }
 
@@ -64,7 +64,7 @@ html,
 body {
   background: var(--canvas);
   color: var(--ink);
-  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   min-height: 100%;
 }
 

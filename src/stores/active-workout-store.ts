@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { draftSetIsLogged } from '@/features/workout/logged-set';
 import type { ExerciseType } from '@/features/workout/types';
 
 export type DraftSet = {
@@ -28,6 +29,8 @@ export type DraftExercise = {
   imageStoragePath?: string | null;
   imageKey?: string | null;
   slug?: string | null;
+  /** Template target, shown as a placeholder. It is not a logged set. */
+  plannedReps?: number | null;
   notes: string;
   sets: DraftSet[];
 };
@@ -70,7 +73,6 @@ type ActiveWorkoutState = {
     setLocalId: string,
     patch: Partial<Omit<DraftSet, 'localId' | 'setNumber'>>,
   ) => void;
-  toggleSetCompleted: (exerciseLocalId: string, setLocalId: string) => void;
   removeSet: (exerciseLocalId: string, setLocalId: string) => void;
   startRest: (seconds?: number) => void;
   clearRest: () => void;
@@ -113,15 +115,12 @@ export const useActiveWorkoutStore = create<ActiveWorkoutState>()(
         const seeded = (input?.exercises ?? []).map((exercise) => {
           const { plannedSets, plannedReps, ...rest } = exercise;
           const count = Math.max(1, Math.min(12, plannedSets ?? 3));
-          const repsHint = plannedReps != null ? String(plannedReps) : '';
           return {
             ...rest,
             localId: id(),
             notes: '',
-            sets: Array.from({ length: count }, (_, index) => ({
-              ...emptySet(index + 1),
-              reps: repsHint,
-            })),
+            plannedReps: plannedReps ?? null,
+            sets: Array.from({ length: count }, (_, index) => emptySet(index + 1)),
           };
         });
         set({
@@ -197,17 +196,18 @@ export const useActiveWorkoutStore = create<ActiveWorkoutState>()(
         list.splice(target, 0, item!);
         set({ exercises: list });
       },
-      addSet: (exerciseLocalId) =>
+      addSet: (exerciseLocalId) => {
+        const exercise = get().exercises.find((item) => item.localId === exerciseLocalId);
+        const last = exercise?.sets[exercise.sets.length - 1];
         set({
-          exercises: get().exercises.map((exercise) => {
-            if (exercise.localId !== exerciseLocalId) return exercise;
-            const last = exercise.sets[exercise.sets.length - 1];
+          exercises: get().exercises.map((item) => {
+            if (item.localId !== exerciseLocalId) return item;
             return {
-              ...exercise,
+              ...item,
               sets: [
-                ...exercise.sets,
+                ...item.sets,
                 {
-                  ...emptySet(exercise.sets.length + 1),
+                  ...emptySet(item.sets.length + 1),
                   weightKg: last?.weightKg ?? '',
                   reps: last?.reps ?? '',
                   durationSec: last?.durationSec ?? '',
@@ -216,10 +216,12 @@ export const useActiveWorkoutStore = create<ActiveWorkoutState>()(
               ],
             };
           }),
-        }),
+        });
+        if (last && draftSetIsLogged(last)) get().startRest();
+      },
       updateSet: (exerciseLocalId, setLocalId, patch) =>
-        set({
-          exercises: get().exercises.map((exercise) => {
+        set((state) => ({
+          exercises: state.exercises.map((exercise) => {
             if (exercise.localId !== exerciseLocalId) return exercise;
             return {
               ...exercise,
@@ -228,28 +230,7 @@ export const useActiveWorkoutStore = create<ActiveWorkoutState>()(
               ),
             };
           }),
-        }),
-      toggleSetCompleted: (exerciseLocalId, setLocalId) => {
-        const state = get();
-        set({
-          exercises: state.exercises.map((exercise) => {
-            if (exercise.localId !== exerciseLocalId) return exercise;
-            return {
-              ...exercise,
-              sets: exercise.sets.map((draftSet) =>
-                draftSet.localId === setLocalId
-                  ? { ...draftSet, completed: !draftSet.completed }
-                  : draftSet,
-              ),
-            };
-          }),
-        });
-        const exercise = get().exercises.find((item) => item.localId === exerciseLocalId);
-        const draftSet = exercise?.sets.find((item) => item.localId === setLocalId);
-        if (draftSet?.completed) {
-          get().startRest();
-        }
-      },
+        })),
       removeSet: (exerciseLocalId, setLocalId) =>
         set({
           exercises: get().exercises.map((exercise) => {

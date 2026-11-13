@@ -15,6 +15,6 @@ export { borders, colors, elevation, iconSizes, layout, motion, radii, spacing, 
 
 /**
  * Replicate-inspired warm bone/ink UI with locked Trackwise primary `#00D95F`.
- * Type: Bricolage Grotesque (display) + Geist (body) + JetBrains Mono (metrics).
+ * Type: Bricolage Grotesque (display + body) + JetBrains Mono (metrics).
  * Runtime paint: prefer `useThemeColors()`. Static `colors` is the light palette.
  */
