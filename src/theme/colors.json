@@ -33,11 +33,11 @@
   "cameraOverlay": "rgba(0,0,0,0.72)",
   "onOverlayBorder": "rgba(255,255,255,0.72)",
   "macroCalories": "#00D95F",
-  "macroProtein": "#d64545",
-  "macroCarbs": "#00D95F",
-  "macroFat": "#E6B422",
-  "macroFiber": "#0D9488",
-  "macroSugars": "#DB2777",
-  "macroSalt": "#6366F1",
+  "macroProtein": "#3E6F8A",
+  "macroCarbs": "#A56B2A",
+  "macroFat": "#8A5A6A",
+  "macroFiber": "#3F6B62",
+  "macroSugars": "#8C5A48",
+  "macroSalt": "#5C6570",
   "macroActivity": "#00B84F"
 }

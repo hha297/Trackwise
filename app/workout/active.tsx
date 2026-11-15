@@ -35,11 +35,12 @@ import { resolveWorkoutName } from '@/features/workout/session-display';
 import { useActiveWorkoutStore, type DraftExercise } from '@/stores/active-workout-store';
 import { iconSizes, radii, spacing } from '@/theme';
 import { fonts } from '@/theme/fonts';
-import { useThemeColors } from '@/theme/theme-provider';
+import { useTheme, useThemeColors } from '@/theme/theme-provider';
 
 export default function ActiveWorkoutScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { scheme } = useTheme();
   const store = useActiveWorkoutStore();
   const finish = useFinishWorkout();
   const weight = useLatestWeight();
@@ -152,7 +153,7 @@ export default function ActiveWorkoutScreen() {
             onPress={() => (store.paused ? store.resume() : store.pause())}
           >
             {store.paused ? (
-              <Play size={18} color={colors.primary} />
+              <Play size={18} color={scheme === 'dark' ? colors.primary : colors.textPrimary} />
             ) : (
               <Pause size={18} color={colors.textPrimary} />
             )}
@@ -346,8 +347,11 @@ export default function ActiveWorkoutScreen() {
                 paddingVertical: spacing[1],
               }}
             >
-              <Plus size={16} color={colors.primary} />
-              <Text variant="bodyStrong" tone="brand">
+              <Plus size={16} color={scheme === 'dark' ? colors.primary : colors.textPrimary} />
+              <Text
+                variant="bodyStrong"
+                style={{ color: scheme === 'dark' ? colors.primary : colors.textPrimary }}
+              >
                 {t('workout.addSet')}
               </Text>
             </Pressable>
@@ -371,6 +375,8 @@ export default function ActiveWorkoutScreen() {
 /** Owns the 1s tick so set metric TextInputs are not re-rendered every second. */
 function ActiveElapsedLabel({ paused }: { paused: boolean }) {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const { scheme } = useTheme();
   const getActiveDurationSec = useActiveWorkoutStore((state) => state.getActiveDurationSec);
   const [nowMs, setNowMs] = useState(() => Date.now());
 
@@ -383,7 +389,14 @@ function ActiveElapsedLabel({ paused }: { paused: boolean }) {
   const elapsed = getActiveDurationSec();
 
   return (
-    <Text tone="brand" style={{ fontFamily: fonts.monoBold, fontSize: 28, lineHeight: 34 }}>
+    <Text
+      style={{
+        fontFamily: fonts.monoBold,
+        fontSize: 28,
+        lineHeight: 34,
+        color: scheme === 'dark' ? colors.primary : colors.textPrimary,
+      }}
+    >
       {formatElapsed(elapsed)}
       {paused ? ` · ${t('workout.paused')}` : ''}
     </Text>

@@ -472,6 +472,8 @@
       "breakdownExpandHint": "Tap a category to see what you logged in the last {{count}} days.",
       "breakdownEmptyCategory": "Nothing logged in this category for the selected period.",
       "breakdownItemCount": "{{count}} items",
+      "breakdownShowMore": "Show more",
+      "breakdownShowLess": "Show less",
       "activeDaysCount": "{{count}} active days",
       "milestonesTitle": "Milestones",
       "milestonesHint": "Based on your best consistency streak — any day with nutrition, hydration, or a completed workout counts.",
@@ -850,7 +852,8 @@
     "mealPlanPreview": {
       "emptyLabel": "Nothing planned yet",
       "errorBody": "Could not load this day’s plan. You can still open Meal Plan.",
-      "plannedSummary": "{{protein}} g protein · {{count}} meals planned",
+      "plannedSummary": "{{meals}} · {{count}} still to log",
+      "plannedSummaryDone": "{{meals}} · logged",
       "planCta": "Plan meals",
       "openCta": "Open meal plan"
     }
@@ -2046,6 +2049,8 @@
     "add": "Add",
     "deleteIntake": "Delete",
     "intakeLog": "Today's drinks",
+    "showAllDrinks": "Show all {{count}}",
+    "showFewerDrinks": "Show less",
     "emptyDay": "Nothing logged for this day.",
     "weekTotal": "This week",
     "targetLabel": "Daily goal",

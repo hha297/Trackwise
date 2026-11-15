@@ -1,4 +1,4 @@
-import { Pressable, View, Image } from 'react-native';
+import { Image, Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Text } from '@/components/ui/text';
@@ -39,6 +39,16 @@ export function TemplateCard({ template, onPress, wide = false }: TemplateCardPr
   });
   const categoryLabel = template.category
     ? t(`workout.category.${template.category}`, { defaultValue: template.category })
+    : null;
+  const description = template.description
+    ? localizedTemplateDescription(t, template.name, template.description, {
+        isSystem: template.is_system,
+      })
+    : null;
+  const equipment = template.equipment_summary
+    ? localizedEquipmentSummary(t, template.equipment_summary, {
+        isSystem: template.is_system,
+      })
     : null;
 
   return (
@@ -95,25 +105,21 @@ export function TemplateCard({ template, onPress, wide = false }: TemplateCardPr
                 {meta}
               </Text>
             ) : null}
-            {template.equipment_summary ? (
+            {equipment ? (
               <Text
                 variant="caption"
                 style={{ color: withAlpha('#FFFFFF', 0.78) }}
                 numberOfLines={1}
               >
-                {localizedEquipmentSummary(t, template.equipment_summary, {
-                  isSystem: template.is_system,
-                })}
+                {equipment}
               </Text>
-            ) : template.description ? (
+            ) : description ? (
               <Text
                 variant="caption"
                 style={{ color: withAlpha('#FFFFFF', 0.78) }}
                 numberOfLines={2}
               >
-                {localizedTemplateDescription(t, template.name, template.description, {
-                  isSystem: template.is_system,
-                })}
+                {description}
               </Text>
             ) : null}
           </View>

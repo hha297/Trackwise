@@ -472,6 +472,8 @@
       "breakdownExpandHint": "Napauta kategoriaa nähdäksesi kirjaukset viimeisten {{count}} päivän ajalta.",
       "breakdownEmptyCategory": "Ei kirjauksia tässä kategoriassa valitulla jaksolla.",
       "breakdownItemCount": "{{count}} riviä",
+      "breakdownShowMore": "Näytä lisää",
+      "breakdownShowLess": "Näytä vähemmän",
       "activeDaysCount": "{{count}} aktiivista päivää",
       "milestonesTitle": "Virstanpylväät",
       "milestonesHint": "Perustuu pisimpään säännöllisyysputkeen — päivä lasketaan, jos kirjasit ravintoa, nesteytystä tai valmiin treenin.",
@@ -850,7 +852,8 @@
     "mealPlanPreview": {
       "emptyLabel": "Ei vielä suunnitelmaa",
       "errorBody": "Päivän suunnitelmaa ei voitu ladata. Voit silti avata ateriasuunnitelman.",
-      "plannedSummary": "{{protein}} g proteiinia · {{count}} ateriaa suunniteltu",
+      "plannedSummary": "{{meals}} · {{count}} kirjaamatta",
+      "plannedSummaryDone": "{{meals}} · kirjattu",
       "planCta": "Suunnittele ateriat",
       "openCta": "Avaa ateriasuunnitelma"
     }
@@ -1902,6 +1905,8 @@
     "add": "Lisää",
     "deleteIntake": "Poista",
     "intakeLog": "Tämän päivän juomat",
+    "showAllDrinks": "Näytä kaikki {{count}}",
+    "showFewerDrinks": "Näytä vähemmän",
     "emptyDay": "Tälle päivälle ei ole merkintöjä.",
     "weekTotal": "Tämä viikko",
     "targetLabel": "Päivätavoite",

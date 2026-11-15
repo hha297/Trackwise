@@ -98,9 +98,11 @@ export default function ImportDataScreen() {
   return (
     <Screen scroll edges={['top', 'bottom', 'left', 'right']}>
       <View style={{ gap: spacing[4] }}>
-        <View className="flex-row items-center justify-between">
-          <Text variant="headingLarge">{t('account.importData')}</Text>
+        <View className="flex-row items-start gap-2">
           <HeaderDoneButton />
+          <Text variant="headingLarge" className="min-w-0 flex-1">
+            {t('account.importData')}
+          </Text>
         </View>
 
         <View

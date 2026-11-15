@@ -1,11 +1,12 @@
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Pencil, Trash2 } from 'lucide-react-native';
+import { Pencil, Trash2, X } from 'lucide-react-native';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Pressable, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Screen } from '@/components/ui/screen';
@@ -189,17 +190,12 @@ export default function RecipeDetailScreen() {
     <Screen scroll keyboard edges={['top', 'bottom', 'left', 'right']}>
       <View style={{ gap: spacing[4] }}>
         <View className="flex-row items-start justify-between gap-3">
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('common.close')}
+          <ChromeIconButton
+            header
+            label={t('common.close')}
             onPress={() => router.back()}
-            hitSlop={8}
-            style={{ paddingVertical: 6 }}
-          >
-            <Text variant="bodyStrong" tone="brand">
-              {t('common.close')}
-            </Text>
-          </Pressable>
+            icon={(color) => <X size={22} color={color} />}
+          />
           <View className="flex-row items-center gap-1">
             <Pressable
               accessibilityRole="button"

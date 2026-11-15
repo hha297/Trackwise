@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Image, Pressable, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Card } from '@/components/ui/card';
 import { Screen } from '@/components/ui/screen';
 import { ErrorState, LoadingState } from '@/components/ui/states';
@@ -44,24 +45,31 @@ export default function WeeklyPlanScreen() {
   return (
     <Screen scroll edges={['top', 'bottom', 'left', 'right']}>
       <View className="gap-4">
-        <View className="flex-row items-center justify-between gap-3">
+        <View className="flex-row items-start gap-2">
+          <ChromeIconButton
+            header
+            label={t('workout.back')}
+            onPress={() => router.back()}
+            icon={(color) => <ChevronLeft size={22} color={color} />}
+          />
           <Text variant="headingLarge" className="min-w-0 flex-1">{t('phase1.planTitle')}</Text>
-          <Pressable accessibilityRole="button" onPress={() => router.back()}>
-            <Text variant="bodyStrong" tone="brand">{t('workout.back')}</Text>
-          </Pressable>
         </View>
         <Text variant="bodySmall" tone="secondary">{t('phase1.planHint')}</Text>
 
         <View className="flex-row items-center justify-between">
-          <Pressable accessibilityRole="button" onPress={() => shiftWeek(-1)} hitSlop={8}>
-            <ChevronLeft size={22} color={colors.textPrimary} />
-          </Pressable>
+          <ChromeIconButton
+            label={t('common.goBack')}
+            onPress={() => shiftWeek(-1)}
+            icon={(color) => <ChevronLeft size={22} color={color} />}
+          />
           <Text variant="bodyStrong">
             {days[0]?.slice(5)} – {days[6]?.slice(5)}
           </Text>
-          <Pressable accessibilityRole="button" onPress={() => shiftWeek(1)} hitSlop={8}>
-            <ChevronRight size={22} color={colors.textPrimary} />
-          </Pressable>
+          <ChromeIconButton
+            label={t('mealPlan.nextDay')}
+            onPress={() => shiftWeek(1)}
+            icon={(color) => <ChevronRight size={22} color={color} />}
+          />
         </View>
 
         <View className="flex-row justify-between">

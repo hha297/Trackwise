@@ -1,9 +1,10 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { ChevronLeft, ChevronRight } from 'lucide-react-native';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, View } from 'react-native';
 
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Screen } from '@/components/ui/screen';
 import { ErrorState, LoadingState } from '@/components/ui/states';
 import { Text } from '@/components/ui/text';
@@ -113,29 +114,27 @@ function MealPlanBody({
         contentContainerStyle={{ gap: spacing[4], paddingBottom: spacing[8] }}
         keyboardShouldPersistTaps="handled"
       >
-        <View className="flex-row items-center justify-between gap-3">
+        <View className="flex-row items-start gap-2">
+          <ChromeIconButton
+            header
+            label={t('common.close')}
+            onPress={() => router.back()}
+            icon={(color) => <X size={22} color={color} />}
+          />
           <Text variant="headingLarge" className="min-w-0 flex-1">
             {t('mealPlan.title')}
           </Text>
-          <Pressable accessibilityRole="button" onPress={() => router.back()}>
-            <Text variant="bodyStrong" tone="brand">
-              {t('common.close')}
-            </Text>
-          </Pressable>
         </View>
         <Text variant="bodySmall" tone="secondary">
           {t('mealPlan.subtitle')}
         </Text>
 
         <View className="flex-row items-center justify-between gap-2">
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('mealPlan.prevDay')}
+          <ChromeIconButton
+            label={t('mealPlan.prevDay')}
             onPress={() => selectDay(shiftDay(selectedDate, -1))}
-            hitSlop={8}
-          >
-            <ChevronLeft size={22} color={colors.textPrimary} />
-          </Pressable>
+            icon={(color) => <ChevronLeft size={22} color={color} />}
+          />
           <View className="min-w-0 flex-1 items-center gap-1">
             <Text variant="bodyStrong" numberOfLines={1}>
               {formatDiaryHeading(selectedDate, locale)}
@@ -156,14 +155,11 @@ function MealPlanBody({
               </Text>
             )}
           </View>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('mealPlan.nextDay')}
+          <ChromeIconButton
+            label={t('mealPlan.nextDay')}
             onPress={() => selectDay(shiftDay(selectedDate, 1))}
-            hitSlop={8}
-          >
-            <ChevronRight size={22} color={colors.textPrimary} />
-          </Pressable>
+            icon={(color) => <ChevronRight size={22} color={color} />}
+          />
         </View>
 
         <View className="flex-row justify-between">

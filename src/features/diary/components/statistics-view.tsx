@@ -5,6 +5,7 @@ import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Card } from '@/components/ui/card';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Text } from '@/components/ui/text';
 import { ErrorState, LoadingState } from '@/components/ui/states';
 import {
@@ -202,23 +203,19 @@ export function StatisticsView({
       </View>
 
       <View className="flex-row items-center justify-between">
-        <Pressable
-          accessibilityRole="button"
+        <ChromeIconButton
+          label={t('common.goBack')}
           onPress={() => shift(-1)}
-          className="h-11 w-11 items-center justify-center"
-        >
-          <ChevronLeft size={22} color={colors.textSecondary} />
-        </Pressable>
+          icon={(color) => <ChevronLeft size={22} color={color} />}
+        />
         <Text variant="bodyStrong" style={{ textAlign: 'center', flex: 1 }} numberOfLines={2}>
           {rangeLabel}
         </Text>
-        <Pressable
-          accessibilityRole="button"
+        <ChromeIconButton
+          label={t('mealPlan.nextDay')}
           onPress={() => shift(1)}
-          className="h-11 w-11 items-center justify-center"
-        >
-          <ChevronRight size={22} color={colors.textSecondary} />
-        </Pressable>
+          icon={(color) => <ChevronRight size={22} color={color} />}
+        />
       </View>
 
       {dateKey === todayKey || (mode === 'week' && weekKeys.includes(todayKey)) ? (

@@ -1,12 +1,13 @@
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import { ImagePlus, Trash2 } from 'lucide-react-native';
+import { ImagePlus, Trash2, X } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Input } from '@/components/ui/input';
 import { Screen } from '@/components/ui/screen';
 import { Select } from '@/components/ui/select';
@@ -160,13 +161,16 @@ function EditProfileForm({ profile, email }: EditProfileFormProps) {
 
   return (
     <View style={{ gap: spacing[4] }}>
-      <View className="flex-row items-center justify-between">
-        <Text variant="headingLarge">{t('account.editProfile')}</Text>
-        <Pressable onPress={() => router.back()}>
-          <Text variant="bodyStrong" tone="brand">
-            {t('account.cancel')}
-          </Text>
-        </Pressable>
+      <View className="flex-row items-start gap-2">
+        <ChromeIconButton
+          header
+          label={t('account.cancel')}
+          onPress={() => router.back()}
+          icon={(color) => <X size={22} color={color} />}
+        />
+        <Text variant="headingLarge" className="min-w-0 flex-1">
+          {t('account.editProfile')}
+        </Text>
       </View>
 
       <View className="items-center gap-3">

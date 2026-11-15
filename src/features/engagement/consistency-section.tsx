@@ -1,6 +1,7 @@
-import { Flame } from 'lucide-react-native';
-import { StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
 
 import { Card } from '@/components/ui/card';
 import { ErrorState, LoadingState } from '@/components/ui/states';
@@ -20,6 +21,9 @@ import { useAppLanguage } from '@/i18n';
 import { radii, spacing, withAlpha } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 import { toDiaryDateKey } from '@/utils/date';
+
+const flameGif = require('../../../assets/animations/flame.gif');
+const flameZeroGif = require('../../../assets/animations/flame-zero.gif');
 
 type ConsistencySectionProps = {
   todayKey?: string;
@@ -46,7 +50,6 @@ export function ConsistencySection({
   const colors = useThemeColors();
   const locale = useAppLanguage();
   const { data, isLoading, isError, refetch } = useEngagementStreaks(todayKey);
-  const streakAccent = colors.warning;
   const weeks = consistencyWeeksForPeriod(period);
 
   if (isLoading && !data) {
@@ -82,29 +85,20 @@ export function ConsistencySection({
   const activeInPeriod = countActiveDaysInRange(unionKeys, startKey, endKey);
 
   return (
-    <Card
-      style={styles.card}
-      accessibilityLabel={t('engagement.consistency.screenTitle')}
-    >
-      <View style={{ gap: 2 }}>
-        <Text variant="headingSmall">{t('engagement.consistency.screenTitle')}</Text>
-        <Text variant="caption" tone="muted">
-          {t('engagement.consistency.sectionHint')}
+    <View style={styles.stack} accessibilityLabel={t('engagement.consistency.screenTitle')}>
+      <Card style={styles.poster}>
+        <Text variant="headingSmall" style={styles.centerText}>
+          {t('engagement.consistency.screenTitle')}
         </Text>
-      </View>
-
-      <View style={styles.heroRow}>
-        <View style={[styles.flameWrap, { backgroundColor: withAlpha(streakAccent, 0.18) }]}>
-          <Flame size={22} color={streakAccent} fill={streakAccent} />
-        </View>
-        <View style={styles.heroCopy}>
-          <Text variant="caption" style={{ color: streakAccent }}>
-            {t('engagement.consistency.currentStreak')}
-          </Text>
-          <Text variant="headingLarge" numberOfLines={1}>
+        <StreakFlame lit={overall.current >= 1} />
+        <View style={styles.posterCopy}>
+          <Text variant="display" numberOfLines={1} style={styles.centerText}>
             {t('engagement.consistency.daysCount', { count: overall.current })}
           </Text>
-          <Text variant="caption" tone="muted" numberOfLines={2}>
+          <Text variant="caption" tone="muted" style={styles.centerText}>
+            {t('engagement.consistency.currentStreak')}
+          </Text>
+          <Text variant="caption" tone="secondary" numberOfLines={2} style={styles.centerText}>
             {empty
               ? t('engagement.streaks.empty')
               : overall.alive
@@ -112,92 +106,135 @@ export function ConsistencySection({
                 : t('engagement.consistency.startAgain')}
           </Text>
         </View>
-      </View>
 
-      <View style={styles.statsRow}>
-        <View style={styles.stat}>
-          <Text variant="caption" tone="muted" numberOfLines={1}>
-            {t('engagement.consistency.bestStreak')}
-          </Text>
-          <Text variant="bodyStrong" numberOfLines={1}>
-            {t('engagement.consistency.daysCount', { count: overall.longest })}
-          </Text>
-          <Text variant="fine" tone="muted" numberOfLines={1}>
-            {t('engagement.consistency.bestStreakHint')}
-          </Text>
+        <View style={[styles.statsRow, { backgroundColor: colors.surfaceMuted }]}>
+          <View style={styles.stat}>
+            <Text variant="caption" tone="muted" numberOfLines={1} style={styles.centerText}>
+              {t('engagement.consistency.bestStreak')}
+            </Text>
+            <Text variant="headingSmall" numberOfLines={1} style={styles.centerText}>
+              {t('engagement.consistency.daysCount', { count: overall.longest })}
+            </Text>
+          </View>
+          <View style={[styles.statDivider, { backgroundColor: colors.border }]} />
+          <View style={styles.stat}>
+            <Text variant="caption" tone="muted" numberOfLines={1} style={styles.centerText}>
+              {t('engagement.consistency.activeInPeriod')}
+            </Text>
+            <Text variant="headingSmall" numberOfLines={1} style={styles.centerText}>
+              {t('engagement.consistency.daysCount', { count: activeInPeriod })}
+            </Text>
+          </View>
         </View>
-        <View style={styles.stat}>
-          <Text variant="caption" tone="muted" numberOfLines={1}>
-            {t('engagement.consistency.activeInPeriod')}
-          </Text>
-          <Text variant="bodyStrong" numberOfLines={1}>
-            {t('engagement.consistency.daysCount', { count: activeInPeriod })}
-          </Text>
-          <Text variant="fine" tone="muted" numberOfLines={1}>
-            {t('engagement.consistency.activeInPeriodHint', { count: period })}
-          </Text>
-        </View>
-      </View>
+        <Text variant="caption" tone="muted" style={styles.centerText}>
+          {t('engagement.consistency.sectionHint')}
+        </Text>
+      </Card>
 
-      <View style={[styles.divider, { backgroundColor: colors.border }]} />
+      <Card style={styles.card}>
+        <ConsistencyHeatmap
+          todayKey={todayKey}
+          flagsByDay={data.flagsByDay}
+          locale={locale}
+          weeks={weeks}
+        />
+      </Card>
 
-      <ConsistencyHeatmap
-        todayKey={todayKey}
-        flagsByDay={data.flagsByDay}
-        locale={locale}
-        weeks={weeks}
-      />
+      <Card style={styles.card}>
+        <ConsistencyBreakdown
+          todayKey={todayKey}
+          nutritionKeys={data.nutritionKeys}
+          hydrationKeys={data.hydrationKeys}
+          workoutCompletedKeys={data.workoutCompletedKeys}
+          windowDays={period}
+          locale={locale}
+          activityDays={activityDays}
+        />
+      </Card>
 
-      <View style={[styles.divider, { backgroundColor: colors.border }]} />
-
-      <ConsistencyBreakdown
-        todayKey={todayKey}
-        nutritionKeys={data.nutritionKeys}
-        hydrationKeys={data.hydrationKeys}
-        workoutCompletedKeys={data.workoutCompletedKeys}
-        windowDays={period}
-        locale={locale}
-        activityDays={activityDays}
-      />
-
-      <View style={[styles.divider, { backgroundColor: colors.border }]} />
-
-      <ConsistencyMilestones bestDays={overall.longest} />
-    </Card>
+      <Card style={styles.card}>
+        <ConsistencyMilestones bestDays={overall.longest} />
+      </Card>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  stack: {
+    gap: spacing[4],
+  },
   card: {
     gap: spacing[4],
   },
-  heroRow: {
-    flexDirection: 'row',
+  poster: {
     alignItems: 'center',
     gap: spacing[3],
   },
-  flameWrap: {
-    width: 48,
-    height: 48,
-    borderRadius: radii.sm,
+  posterCopy: {
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-  heroCopy: {
-    flex: 1,
-    minWidth: 0,
     gap: 2,
   },
+  centerText: {
+    textAlign: 'center',
+  },
+  flameWell: {
+    width: 112,
+    height: 112,
+    borderRadius: radii.pill,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  flame: {
+    width: 80,
+    height: 80,
+  },
   statsRow: {
+    alignSelf: 'stretch',
     flexDirection: 'row',
-    gap: spacing[4],
+    alignItems: 'stretch',
+    borderRadius: radii.lg,
+    overflow: 'hidden',
   },
   stat: {
     flex: 1,
     minWidth: 0,
+    alignItems: 'center',
     gap: 2,
+    paddingHorizontal: spacing[4],
+    paddingVertical: spacing[3],
+  },
+  statDivider: {
+    width: StyleSheet.hairlineWidth,
   },
   divider: {
     height: StyleSheet.hairlineWidth,
   },
 });
+
+function StreakFlame({ lit }: { lit: boolean }) {
+  const colors = useThemeColors();
+  const reducedMotion = useReducedMotion();
+
+  return (
+    <View
+      style={[
+        styles.flameWell,
+        {
+          backgroundColor: withAlpha(colors.warning, lit ? 0.22 : 0.1),
+          borderColor: lit ? colors.warning : withAlpha(colors.warning, 0.35),
+        },
+      ]}
+      accessibilityElementsHidden
+      importantForAccessibility="no"
+    >
+      <Image
+        source={lit ? flameGif : flameZeroGif}
+        style={styles.flame}
+        contentFit="cover"
+        autoplay={!reducedMotion}
+      />
+    </View>
+  );
+}

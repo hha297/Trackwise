@@ -472,6 +472,8 @@
       "breakdownExpandHint": "Tryck på en kategori för att se vad du loggat de senaste {{count}} dagarna.",
       "breakdownEmptyCategory": "Inget loggat i den här kategorin för vald period.",
       "breakdownItemCount": "{{count}} poster",
+      "breakdownShowMore": "Visa mer",
+      "breakdownShowLess": "Visa färre",
       "activeDaysCount": "{{count}} aktiva dagar",
       "milestonesTitle": "Milstolpar",
       "milestonesHint": "Baserat på din bästa regelbundenhetsstreak — en dag räknas om du loggat nutrition, hydrering eller ett avslutat pass.",
@@ -850,7 +852,8 @@
     "mealPlanPreview": {
       "emptyLabel": "Inget planerat ännu",
       "errorBody": "Kunde inte ladda dagens plan. Du kan fortfarande öppna Måltidsplan.",
-      "plannedSummary": "{{protein}} g protein · {{count}} måltider planerade",
+      "plannedSummary": "{{meals}} · {{count}} kvar att logga",
+      "plannedSummaryDone": "{{meals}} · loggat",
       "planCta": "Planera måltider",
       "openCta": "Öppna måltidsplan"
     }
@@ -1902,6 +1905,8 @@
     "add": "Lägg till",
     "deleteIntake": "Ta bort",
     "intakeLog": "Dagens drycker",
+    "showAllDrinks": "Visa alla {{count}}",
+    "showFewerDrinks": "Visa färre",
     "emptyDay": "Inget loggat den här dagen.",
     "weekTotal": "Den här veckan",
     "targetLabel": "Dagsmål",

@@ -1,11 +1,12 @@
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Star } from 'lucide-react-native';
+import { Star, X } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Card } from '@/components/ui/card';
 import { Screen } from '@/components/ui/screen';
 import { ErrorState, LoadingState } from '@/components/ui/states';
@@ -120,15 +121,16 @@ export default function ExerciseDetailScreen() {
   return (
     <Screen scroll edges={['top', 'bottom', 'left', 'right']}>
       <View className="gap-4">
-        <View className="flex-row items-start justify-between gap-3">
+        <View className="flex-row items-start gap-2">
+          <ChromeIconButton
+            header
+            label={t('workout.close')}
+            onPress={() => router.back()}
+            icon={(color) => <X size={22} color={color} />}
+          />
           <Text variant="headingLarge" className="min-w-0 flex-1" numberOfLines={3}>
             {exercise.name}
           </Text>
-          <Pressable onPress={() => router.back()}>
-            <Text variant="bodyStrong" tone="brand">
-              {t('workout.close')}
-            </Text>
-          </Pressable>
         </View>
 
         <View

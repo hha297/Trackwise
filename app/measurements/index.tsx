@@ -1,9 +1,11 @@
 import { router } from 'expo-router';
+import { X } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { DeleteConfirmDialog } from '@/components/ui/delete-confirm-dialog';
 import { Input } from '@/components/ui/input';
 import { Screen } from '@/components/ui/screen';
@@ -228,13 +230,16 @@ export default function MeasurementsScreen() {
   return (
     <Screen scroll keyboard edges={['top', 'bottom', 'left', 'right']}>
       <View className="gap-4">
-        <View className="flex-row items-center justify-between">
-          <Text variant="headingLarge">{t('measurements.title')}</Text>
-          <Pressable onPress={() => router.back()} accessibilityRole="button">
-            <Text variant="bodyStrong" tone="primary">
-              {t('measurements.close')}
-            </Text>
-          </Pressable>
+        <View className="flex-row items-start gap-2">
+          <ChromeIconButton
+            header
+            label={t('measurements.close')}
+            onPress={() => router.back()}
+            icon={(color) => <X size={22} color={color} />}
+          />
+          <Text variant="headingLarge" className="min-w-0 flex-1">
+            {t('measurements.title')}
+          </Text>
         </View>
 
         <Text variant="bodySmall" tone="secondary">

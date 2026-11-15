@@ -1,13 +1,4 @@
-import {
-  Beef,
-  ChevronDown,
-  Droplets,
-  Leaf,
-  Target,
-  UtensilsCrossed,
-  Wheat,
-  Zap,
-} from 'lucide-react-native';
+import { Beef, ChevronDown, Droplets, Leaf, Target, UtensilsCrossed, Wheat, Zap } from 'lucide-react-native';
 import { type ReactNode, useMemo, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -159,10 +150,7 @@ export function NutritionDashboard({
               centerSecondary={t('diary.nutrition.consumed')}
             />
           </View>
-          <View
-            className="flex-1 justify-center gap-5 pl-4"
-            style={{ alignItems: 'flex-end' }}
-          >
+          <View className="flex-1 justify-center gap-5 pl-4">
             <MetricStackItem
               icon={<Target size={15} color={colors.textSecondary} />}
               label={t('diary.nutrition.toConsume')}
@@ -182,10 +170,11 @@ export function NutritionDashboard({
               danger={over}
             />
             <MetricStackItem
-              icon={<Zap size={15} color={colors.macroActivity} />}
+              icon={<Zap size={15} color={colors.warning} />}
               label={t('diary.nutrition.burned')}
               value={formatNumber(burned, locale)}
               unit={t('diary.nutrition.kcal')}
+              valueColor={colors.warning}
             />
           </View>
         </View>
@@ -341,15 +330,17 @@ function MetricStackItem({
   value,
   unit,
   danger,
+  valueColor,
 }: {
   icon: ReactNode;
   label: string;
   value: string;
   unit: string;
   danger?: boolean;
+  valueColor?: string;
 }) {
   return (
-    <View className="flex-row items-center justify-end gap-2.5">
+    <View className="w-full flex-row items-start justify-end gap-2.5">
       <View className="items-end gap-0.5">
         <Text variant="fine" tone="secondary" numberOfLines={1} style={{ textAlign: 'right' }}>
           {label}
@@ -359,6 +350,7 @@ function MetricStackItem({
             variant="metric"
             tone={danger ? 'error' : 'primary'}
             numberOfLines={1}
+            style={valueColor ? { color: valueColor } : undefined}
           >
             {value}
           </Text>
@@ -367,7 +359,7 @@ function MetricStackItem({
           </Text>
         </View>
       </View>
-      <View className="w-5 items-center">{icon}</View>
+      <View style={{ width: 16, alignItems: 'flex-end' }}>{icon}</View>
     </View>
   );
 }

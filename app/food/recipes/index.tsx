@@ -1,10 +1,11 @@
 import { router, type Href } from 'expo-router';
-import { BookOpen, Plus } from 'lucide-react-native';
+import { BookOpen, Plus, X } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Screen } from '@/components/ui/screen';
@@ -23,15 +24,16 @@ export default function RecipesIndexScreen() {
   return (
     <Screen scroll edges={['top', 'bottom', 'left', 'right']}>
       <View style={{ gap: spacing[4] }}>
-        <View className="flex-row items-center justify-between gap-3">
+        <View className="flex-row items-start gap-2">
+          <ChromeIconButton
+            header
+            label={t('common.close')}
+            onPress={() => router.back()}
+            icon={(color) => <X size={22} color={color} />}
+          />
           <Text variant="headingLarge" className="min-w-0 flex-1">
             {t('recipes.libraryTitle')}
           </Text>
-          <Pressable accessibilityRole="button" onPress={() => router.back()}>
-            <Text variant="bodyStrong" tone="brand">
-              {t('common.close')}
-            </Text>
-          </Pressable>
         </View>
         <Text variant="bodySmall" tone="secondary">
           {t('recipes.librarySubtitle')}

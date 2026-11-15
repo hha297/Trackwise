@@ -1,4 +1,3 @@
-import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import {
   CircleHelp,
@@ -21,6 +20,7 @@ import {
 } from '@/features/account/constants';
 import { HeaderDoneButton } from '@/features/account/header-done-button';
 import { SettingsRow, SettingsSection } from '@/features/account/settings-row';
+import { getAppVersion } from '@/lib/app-version';
 import { reportError } from '@/lib/errors/report-error';
 import { radii, spacing } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
@@ -48,17 +48,18 @@ const WHAT_KEYS = [
 export default function AboutScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
-  const version =
-    Constants.expoConfig?.version ?? Constants.nativeAppVersion ?? '1.0.0';
+  const version = getAppVersion();
   const supportEmail = getSupportEmail();
   const failed = t('account.openUrlFailed');
 
   return (
     <Screen scroll edges={['top', 'bottom', 'left', 'right']}>
       <View style={{ gap: spacing[4] }}>
-        <View className="flex-row items-center justify-between">
-          <Text variant="headingLarge">{t('account.about')}</Text>
+        <View className="flex-row items-start gap-2">
           <HeaderDoneButton />
+          <Text variant="headingLarge" className="min-w-0 flex-1">
+            {t('account.about')}
+          </Text>
         </View>
 
         <View

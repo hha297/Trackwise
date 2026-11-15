@@ -1,9 +1,11 @@
 import { router, useLocalSearchParams } from 'expo-router';
+import { X } from 'lucide-react-native';
 import { memo, useCallback, useDeferredValue, useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, FlatList, Platform, Pressable, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Input } from '@/components/ui/input';
 import { Screen } from '@/components/ui/screen';
@@ -253,7 +255,13 @@ export default function ExercisePickerScreen() {
   const listHeader = useMemo(
     () => (
       <View style={{ gap: 14, paddingBottom: 12 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
+          <ChromeIconButton
+            header
+            label={t('workout.done')}
+            onPress={() => router.back()}
+            icon={(color) => <X size={22} color={color} />}
+          />
           <View style={{ flex: 1, minWidth: 0, gap: 4 }}>
             <Text variant="headingLarge">
               {browseMode ? t('workout.exerciseLibrary') : t('workout.addExercise')}
@@ -262,11 +270,6 @@ export default function ExercisePickerScreen() {
               {browseMode ? t('workout.exerciseLibraryBody') : t('workout.addExerciseHint')}
             </Text>
           </View>
-          <Pressable onPress={() => router.back()} hitSlop={8}>
-            <Text variant="bodyStrong" tone="secondary">
-              {t('workout.done')}
-            </Text>
-          </Pressable>
         </View>
 
         <Input
