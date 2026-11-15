@@ -14,7 +14,7 @@ export const WORKOUT_MUSCLE_IMAGES: Record<string, ImageSourcePropType> = {
   forearms: require('../../../assets/images/workout/muscles/forearms.jpg'),
   quadriceps: require('../../../assets/images/workout/muscles/quadriceps.webp'),
   hamstrings: require('../../../assets/images/workout/muscles/hamstrings.jpg'),
-  glutes: require('../../../assets/images/workout/muscles/glutes.webp'),
+  glutes: require('../../../assets/images/workout/muscles/glutes.jpg'),
   calves: require('../../../assets/images/workout/muscles/calves.webp'),
   core: require('../../../assets/images/workout/muscles/core.jpg'),
 };

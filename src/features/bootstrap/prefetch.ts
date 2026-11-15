@@ -2,6 +2,7 @@ import type { QueryClient } from '@tanstack/react-query';
 
 import { fetchFoodEntries } from '@/features/food/api';
 import { ensureProfile, fetchActiveGoal } from '@/features/goals/api';
+import i18n from '@/i18n';
 import { getSupabase } from '@/lib/supabase/client';
 import { toDiaryDateKey } from '@/utils/date';
 
@@ -138,12 +139,12 @@ export function toBootstrapErrorMessage(error: unknown): string {
     message.toLowerCase().includes('could not find the table') ||
     message.toLowerCase().includes('schema cache')
   ) {
-    return 'Database tables are missing. Open Supabase → SQL Editor and run supabase/migrations/20260929170000_calio_core_schema.sql, then tap Retry.';
+    return i18n.t('bootstrap.schemaMissing');
   }
 
   if (message) {
     return message;
   }
 
-  return 'Could not load your data. Check your connection and try again.';
+  return i18n.t('bootstrap.loadFailed');
 }

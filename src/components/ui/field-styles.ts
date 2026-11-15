@@ -42,8 +42,8 @@ export function getFieldPlaceholderTypography(themeColors: ThemeColors = staticC
 export function getFieldCompactTypography(themeColors: ThemeColors = staticColors) {
   return {
     fontFamily: fonts.bodyRegular,
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 16,
+    lineHeight: 22,
     color: themeColors.textPrimary,
     ...(Platform.OS === 'android' ? { includeFontPadding: false } : null),
   } as const;
@@ -52,8 +52,8 @@ export function getFieldCompactTypography(themeColors: ThemeColors = staticColor
 export function getFieldCompactPlaceholderTypography(themeColors: ThemeColors = staticColors) {
   return {
     fontFamily: fonts.bodyRegular,
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 16,
+    lineHeight: 22,
     color: themeColors.textMuted,
     ...(Platform.OS === 'android' ? { includeFontPadding: false } : null),
   } as const;

@@ -243,12 +243,7 @@ export function NutritionDashboard({
                         />
                       ) : null}
                     </View>
-                    <Text
-                      variant="caption"
-                      tone="secondary"
-                      numberOfLines={1}
-                      style={{ fontSize: 10 }}
-                    >
+                    <Text variant="fine" tone="secondary" numberOfLines={1}>
                       {bar.label}
                     </Text>
                   </View>
@@ -356,12 +351,7 @@ function MetricStackItem({
   return (
     <View className="flex-row items-center justify-end gap-2.5">
       <View className="items-end gap-0.5">
-        <Text
-          variant="caption"
-          tone="secondary"
-          numberOfLines={1}
-          style={{ fontSize: 11, textAlign: 'right' }}
-        >
+        <Text variant="fine" tone="secondary" numberOfLines={1} style={{ textAlign: 'right' }}>
           {label}
         </Text>
         <View className="flex-row items-baseline justify-end gap-1">
@@ -372,7 +362,7 @@ function MetricStackItem({
           >
             {value}
           </Text>
-          <Text variant="caption" tone="secondary" style={{ fontSize: 10 }}>
+          <Text variant="fine" tone="secondary">
             {unit}
           </Text>
         </View>
@@ -421,7 +411,7 @@ function NutrientCell({
     >
       <View className="flex-row items-center gap-1">
         {icon}
-        <Text variant="caption" tone="secondary" numberOfLines={1} style={{ fontSize: 11 }}>
+        <Text variant="fine" tone="secondary" numberOfLines={1}>
           {name}
         </Text>
       </View>
@@ -437,7 +427,7 @@ function NutrientCell({
           style={{ width: `${ratio * 100}%`, backgroundColor: color }}
         />
       </View>
-      <Text variant="caption" tone="secondary" numberOfLines={1} style={{ fontSize: 10 }}>
+      <Text variant="fine" tone="secondary" numberOfLines={1}>
         {status}
       </Text>
     </View>

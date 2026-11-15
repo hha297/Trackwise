@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { Text } from '@/components/ui/text';
 import { SelectionCard } from '@/features/setup/selection-card';
@@ -7,25 +8,10 @@ import { SetupShell } from '@/features/setup/setup-shell';
 import { useSetup } from '@/features/setup/setup-provider';
 import type { GoalType } from '@/features/setup/calculations';
 
-const OPTIONS: { value: GoalType; label: string; description: string }[] = [
-  {
-    value: 'lose_weight',
-    label: 'Lose weight / cut',
-    description: 'Create a calorie deficit while keeping protein high.',
-  },
-  {
-    value: 'maintain_weight',
-    label: 'Maintain weight',
-    description: 'Hold your current weight with balanced intake.',
-  },
-  {
-    value: 'gain_weight',
-    label: 'Gain weight / bulk',
-    description: 'Build with a controlled surplus.',
-  },
-];
+const GOAL_VALUES: GoalType[] = ['lose_weight', 'maintain_weight', 'gain_weight'];
 
 export function GoalStep() {
+  const { t } = useTranslation();
   const { answers, progress, goNext, goBack, saving, error } = useSetup();
   const [goalType, setGoalType] = useState<GoalType | null>(answers.goalType);
   const [touched, setTouched] = useState(false);
@@ -35,8 +21,8 @@ export function GoalStep() {
 
   return (
     <SetupShell
-      title="What would you like to achieve?"
-      subtitle="Pick the primary goal for your Trackwise plan. You can change this later."
+      title={t('setup.goal.title')}
+      subtitle={t('setup.goal.subtitle')}
       stepIndex={progress.index}
       stepTotal={progress.total}
       onBack={progress.index > 0 ? () => void goBack() : undefined}
@@ -49,18 +35,18 @@ export function GoalStep() {
       }}
     >
       <View className="gap-3">
-        {OPTIONS.map((option) => (
+        {GOAL_VALUES.map((value) => (
           <SelectionCard
-            key={option.value}
-            label={option.label}
-            description={option.description}
-            selected={goalType === option.value}
-            onPress={() => setGoalType(option.value)}
+            key={value}
+            label={t(`setup.goal.${value}.label`)}
+            description={t(`setup.goal.${value}.description`)}
+            selected={goalType === value}
+            onPress={() => setGoalType(value)}
           />
         ))}
         {showError ? (
           <Text variant="caption" tone="error">
-            Choose a goal to continue
+            {t('setup.goal.error')}
           </Text>
         ) : null}
         {error ? (

@@ -124,7 +124,7 @@ src/
 | --------------- | ------------------------------------------------------------------- |
 | **Mobile**      | Expo SDK 58, Expo Router, React Native, TypeScript                  |
 | **UI**          | NativeWind / Tailwind, Lucide, Trackwise tokens (`#00D95F`)         |
-| **Fonts**       | Bricolage Grotesque · Geist · JetBrains Mono                        |
+| **Fonts**       | Bricolage Grotesque · JetBrains Mono                                |
 | **Server state**| TanStack Query                                                      |
 | **Forms**       | React Hook Form + Zod                                               |
 | **Backend**     | Supabase Auth, Postgres, RLS, Storage, Edge Functions               |
@@ -327,7 +327,7 @@ See [`DESIGN.MD`](./DESIGN.MD) together with `src/theme/` and `src/components/ui
 | ----- | ----- |
 | Primary | `#00D95F` |
 | Display | Bricolage Grotesque |
-| Body | Geist |
+| Body | Bricolage Grotesque |
 | Mono | JetBrains Mono |
 
 ---

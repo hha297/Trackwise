@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import { expandLibraryPaths } from '@/features/workout/catalog/library-path-aliases';
 import { dedupeMuscleList } from '@/features/workout/exercise-display';
 import { getSupabase } from '@/lib/supabase/client';
@@ -12,6 +13,8 @@ import type {
   WorkoutTemplateExercise,
   WorkoutTemplateVariation,
 } from './types';
+import { estimateWorkoutCalories } from './exercise-calorie-engine';
+import { workoutNamePatch } from './session-display';
 import { TEMPLATE_TRAINING_LEVELS } from './types';
 
 const EXERCISE_SELECT =
@@ -233,7 +236,7 @@ export async function fetchWorkoutTemplates(): Promise<WorkoutTemplate[]> {
       .order('name');
     if (!result.error) return (result.data ?? []) as unknown as WorkoutTemplate[];
   }
-  throw new Error('Could not load workout templates.');
+  throw new Error(i18n.t('errors.loadTemplates'));
 }
 
 export type WorkoutTemplateExerciseInput = {
@@ -320,7 +323,7 @@ async function queryTemplateExercises(filter: {
       return ((result.data ?? []) as unknown as JoinedExerciseRow[]).map(mapJoinedExercise);
     }
   }
-  throw new Error('Could not load template exercises.');
+  throw new Error(i18n.t('errors.loadTemplateExercises'));
 }
 
 export async function fetchTemplateVariations(
@@ -596,18 +599,90 @@ export async function deleteWorkoutTemplate(id: string, userId: string): Promise
   if (error) throw error;
 }
 
+type WorkoutImageJoin = {
+  image_url?: string | null;
+  image_storage_path?: string | null;
+  image_key?: string | null;
+  slug?: string | null;
+};
+
+export type WorkoutListJoinRow = WorkoutListItem & {
+  workout_exercises?: {
+    position?: number | null;
+    exercise_name?: string | null;
+    exercise?: WorkoutImageJoin | WorkoutImageJoin[] | null;
+    workout_sets?: {
+      weight_kg?: number | null;
+      reps?: number | null;
+      duration_sec?: number | null;
+      distance_m?: number | null;
+    }[] | null;
+  }[];
+};
+
+export function mapWorkoutListRows(rows: WorkoutListJoinRow[]): WorkoutListItem[] {
+  return rows.map((row) => {
+    const joined = [...(row.workout_exercises ?? [])].sort(
+      (a, b) => (a.position ?? 0) - (b.position ?? 0),
+    );
+    let setCount = 0;
+    let volumeKg = 0;
+    for (const exercise of joined) {
+      for (const set of exercise.workout_sets ?? []) {
+        const weight = Number(set.weight_kg ?? 0);
+        const reps = Number(set.reps ?? 0);
+        const duration = Number(set.duration_sec ?? 0);
+        const distance = Number(set.distance_m ?? 0);
+        if (weight <= 0 && reps <= 0 && duration <= 0 && distance <= 0) continue;
+        setCount += 1;
+        if (weight > 0 && reps > 0) volumeKg += weight * reps;
+      }
+    }
+    return {
+      id: row.id,
+      name: row.name,
+      started_at: row.started_at,
+      ended_at: row.ended_at,
+      estimated_calories: row.estimated_calories,
+      status: row.status,
+      active_duration_sec: row.active_duration_sec,
+      set_count: setCount,
+      volume_kg: Math.round(volumeKg),
+      previews: joined.map((exercise) => {
+        const image = Array.isArray(exercise.exercise) ? exercise.exercise[0] : exercise.exercise;
+        return {
+          name: exercise.exercise_name ?? '',
+          image_url: image?.image_url ?? null,
+          image_storage_path: image?.image_storage_path ?? null,
+          image_key: image?.image_key ?? null,
+          slug: image?.slug ?? null,
+        };
+      }),
+    };
+  });
+}
+
 export async function fetchWorkouts(userId: string, limit = 40): Promise<WorkoutListItem[]> {
   const supabase = getSupabase();
   if (!supabase) return [];
-  const { data, error } = await supabase
-    .from('workouts')
-    .select('id, name, started_at, ended_at, estimated_calories, status, active_duration_sec')
-    .eq('user_id', userId)
-    .neq('status', 'discarded')
-    .order('started_at', { ascending: false })
-    .limit(limit);
-  if (error) throw error;
-  return (data ?? []) as WorkoutListItem[];
+  const selects = [
+    'id, name, started_at, ended_at, estimated_calories, status, active_duration_sec, workout_exercises(position, exercise_name, exercise:exercises(image_url, image_storage_path, image_key, slug), workout_sets(weight_kg, reps, duration_sec, distance_m))',
+    'id, name, started_at, ended_at, estimated_calories, status, active_duration_sec, workout_exercises(position, exercise_name, exercise:exercises(image_url, image_storage_path, image_key, slug))',
+    'id, name, started_at, ended_at, estimated_calories, status, active_duration_sec',
+  ];
+  let lastError: { message: string } | null = null;
+  for (const columns of selects) {
+    const { data, error } = await supabase
+      .from('workouts')
+      .select(columns)
+      .eq('user_id', userId)
+      .neq('status', 'discarded')
+      .order('started_at', { ascending: false })
+      .limit(limit);
+    if (!error) return mapWorkoutListRows((data ?? []) as unknown as WorkoutListJoinRow[]);
+    lastError = error;
+  }
+  throw lastError ?? new Error('Could not load workouts.');
 }
 
 export async function fetchWorkoutDetail(id: string, userId: string): Promise<WorkoutDetail | null> {
@@ -826,6 +901,181 @@ export async function finishWorkoutSession(
   }
 
   return { workoutId: workout.id as string };
+}
+
+export async function renameWorkout(id: string, userId: string, name: string): Promise<void> {
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase is not configured.');
+  const patch = workoutNamePatch(name);
+  const { error } = await supabase
+    .from('workouts')
+    .update(patch)
+    .eq('id', id)
+    .eq('user_id', userId);
+  if (error) throw error;
+}
+
+function loggedMeasure(value: number | null | undefined): number | null {
+  if (value == null || !Number.isFinite(value) || value <= 0) return null;
+  return value;
+}
+
+/** Update or remove one saved set, then renumber and recompute the session calories. */
+export async function reviseSavedWorkoutSet(input: {
+  userId: string;
+  workoutId: string;
+  setId: string;
+  mode: 'update' | 'delete';
+  weightKg?: number | null;
+  reps?: number | null;
+  durationSec?: number | null;
+  distanceM?: number | null;
+}): Promise<void> {
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase is not configured.');
+  const detail = await fetchWorkoutDetail(input.workoutId, input.userId);
+  if (!detail) throw new Error('Workout not found.');
+
+  const exercise = detail.exercises.find((item) =>
+    item.sets.some((set) => set.id === input.setId),
+  );
+  if (!exercise) throw new Error('Set not found.');
+
+  const weightKg = loggedMeasure(input.weightKg);
+  const reps = loggedMeasure(input.reps);
+  const durationSec = loggedMeasure(input.durationSec);
+  const distanceM = loggedMeasure(input.distanceM);
+  const clearing =
+    input.mode === 'delete' ||
+    (weightKg == null && reps == null && durationSec == null && distanceM == null);
+
+  if (clearing) {
+    const { error } = await supabase.from('workout_sets').delete().eq('id', input.setId);
+    if (error) throw error;
+  } else {
+    const { error } = await supabase
+      .from('workout_sets')
+      .update({
+        weight_kg: weightKg,
+        reps,
+        duration_sec: durationSec,
+        distance_m: distanceM,
+        completed: true,
+      })
+      .eq('id', input.setId);
+    if (error) throw error;
+  }
+
+  const nextSets = exercise.sets
+    .filter((set) => set.id !== input.setId || !clearing)
+    .map((set, index) =>
+      set.id === input.setId
+        ? {
+            ...set,
+            weight_kg: weightKg,
+            reps,
+            duration_sec: durationSec,
+            distance_m: distanceM,
+            completed: true,
+            set_number: index + 1,
+          }
+        : { ...set, set_number: index + 1 },
+    );
+
+  await Promise.all(
+    nextSets.map((set) =>
+      supabase.from('workout_sets').update({ set_number: set.set_number }).eq('id', set.id),
+    ),
+  );
+
+  const exercises = detail.exercises.map((item) =>
+    item.id === exercise.id ? { ...item, sets: nextSets } : item,
+  );
+  const bodyWeightKg = Number(detail.calorie_body_weight_kg ?? 0);
+  if (!(bodyWeightKg > 0)) return;
+
+  const estimate = estimateWorkoutCalories({
+    activeDurationSec: detail.active_duration_sec ?? 0,
+    bodyWeightKg,
+    exercises: exercises.map((item) => ({
+      localId: item.id,
+      name: item.exercise_name,
+      exerciseType: item.exercise_type,
+      metValue: null,
+      sets: item.sets.map((set) => ({
+        weightKg: set.weight_kg,
+        reps: set.reps,
+        durationSec: set.duration_sec,
+        distanceM: set.distance_m,
+        restSec: set.rest_sec,
+        completed: true,
+      })),
+    })),
+  });
+  const byId = new Map(estimate.exercises.map((row) => [row.localId, row]));
+
+  await Promise.all(
+    exercises.map((item) => {
+      const row = byId.get(item.id);
+      return supabase
+        .from('workout_exercises')
+        .update({
+          estimated_calories: row?.estimatedCalories ?? 0,
+          estimate_method: row?.method ?? null,
+          estimate_calc_version: row?.calcVersion ?? null,
+          estimate_duration_sec: row?.durationSec ?? null,
+          estimate_activity_key: row?.activityKey ?? null,
+          estimate_body_weight_kg: bodyWeightKg,
+        })
+        .eq('id', item.id);
+    }),
+  );
+
+  const { error: workoutError } = await supabase
+    .from('workouts')
+    .update({
+      estimated_calories: estimate.totalEstimatedCalories,
+      calorie_calc_version: estimate.calcVersion,
+      calorie_body_weight_kg: bodyWeightKg,
+    })
+    .eq('id', input.workoutId)
+    .eq('user_id', input.userId);
+  if (workoutError) throw workoutError;
+}
+
+/** Persist a new set order for one exercise (1-based set_number). */
+export async function reorderSavedWorkoutSets(input: {
+  userId: string;
+  workoutId: string;
+  exerciseId: string;
+  orderedSetIds: string[];
+}): Promise<void> {
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase is not configured.');
+  if (input.orderedSetIds.length === 0) return;
+
+  const detail = await fetchWorkoutDetail(input.workoutId, input.userId);
+  if (!detail) throw new Error('Workout not found.');
+  const exercise = detail.exercises.find((item) => item.id === input.exerciseId);
+  if (!exercise) throw new Error('Exercise not found.');
+
+  const known = new Set(exercise.sets.map((set) => set.id));
+  if (
+    input.orderedSetIds.length !== known.size ||
+    input.orderedSetIds.some((id) => !known.has(id))
+  ) {
+    throw new Error('Invalid set order.');
+  }
+
+  // No unique constraint on set_number — write final order directly (avoids 1000+ flashes).
+  for (let index = 0; index < input.orderedSetIds.length; index += 1) {
+    const id = input.orderedSetIds[index]!;
+    const { error } = await supabase
+      .from('workout_sets')
+      .update({ set_number: index + 1 })
+      .eq('id', id);
+    if (error) throw error;
+  }
 }
 
 export async function deleteWorkout(id: string, userId: string): Promise<void> {

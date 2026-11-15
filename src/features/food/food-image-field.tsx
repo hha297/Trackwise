@@ -2,6 +2,7 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera, ImagePlus, Trash2, RefreshCw } from 'lucide-react-native';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
 
@@ -69,6 +70,7 @@ export function FoodImageField({
   disabled = false,
   existingUrl = null,
 }: FoodImageFieldProps) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const [busy, setBusy] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
@@ -89,7 +91,7 @@ export function FoodImageField({
     try {
       const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permission.granted) {
-        setLocalError('Photo library access is required to add a food image.');
+        setLocalError(t('food.image.permissionDenied'));
         return;
       }
 
@@ -105,16 +107,23 @@ export function FoodImageField({
       }
 
       const asset = result.assets[0];
+      const limit = formatFoodImageSizeLimit();
       let selected = validateFoodImageSelection({
         uri: asset.uri,
         mimeType: asset.mimeType,
         fileName: asset.fileName,
         fileSize: asset.fileSize,
+        emptyUriMessage: t('errors.imageReadFailed'),
+        invalidTypeMessage: t('errors.imageTypeInvalid'),
+        tooLargeMessage: t('errors.imageTooLarge', { limit }),
       });
-      selected = await assertFoodImageWithinSizeLimit(selected);
+      selected = await assertFoodImageWithinSizeLimit(
+        selected,
+        t('errors.imageTooLarge', { limit }),
+      );
       onChange(selected);
     } catch (err) {
-      setLocalError(err instanceof Error ? err.message : 'Could not select that image.');
+      setLocalError(err instanceof Error ? err.message : t('food.image.selectFailed'));
     } finally {
       setBusy(false);
     }
@@ -130,10 +139,10 @@ export function FoodImageField({
     <View style={styles.wrap}>
       <View style={styles.header}>
         <Text variant="label" tone="secondary" style={styles.headerTitle}>
-          Food image (optional)
+          {t('food.image.title')}
         </Text>
         <Text variant="caption" tone="muted" style={styles.headerHint}>
-          1 photo · max {formatFoodImageSizeLimit()}
+          {t('food.image.hint', { limit: formatFoodImageSizeLimit() })}
         </Text>
       </View>
 
@@ -151,12 +160,12 @@ export function FoodImageField({
               source={{ uri: previewUri }}
               style={[styles.previewImage, { backgroundColor: colors.surface }]}
               contentFit="cover"
-              accessibilityLabel="Selected food image"
+              accessibilityLabel={t('food.image.selectedA11y')}
             />
             <View style={styles.previewActions}>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Replace food image"
+                accessibilityLabel={t('food.image.replaceA11y')}
                 disabled={disabled || busy}
                 onPress={() => void pickImage()}
                 style={({ pressed }) => [
@@ -170,12 +179,12 @@ export function FoodImageField({
               >
                 <RefreshCw size={iconSizes.sm} color={colors.textPrimary} strokeWidth={2.25} />
                 <Text variant="label" tone="primary">
-                  Replace
+                  {t('food.image.replace')}
                 </Text>
               </Pressable>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Remove food image"
+                accessibilityLabel={t('food.image.removeA11y')}
                 disabled={disabled || busy}
                 onPress={clearImage}
                 style={({ pressed }) => [
@@ -189,7 +198,7 @@ export function FoodImageField({
               >
                 <Trash2 size={iconSizes.sm} color={colors.error} strokeWidth={2.25} />
                 <Text variant="label" tone="error">
-                  Remove
+                  {t('food.image.remove')}
                 </Text>
               </Pressable>
             </View>
@@ -198,7 +207,7 @@ export function FoodImageField({
       ) : (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Add food image"
+          accessibilityLabel={t('food.image.addA11y')}
           disabled={disabled || busy}
           onPress={() => void pickImage()}
           onLayout={(event) => {
@@ -225,16 +234,16 @@ export function FoodImageField({
                 </View>
                 <View style={styles.emptyCopy}>
                   <Text variant="bodyStrong" style={styles.emptyTitle}>
-                    Add food image
+                    {t('food.image.add')}
                   </Text>
                   <Text variant="caption" tone="muted" style={styles.emptyHint}>
-                    Choose one JPEG, PNG, or WebP from your library
+                    {t('food.image.addHint')}
                   </Text>
                 </View>
                 <View style={styles.emptyMeta}>
                   <Camera size={14} color={colors.textMuted} />
                   <Text variant="caption" tone="muted" style={styles.emptyMetaText}>
-                    Tap to pick a photo for this food
+                    {t('food.image.addMeta')}
                   </Text>
                 </View>
               </View>

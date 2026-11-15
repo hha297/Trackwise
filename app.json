@@ -41,7 +41,7 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#00D95F",
-          "image": "./assets/images/branding/logo.png",
+          "image": "./assets/images/branding/logo-splash.png",
           "imageWidth": 112
         }
       ],
@@ -63,7 +63,15 @@
       "expo-web-browser",
       "expo-font",
       "expo-localization",
-      "expo-sharing"
+      "expo-sharing",
+      [
+        "expo-notifications",
+        {
+          "color": "#00D95F",
+          "defaultChannel": "trackwise-reminders",
+          "enableRemoteNotifications": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

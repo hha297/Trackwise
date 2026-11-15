@@ -82,12 +82,12 @@ export default async function SettingsPage() {
       <div className="space-y-4 p-8">
         <Card className="space-y-2 text-sm text-mute">
           <p>
-            To refresh coaching copy and upload local exercise assets into Storage on a local
-            stack, run:
+            Replace system exercise artwork from <strong className="text-ink">Exercises</strong>{' '}
+            (uploads go to the <code className="font-mono-metric text-ink">exercise-images</code>{' '}
+            bucket). Keep matching files under the mobile{' '}
+            <code className="font-mono-metric text-ink">assets/images/workout/exercises/</code>{' '}
+            tree for offline fallbacks.
           </p>
-          <code className="font-mono-metric block rounded-[10px] bg-bone px-3 py-2 text-xs text-ink">
-            node scripts/sync-system-exercises.mjs
-          </code>
         </Card>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {metrics.map((metric) => (

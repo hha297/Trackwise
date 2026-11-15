@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -13,19 +14,15 @@ import { getSupabase } from '@/lib/supabase/client';
 import { radii, spacing } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 
-const types = [
-  { id: 'lose_weight', label: 'Lose weight' },
-  { id: 'maintain_weight', label: 'Maintain' },
-  { id: 'gain_weight', label: 'Gain weight' },
-] as const;
+const GOAL_TYPES = ['lose_weight', 'maintain_weight', 'gain_weight'] as const;
 
 export default function GoalsScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const { session } = useAuth();
   const existing = useActiveGoal();
   const queryClient = useQueryClient();
-  const [goalType, setGoalType] =
-    useState<(typeof types)[number]['id']>('maintain_weight');
+  const [goalType, setGoalType] = useState<(typeof GOAL_TYPES)[number]>('maintain_weight');
   const [calories, setCalories] = useState(
     String(existing.data?.daily_calorie_target ?? 2000),
   );
@@ -37,11 +34,17 @@ export default function GoalsScreen() {
   const [fat, setFat] = useState(String(existing.data?.fat_g ?? 70));
   const [error, setError] = useState<string | null>(null);
 
+  const goalLabels: Record<(typeof GOAL_TYPES)[number], string> = {
+    lose_weight: t('goalsEdit.loseWeight'),
+    maintain_weight: t('goalsEdit.maintain'),
+    gain_weight: t('goalsEdit.gainWeight'),
+  };
+
   const save = useMutation({
     mutationFn: async () => {
       const supabase = getSupabase();
       const userId = session?.user.id;
-      if (!supabase || !userId) throw new Error('Sign in required.');
+      if (!supabase || !userId) throw new Error(t('goalsEdit.signInRequired'));
       await supabase.from('goals').update({ is_active: false }).eq('user_id', userId).eq('is_active', true);
       const { error: insertError } = await supabase.from('goals').insert({
         user_id: userId,
@@ -59,52 +62,81 @@ export default function GoalsScreen() {
       await queryClient.invalidateQueries({ queryKey: ['goal'] });
       router.back();
     },
-    onError: (err) => setError(err instanceof Error ? err.message : 'Could not save goal.'),
+    onError: (err) => setError(err instanceof Error ? err.message : t('goalsEdit.saveFailed')),
   });
 
   return (
     <Screen scroll keyboard edges={['top', 'bottom', 'left', 'right']}>
       <View className="gap-4">
         <View className="flex-row items-center justify-between">
-          <Text variant="headingLarge">Goal</Text>
+          <Text variant="headingLarge">{t('goalsEdit.title')}</Text>
           <Pressable onPress={() => router.back()}>
             <Text variant="bodyStrong" tone="primary">
-              Close
+              {t('goalsEdit.close')}
             </Text>
           </Pressable>
         </View>
         <View className="flex-row flex-wrap gap-2">
-          {types.map((type) => (
+          {GOAL_TYPES.map((type) => (
             <Pressable
-              key={type.id}
-              onPress={() => setGoalType(type.id)}
+              key={type}
+              onPress={() => setGoalType(type)}
               style={[
                 styles.goalChip,
                 {
-                  backgroundColor: goalType === type.id ? colors.primary : colors.surfaceMuted,
+                  backgroundColor: goalType === type ? colors.primary : colors.surfaceMuted,
                 },
               ]}
             >
               <Text
                 variant="label"
-                tone={goalType === type.id ? 'onPrimary' : 'primary'}
+                tone={goalType === type ? 'onPrimary' : 'primary'}
               >
-                {type.label}
+                {goalLabels[type]}
               </Text>
             </Pressable>
           ))}
         </View>
-        <Input label="Daily calorie target" value={calories} onChangeText={setCalories} keyboardType="number-pad" />
-        <Input label="Target weight (kg)" value={targetWeight} onChangeText={setTargetWeight} keyboardType="decimal-pad" />
-        <Input label="Protein target (g)" value={protein} onChangeText={setProtein} keyboardType="number-pad" />
-        <Input label="Carbs target (g)" value={carbs} onChangeText={setCarbs} keyboardType="number-pad" />
-        <Input label="Fat target (g)" value={fat} onChangeText={setFat} keyboardType="number-pad" />
+        <Input
+          label={t('goalsEdit.calories')}
+          value={calories}
+          onChangeText={setCalories}
+          keyboardType="number-pad"
+        />
+        <Input
+          label={t('goalsEdit.targetWeight')}
+          value={targetWeight}
+          onChangeText={setTargetWeight}
+          keyboardType="decimal-pad"
+        />
+        <Input
+          label={t('goalsEdit.protein')}
+          value={protein}
+          onChangeText={setProtein}
+          keyboardType="number-pad"
+        />
+        <Input
+          label={t('goalsEdit.carbs')}
+          value={carbs}
+          onChangeText={setCarbs}
+          keyboardType="number-pad"
+        />
+        <Input
+          label={t('goalsEdit.fat')}
+          value={fat}
+          onChangeText={setFat}
+          keyboardType="number-pad"
+        />
         {error ? (
           <Text variant="bodySmall" tone="error">
             {error}
           </Text>
         ) : null}
-        <Button label="Save goal" loading={save.isPending} onPress={() => save.mutate()} />
+        <Button
+          label={t('goalsEdit.save')}
+          loading={save.isPending}
+          onPress={() => save.mutate()}
+        />
       </View>
     </Screen>
   );

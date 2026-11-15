@@ -13,6 +13,12 @@ import {
   useWorkoutTemplates,
 } from '@/features/workout/hooks';
 import { getTemplateCover } from '@/features/workout/template-assets';
+import {
+  localizedEquipmentSummary,
+  localizedTemplateDescription,
+  localizedTemplateName,
+  localizedVariationDescription,
+} from '@/features/workout/template-i18n';
 import type { ExerciseDifficulty, WorkoutTemplateVariation } from '@/features/workout/types';
 import { TEMPLATE_TRAINING_LEVELS } from '@/features/workout/types';
 import { useActiveWorkoutStore } from '@/stores/active-workout-store';
@@ -102,7 +108,7 @@ export default function WorkoutTemplateDetailScreen() {
         <View className="flex-row items-start justify-between gap-3">
           <View className="min-w-0 flex-1 gap-1">
             <Text variant="headingLarge" numberOfLines={2}>
-              {template.name}
+              {localizedTemplateName(t, template.name, { isSystem: template.is_system })}
             </Text>
             <Text variant="caption" tone="secondary">
               {overviewParts.join(' · ')}
@@ -148,34 +154,13 @@ export default function WorkoutTemplateDetailScreen() {
             resizeMode="cover"
             accessibilityIgnoresInvertColors
           />
-          <View
-            pointerEvents="none"
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              bottom: 0,
-              paddingHorizontal: 14,
-              paddingVertical: 12,
-              backgroundColor: withAlpha('#000000', 0.45),
-            }}
-          >
-            {template.description ? (
-              <Text variant="bodySmall" style={{ color: '#FFFFFF' }} numberOfLines={3}>
-                {template.description}
-              </Text>
-            ) : null}
-          </View>
         </View>
 
-        <View className="gap-1">
-          <Text variant="label" tone="secondary">
-            {t('workout.templateOverview')}
-          </Text>
-          <Text variant="bodySmall" tone="secondary">
-            {template.description || t('workout.templateOverviewFallback')}
-          </Text>
-        </View>
+        <Text variant="bodySmall" tone="secondary">
+          {localizedTemplateDescription(t, template.name, template.description, {
+            isSystem: template.is_system,
+          }) || t('workout.templateOverviewFallback')}
+        </Text>
 
         {template.equipment_summary ? (
           <View className="gap-1">
@@ -183,7 +168,9 @@ export default function WorkoutTemplateDetailScreen() {
               {t('workout.equipmentLabel')}
             </Text>
             <Text variant="bodySmall" tone="secondary">
-              {template.equipment_summary}
+              {localizedEquipmentSummary(t, template.equipment_summary, {
+                isSystem: template.is_system,
+              })}
             </Text>
           </View>
         ) : null}
@@ -244,7 +231,13 @@ export default function WorkoutTemplateDetailScreen() {
                 </View>
                 {variation.description ? (
                   <Text variant="caption" tone="secondary" numberOfLines={2}>
-                    {variation.description}
+                    {localizedVariationDescription(
+                      t,
+                      template.name,
+                      variation.training_level,
+                      variation.description,
+                      { isSystem: template.is_system },
+                    )}
                   </Text>
                 ) : (
                   <Text variant="caption" tone="muted">
@@ -265,20 +258,10 @@ export default function WorkoutTemplateDetailScreen() {
 
         {selectedVariation ? (
           <>
-            <View className="flex-row flex-wrap gap-2">
-              <MetaChip label={t(`workout.difficulty.${selectedVariation.training_level}`)} emphasize />
-              {minutes ? (
-                <MetaChip label={t('workout.templateMinutes', { count: minutes })} />
-              ) : null}
-              <MetaChip label={t('workout.templateExerciseCount', { count: list.length })} />
-              {totalSets ? (
-                <MetaChip label={t('workout.templateTotalSets', { count: totalSets })} />
-              ) : null}
-            </View>
-
             <Text variant="label" tone="secondary">
-              {t('workout.templateExercises')} ·{' '}
-              {t(`workout.difficulty.${selectedVariation.training_level}`)}
+              {t('workout.templateExercises')}
+              {minutes ? ` · ${t('workout.templateMinutes', { count: minutes })}` : ''}
+              {totalSets ? ` · ${t('workout.templateTotalSets', { count: totalSets })}` : ''}
             </Text>
 
             <View className="gap-2">
@@ -287,6 +270,7 @@ export default function WorkoutTemplateDetailScreen() {
                   key={row.id}
                   exercise={row}
                   index={index}
+                  isSystem={template.is_system}
                   showImage
                   onPress={
                     row.exercise_id
@@ -309,7 +293,7 @@ export default function WorkoutTemplateDetailScreen() {
           onPress={() => {
             if (!selectedVariation || !list.length) return;
             start({
-              name: `${template.name} · ${t(`workout.difficulty.${selectedVariation.training_level}`)}`,
+              name: `${localizedTemplateName(t, template.name, { isSystem: template.is_system })} · ${t(`workout.difficulty.${selectedVariation.training_level}`)}`,
               sourceTemplateId: template.id,
               exercises: list.map((row) => ({
                 exerciseId: row.exercise_id,
@@ -333,25 +317,3 @@ export default function WorkoutTemplateDetailScreen() {
   );
 }
 
-function MetaChip({ label, emphasize = false }: { label: string; emphasize?: boolean }) {
-  const colors = useThemeColors();
-  return (
-    <View
-      style={{
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        borderRadius: radii.pill,
-        borderWidth: 1,
-        borderColor: emphasize ? colors.primary : colors.border,
-        backgroundColor: emphasize ? withAlpha(colors.primary, 0.12) : colors.surfaceMuted,
-      }}
-    >
-      <Text
-        variant="caption"
-        style={{ color: emphasize ? colors.primary : colors.textSecondary }}
-      >
-        {label}
-      </Text>
-    </View>
-  );
-}

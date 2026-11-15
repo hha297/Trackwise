@@ -1,5 +1,6 @@
 import { Moon, Sun } from 'lucide-react-native';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -23,6 +24,7 @@ type ThemeToggleProps = {
 
 /** Sun/moon theme control — sliding switch or compact icon. */
 export function ThemeToggle({ variant = 'switch' }: ThemeToggleProps) {
+  const { t } = useTranslation();
   const { scheme, colors, toggleLightDark } = useTheme();
   const isDark = scheme === 'dark';
   const progress = useSharedValue(isDark ? 1 : 0);
@@ -35,7 +37,7 @@ export function ThemeToggle({ variant = 'switch' }: ThemeToggleProps) {
     transform: [{ translateX: progress.value * TRAVEL }],
   }));
 
-  const accessibilityLabel = isDark ? 'Dark mode' : 'Light mode';
+  const accessibilityLabel = isDark ? t('auth.themeA11yDark') : t('auth.themeA11yLight');
 
   if (variant === 'icon') {
     return (

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
@@ -18,19 +19,14 @@ import { formatWeight, kgToLb, lbToKg } from '@/features/setup/units';
 import { radii, spacing } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 
-const PACES: { value: Pace; label: string; kg: number }[] = [
-  { value: 'slow', label: 'Slow', kg: 0.25 },
-  { value: 'moderate', label: 'Moderate', kg: 0.5 },
-  { value: 'fast', label: 'Fast', kg: 0.75 },
+const PACES: { value: Pace; kg: number }[] = [
+  { value: 'slow', kg: 0.25 },
+  { value: 'moderate', kg: 0.5 },
+  { value: 'fast', kg: 0.75 },
 ];
 
-function goalDirectionHint(goalType: string | null | undefined): string {
-  if (goalType === 'lose_weight') return 'lower than your current weight';
-  if (goalType === 'gain_weight') return 'higher than your current weight';
-  return 'close to your current weight';
-}
-
 export function TargetStep() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const { answers, progress, goNext, goBack, saving, error } = useSetup();
   const units = answers.units;
@@ -73,24 +69,44 @@ export function TargetStep() {
     targetKg >= 40 &&
     targetKg <= 250;
 
+  const goalHint =
+    answers.goalType === 'lose_weight'
+      ? t('setup.target.hintLower')
+      : answers.goalType === 'gain_weight'
+        ? t('setup.target.hintHigher')
+        : t('setup.target.hintClose');
+
   const directionWarning =
     targetKg != null && answers.goalType != null && !compatible
       ? answers.goalType === 'lose_weight'
-        ? `You chose cut, but ${formatWeight(targetKg, units)} is above your current weight (${formatWeight(currentKg, units)}). Double-check that isn’t a typo — you can still continue if it’s intentional.`
+        ? t('setup.target.warnCut', {
+            target: formatWeight(targetKg, units),
+            current: formatWeight(currentKg, units),
+          })
         : answers.goalType === 'gain_weight'
-          ? `You chose bulk, but ${formatWeight(targetKg, units)} is below your current weight (${formatWeight(currentKg, units)}). Double-check that isn’t a typo — you can still continue if it’s intentional.`
-          : `That target isn’t close to your current weight. For maintain, a target ${goalDirectionHint(answers.goalType)} usually fits better.`
+          ? t('setup.target.warnBulk', {
+              target: formatWeight(targetKg, units),
+              current: formatWeight(currentKg, units),
+            })
+          : t('setup.target.warnMaintain', { hint: goalHint })
       : null;
 
   const rangeWarning =
-    targetKg != null && !safe && compatible
-      ? 'That’s a large jump from your current weight. You can still continue — consider a nearer target if this was accidental.'
-      : null;
+    targetKg != null && !safe && compatible ? t('setup.target.warnRange') : null;
+
+  const suggestedPaceLabel =
+    suggested === 'slow'
+      ? t('setup.target.paceSlow')
+      : suggested === 'moderate'
+        ? t('setup.target.paceModerate')
+        : suggested === 'fast'
+          ? t('setup.target.paceFast')
+          : null;
 
   return (
     <SetupShell
-      title="Target weight & pace"
-      subtitle={`Current weight: ${formatWeight(currentKg, units)}. Enter the weight you want to aim for.`}
+      title={t('setup.target.title')}
+      subtitle={t('setup.target.subtitle', { weight: formatWeight(currentKg, units) })}
       stepIndex={progress.index}
       stepTotal={progress.total}
       onBack={() => void goBack()}
@@ -104,16 +120,18 @@ export function TargetStep() {
     >
       <View className="gap-4">
         <Input
-          label={units === 'metric' ? 'Target weight (kg)' : 'Target weight (lb)'}
+          label={units === 'metric' ? t('setup.target.weightKg') : t('setup.target.weightLb')}
           value={targetDisplay}
           onChangeText={setTargetDisplay}
           keyboardType="decimal-pad"
-          placeholder={units === 'metric' ? 'Enter target in kg' : 'Enter target in lb'}
+          placeholder={
+            units === 'metric' ? t('setup.target.placeholderKg') : t('setup.target.placeholderLb')
+          }
           error={
             touched && targetDisplay.trim() === ''
-              ? 'Enter a target weight'
+              ? t('setup.target.emptyError')
               : touched && targetKg != null && (targetKg < 40 || targetKg > 250)
-                ? 'Enter a realistic target weight'
+                ? t('setup.target.rangeError')
                 : undefined
           }
         />
@@ -149,13 +167,24 @@ export function TargetStep() {
         ) : null}
 
         <Text variant="label" tone="secondary">
-          Pace {suggested ? `(suggested: ${suggested})` : ''}
+          {suggestedPaceLabel
+            ? t('setup.target.paceSuggested', { pace: suggestedPaceLabel })
+            : t('setup.target.paceLabel')}
         </Text>
         {PACES.map((option) => (
           <SelectionCard
             key={option.value}
-            label={option.label}
-            description={`About ${option.kg} kg (${(option.kg * 2.2).toFixed(1)} lb) per week`}
+            label={t(
+              option.value === 'slow'
+                ? 'setup.target.paceSlow'
+                : option.value === 'moderate'
+                  ? 'setup.target.paceModerate'
+                  : 'setup.target.paceFast',
+            )}
+            description={t('setup.target.paceAbout', {
+              kg: option.kg,
+              lb: (option.kg * 2.2).toFixed(1),
+            })}
             selected={pace === option.value}
             onPress={() => setPace(option.value)}
           />
@@ -171,14 +200,15 @@ export function TargetStep() {
             }}
           >
             <Text variant="bodySmall" tone="muted">
-              Estimated timeline: about {weeks} week{weeks === 1 ? '' : 's'} (rough guide only).
+              {t('setup.target.timeline', { weeks })}
+              {t('setup.target.timelineHint')}
             </Text>
           </View>
         ) : null}
 
         {touched && !canContinue ? (
           <Text variant="caption" tone="error">
-            Enter a target weight and choose a pace to continue
+            {t('setup.target.continueError')}
           </Text>
         ) : null}
         {error ? (

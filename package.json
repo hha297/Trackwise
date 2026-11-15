@@ -4,7 +4,6 @@
   "version": "1.1.1",
   "dependencies": {
     "@expo-google-fonts/bricolage-grotesque": "^0.4.1",
-    "@expo-google-fonts/geist": "^0.4.2",
     "@expo-google-fonts/jetbrains-mono": "^0.4.1",
     "@expo/vector-icons": "^15.0.2",
     "@hookform/resolvers": "^5.9.1",
@@ -27,6 +26,7 @@
     "expo-linking": "~58.0.15",
     "expo-localization": "~58.0.5",
     "expo-modules-core": "~58.0.29",
+    "expo-notifications": "~58.1.9",
     "expo-router": "~58.0.28",
     "expo-sharing": "~58.0.21",
     "expo-splash-screen": "~58.0.12",
@@ -81,8 +81,7 @@
     "format:check": "prettier --check .",
     "supabase:start": "npx --yes supabase start",
     "supabase:status": "npx --yes supabase status",
-    "supabase:stop": "npx --yes supabase stop",
-    "sync:exercises": "node scripts/sync-system-exercises.mjs"
+    "supabase:stop": "npx --yes supabase stop"
   },
   "private": true
 }

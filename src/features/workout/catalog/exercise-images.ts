@@ -1,3 +1,5 @@
+import { preferredExerciseImage } from '@/features/workout/catalog/exercise-image-source';
+import { LOCAL_EXERCISE_IMAGES } from '@/features/workout/catalog/exercise-local-images';
 import { LOCAL_SUBCATEGORY_IMAGES } from '@/features/workout/catalog/subcategory-images';
 import { getSupabase } from '@/lib/supabase/client';
 import { getSupabaseEnv } from '@/lib/supabase/env';
@@ -8,6 +10,8 @@ export const EXERCISE_IMAGE_PLACEHOLDER: number = require('../../../../assets/im
 export const EXERCISE_IMAGES_BUCKET = 'exercise-images';
 
 export type ExerciseImageSource = string | number;
+
+export { preferredExerciseImage };
 
 const resolvedUrlCache = new Map<string, string>();
 
@@ -46,9 +50,37 @@ export function getSubcategoryImage(libraryPath: string): number | null {
 }
 
 /**
- * Resolve display image for an exercise from the API / Storage only.
- * Bundled per-exercise assets are intentionally unused (heavy + offline duplicate of DB).
- * Priority: Cloudinary/custom URL → Supabase Storage path → image_key/slug Storage guess → placeholder.
+ * Display order: saved image URL (admin upload, cache-busted) → storage public URL →
+ * bundled art → placeholder. Bundled files are the offline fallback, not the source of
+ * an admin update. List thumbnails should not prefer multi-megabyte local JPEGs over a URL.
+ */
+function imageStems(value?: string | null): string[] {
+  const raw = value?.trim().toLowerCase() ?? '';
+  if (!raw) return [];
+  const dashed = raw.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  const compact = dashed.replace(/-/g, '');
+  return [raw, dashed, compact].filter(Boolean);
+}
+
+function localExerciseImage(input: {
+  imageKey?: string | null;
+  slug?: string | null;
+  name?: string | null;
+}): ExerciseImageSource | null {
+  for (const stem of [
+    ...imageStems(input.imageKey),
+    ...imageStems(input.slug),
+    ...imageStems(input.name),
+  ]) {
+    const hit = LOCAL_EXERCISE_IMAGES[stem];
+    if (hit != null) return hit as ExerciseImageSource;
+  }
+  return null;
+}
+
+/**
+ * A saved image URL wins. With no saved URL, bundled art wins over the shared
+ * Storage object so a local replacement shows before that file is uploaded.
  */
 export function resolveExerciseImage(input: {
   imageUrl?: string | null;
@@ -57,18 +89,23 @@ export function resolveExerciseImage(input: {
   slug?: string | null;
   name?: string | null;
 }): ExerciseImageSource {
-  const url = input.imageUrl?.trim();
-  if (url && /^https?:\/\//i.test(url)) return url;
-
   const storagePath =
     input.imageStoragePath?.trim() ||
     (input.imageKey ? `exercises/shared/${input.imageKey}.webp` : null) ||
     (input.slug ? `exercises/shared/${input.slug}.webp` : null);
+  return preferredExerciseImage({
+    remoteUrl: input.imageUrl,
+    storageUrl: storagePath ? buildExerciseStoragePublicUrl(storagePath) : null,
+    bundled: localExerciseImage(input),
+    placeholder: EXERCISE_IMAGE_PLACEHOLDER,
+  });
+}
 
-  if (storagePath) {
-    const publicUrl = buildExerciseStoragePublicUrl(storagePath);
-    if (publicUrl) return publicUrl;
-  }
-
-  return EXERCISE_IMAGE_PLACEHOLDER;
+/** Used when the remote image fails. Keeps a real exercise photo instead of a blank error. */
+export function fallbackExerciseImage(input: {
+  imageKey?: string | null;
+  slug?: string | null;
+  name?: string | null;
+}): ExerciseImageSource {
+  return localExerciseImage(input) ?? EXERCISE_IMAGE_PLACEHOLDER;
 }

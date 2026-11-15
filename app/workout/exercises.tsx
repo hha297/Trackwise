@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { useCallback, useDeferredValue, useMemo, useState, type ReactNode } from 'react';
+import { memo, useCallback, useDeferredValue, useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, FlatList, Platform, Pressable, View } from 'react-native';
 
@@ -22,13 +22,13 @@ import {
   estimateExercisePreviewCalories,
 } from '@/features/workout/calculations';
 import { ExerciseListCard } from '@/features/workout/components/exercise-list-card';
+import { WorkoutFilterChip } from '@/features/workout/components/workout-filter-chip';
 import {
   useExerciseFavorites,
   useExercises,
   useToggleExerciseFavorite,
 } from '@/features/workout/hooks';
 import { useActiveWorkoutStore } from '@/stores/active-workout-store';
-import { radii } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 import type { Exercise, ExerciseDifficulty, ExerciseType } from '@/features/workout/types';
 
@@ -40,34 +40,7 @@ function ItemSeparator() {
   return <View style={{ height: 8 }} />;
 }
 
-function FilterChip({
-  label,
-  selected,
-  onPress,
-}: {
-  label: string;
-  selected: boolean;
-  onPress: () => void;
-}) {
-  const colors = useThemeColors();
-  return (
-    <Pressable
-      onPress={onPress}
-      style={{
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        borderRadius: radii.pill,
-        backgroundColor: selected ? colors.surface : colors.surfaceMuted,
-        borderWidth: selected ? 1.5 : 1,
-        borderColor: selected ? colors.borderStrong : colors.border,
-      }}
-    >
-      <Text variant="caption" tone={selected ? 'primary' : 'secondary'}>
-        {label}
-      </Text>
-    </Pressable>
-  );
-}
+const FilterChip = WorkoutFilterChip;
 
 function FilterSection({
   title,
@@ -85,6 +58,68 @@ function FilterSection({
     </View>
   );
 }
+
+const ExercisePickerRow = memo(function ExercisePickerRow({
+  item,
+  favorite,
+  weightKg,
+  browseMode,
+  onOpen,
+  onPick,
+  onToggle,
+}: {
+  item: Exercise;
+  favorite: boolean;
+  weightKg: number | null;
+  browseMode: boolean;
+  onOpen: (exercise: Exercise) => void;
+  onPick: (exercise: Exercise) => void;
+  onToggle: (exercise: Exercise, favorite: boolean) => void;
+}) {
+  const { t } = useTranslation();
+  const preview = useMemo(
+    () =>
+      weightKg && weightKg > 0
+        ? estimateExercisePreviewCalories({
+            exerciseType: item.exercise_type,
+            metValue: item.met_value,
+            name: item.name,
+            bodyWeightKg: weightKg,
+          })
+        : null,
+    [item.exercise_type, item.met_value, item.name, weightKg],
+  );
+  const onPress = useCallback(() => {
+    if (browseMode) {
+      onOpen(item);
+      return;
+    }
+    try {
+      onPick(item);
+    } catch (error) {
+      Alert.alert(
+        t('workout.saveFailed'),
+        error instanceof Error ? error.message : t('workout.retry'),
+      );
+    }
+  }, [browseMode, item, onOpen, onPick, t]);
+
+  return (
+    <ExerciseListCard
+      exercise={item}
+      favorite={favorite}
+      estimatedKcal={preview?.estimatedCalories ?? null}
+      estimateMinutes={preview?.durationMin ?? EXERCISE_PREVIEW_DURATION_MIN}
+      estimateActivityLabel={
+        preview && preview.evidence !== 'compendium_activity'
+          ? t(`workout.activityClass.${preview.activityLabelKey}`)
+          : null
+      }
+      onToggleFavorite={() => onToggle(item, favorite)}
+      onPress={onPress}
+    />
+  );
+});
 
 function parseCategory(value: string | undefined): CategoryFilter {
   if (value === 'all') return 'all';
@@ -125,9 +160,6 @@ export default function ExercisePickerScreen() {
   const favorites = useExerciseFavorites();
   const toggleFavorite = useToggleExerciseFavorite();
   const weight = useLatestWeight();
-  const startedAt = useActiveWorkoutStore((state) => state.startedAt);
-  const addExercise = useActiveWorkoutStore((state) => state.addExercise);
-  const start = useActiveWorkoutStore((state) => state.start);
   const favoriteIds = useMemo(() => new Set(favorites.data ?? []), [favorites.data]);
 
   const sorted = useMemo(() => {
@@ -173,10 +205,11 @@ export default function ExercisePickerScreen() {
 
   const pickExercise = useCallback(
     (exercise: Exercise) => {
-      if (!startedAt) {
-        start({ name: t('workout.defaultName') });
+      const store = useActiveWorkoutStore.getState();
+      if (!store.startedAt) {
+        store.start({ name: t('workout.defaultName') });
       }
-      addExercise({
+      store.addExercise({
         exerciseId: exercise.id,
         name: exercise.name,
         exerciseType: exercise.exercise_type,
@@ -189,7 +222,7 @@ export default function ExercisePickerScreen() {
       });
       router.replace('/workout/active');
     },
-    [addExercise, start, startedAt, t],
+    [t],
   );
 
   const onToggleFavorite = useCallback(
@@ -203,47 +236,18 @@ export default function ExercisePickerScreen() {
   );
 
   const renderItem = useCallback(
-    ({ item }: { item: Exercise }) => {
-      const fav = favoriteIds.has(item.id);
-      const preview =
-        weight.weightKg && weight.weightKg > 0
-          ? estimateExercisePreviewCalories({
-              exerciseType: item.exercise_type,
-              metValue: item.met_value,
-              name: item.name,
-              bodyWeightKg: weight.weightKg,
-            })
-          : null;
-      return (
-        <ExerciseListCard
-          exercise={item}
-          favorite={fav}
-          estimatedKcal={preview?.estimatedCalories ?? null}
-          estimateMinutes={preview?.durationMin ?? EXERCISE_PREVIEW_DURATION_MIN}
-          estimateActivityLabel={
-            preview && preview.evidence !== 'compendium_activity'
-              ? t(`workout.activityClass.${preview.activityLabelKey}`)
-              : null
-          }
-          onToggleFavorite={() => onToggleFavorite(item, fav)}
-          onPress={() => {
-            if (browseMode) {
-              openExercise(item);
-              return;
-            }
-            try {
-              pickExercise(item);
-            } catch (error) {
-              Alert.alert(
-                t('workout.saveFailed'),
-                error instanceof Error ? error.message : t('workout.retry'),
-              );
-            }
-          }}
-        />
-      );
-    },
-    [browseMode, favoriteIds, onToggleFavorite, openExercise, pickExercise, t, weight.weightKg],
+    ({ item }: { item: Exercise }) => (
+      <ExercisePickerRow
+        item={item}
+        favorite={favoriteIds.has(item.id)}
+        weightKg={weight.weightKg ?? null}
+        browseMode={browseMode}
+        onOpen={openExercise}
+        onPick={pickExercise}
+        onToggle={onToggleFavorite}
+      />
+    ),
+    [browseMode, favoriteIds, onToggleFavorite, openExercise, pickExercise, weight.weightKg],
   );
 
   const listHeader = useMemo(
@@ -251,7 +255,7 @@ export default function ExercisePickerScreen() {
       <View style={{ gap: 14, paddingBottom: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
           <View style={{ flex: 1, minWidth: 0, gap: 4 }}>
-            <Text variant="headingLarge" tone="brand">
+            <Text variant="headingLarge">
               {browseMode ? t('workout.exerciseLibrary') : t('workout.addExercise')}
             </Text>
             <Text variant="bodySmall" tone="secondary">
@@ -259,7 +263,7 @@ export default function ExercisePickerScreen() {
             </Text>
           </View>
           <Pressable onPress={() => router.back()} hitSlop={8}>
-            <Text variant="bodyStrong" tone="brand">
+            <Text variant="bodyStrong" tone="secondary">
               {t('workout.done')}
             </Text>
           </Pressable>
@@ -394,10 +398,11 @@ export default function ExercisePickerScreen() {
         className="flex-1"
         data={sorted}
         keyExtractor={(item) => item.id}
-        initialNumToRender={10}
+        initialNumToRender={8}
         windowSize={5}
         maxToRenderPerBatch={6}
         updateCellsBatchingPeriod={50}
+        extraData={favorites.data}
         removeClippedSubviews={Platform.OS === 'android'}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { Select } from '@/components/ui/select';
 import { Text } from '@/components/ui/text';
@@ -8,27 +9,14 @@ import { useSetup } from '@/features/setup/setup-provider';
 import { SetupShell } from '@/features/setup/setup-shell';
 import { useThemeColors } from '@/theme/theme-provider';
 
-const PATTERNS = [
-  { value: 'none', label: 'No specific pattern' },
-  { value: 'vegetarian', label: 'Vegetarian' },
-  { value: 'vegan', label: 'Vegan' },
-  { value: 'high_protein', label: 'High protein focus' },
-];
-
-const MEAL_OPTIONS = [
-  { value: '1', label: '1 meal / day' },
-  { value: '2', label: '2 meals / day' },
-  { value: '3', label: '3 meals / day' },
-  { value: '4', label: '4 meals / day' },
-  { value: '5', label: '5 meals / day' },
-  { value: '6', label: '6+ meals / day' },
-];
+const PATTERN_VALUES = ['none', 'vegetarian', 'vegan', 'high_protein'] as const;
 
 /**
  * Optional preferences. Allergies / “foods to avoid” are deferred until food
  * filtering exists in the diary — we don’t collect data we can’t use yet.
  */
 export function DietaryStep() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const { answers, progress, goNext, goBack, saving, error } = useSetup();
   const [pattern, setPattern] = useState<string | null>(answers.dietaryPattern);
@@ -36,14 +24,25 @@ export function DietaryStep() {
     answers.mealsPerDay != null ? String(Math.min(6, answers.mealsPerDay)) : null,
   );
 
+  const mealOptions = useMemo(
+    () => [
+      ...[1, 2, 3, 4, 5].map((count) => ({
+        value: String(count),
+        label: t('setup.dietary.mealsCount', { count }),
+      })),
+      { value: '6', label: t('setup.dietary.mealsSixPlus') },
+    ],
+    [t],
+  );
+
   return (
     <SetupShell
-      title="Dietary preferences"
-      subtitle="Optional — skip anytime. We only ask what Trackwise can use today."
+      title={t('setup.dietary.title')}
+      subtitle={t('setup.dietary.subtitle')}
       stepIndex={progress.index}
       stepTotal={progress.total}
       onBack={() => void goBack()}
-      continueLabel="Continue"
+      continueLabel={t('setup.continue')}
       continueDisabled={saving}
       continueLoading={saving}
       onContinue={() => {
@@ -61,32 +60,39 @@ export function DietaryStep() {
             void goNext({ dietaryPattern: null, mealsPerDay: null });
           }}
         >
-          Skip for now
+          {t('setup.dietary.skip')}
         </Text>
       }
     >
       <View className="gap-3">
         <Text variant="label" tone="secondary">
-          Eating pattern (optional)
+          {t('setup.dietary.patternLabel')}
         </Text>
-        {PATTERNS.map((option) => (
+        {PATTERN_VALUES.map((value) => (
           <SelectionCard
-            key={option.value}
-            label={option.label}
-            selected={pattern === option.value}
-            onPress={() => setPattern(option.value)}
+            key={value}
+            label={t(
+              value === 'none'
+                ? 'setup.dietary.none'
+                : value === 'vegetarian'
+                  ? 'setup.dietary.vegetarian'
+                  : value === 'vegan'
+                    ? 'setup.dietary.vegan'
+                    : 'setup.dietary.highProtein',
+            )}
+            selected={pattern === value}
+            onPress={() => setPattern(value)}
           />
         ))}
         <Select
-          label="Typical meals per day (optional)"
+          label={t('setup.dietary.mealsLabel')}
           value={meals}
-          options={MEAL_OPTIONS}
-          placeholder="Select if you want"
+          options={mealOptions}
+          placeholder={t('setup.dietary.mealsPlaceholder')}
           onChange={setMeals}
         />
         <Text variant="caption" tone="muted">
-          Allergy and “foods to avoid” lists will arrive when food filtering ships — not collected
-          here.
+          {t('setup.dietary.allergyNote')}
         </Text>
         {error ? (
           <Text variant="caption" tone="error">

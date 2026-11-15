@@ -25,6 +25,8 @@ Local `config.toml` already sets `enable_confirmations = true`, `otp_length = 8`
 
 Auth uses Supabase Auth only for password hashing. The mobile client never stores or hashes passwords.
 
+Phase 1 adds `planned_workouts` (template on a local calendar day, or a rest/recovery day) and `hydration_entries` / `hydration_targets` (millilitres, grouped by the diary date). Personal records and progression are calculated from completed `workout_sets`; they are not a separate table. Apply `20261112223000_phase1_planner_hydration.sql` before using the week plan or water log. The migration is not applied to hosted production from the app repo automatically.
+
 When a user-owned table is added:
 
 1. Add a SQL migration in `migrations/`.

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { Text } from '@/components/ui/text';
 import { estimatePlan } from '@/features/setup/calculations';
@@ -49,6 +50,7 @@ function StatTile({
  * No recalculate / edit-earlier (use Back). Daily calories & macros locked.
  */
 export function SummaryStep() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const { answers, progress, goBack, finish, completing, error } = useSetup();
   const [busy, setBusy] = useState(false);
@@ -95,28 +97,50 @@ export function SummaryStep() {
 
   const goalLabel =
     answers.goalType === 'lose_weight'
-      ? 'Lose weight / cut'
+      ? t('setup.summary.goalLose')
       : answers.goalType === 'gain_weight'
-        ? 'Gain weight / bulk'
-        : 'Maintain weight';
+        ? t('setup.summary.goalGain')
+        : t('setup.summary.goalMaintain');
+
+  const exerciseTypeKey =
+    answers.exerciseType === 'strength'
+      ? 'setup.summary.typeStrength'
+      : answers.exerciseType === 'cardio'
+        ? 'setup.summary.typeCardio'
+        : answers.exerciseType === 'sports'
+          ? 'setup.summary.typeSports'
+          : answers.exerciseType === 'mixed'
+            ? 'setup.summary.typeMixed'
+            : answers.exerciseType === 'other'
+              ? 'setup.summary.typeOther'
+              : null;
 
   const exerciseLabel =
     answers.sessionsPerWeek === 0 || answers.exerciseType === 'none'
-      ? 'No structured sessions'
+      ? t('setup.summary.exerciseNone')
       : answers.exerciseType === 'other' && answers.exerciseTypeOther
         ? answers.exerciseTypeOther
-        : answers.exerciseType
-          ? answers.exerciseType.replace('_', ' ')
+        : exerciseTypeKey
+          ? t(exerciseTypeKey)
           : '—';
+
+  const explanation =
+    plan == null
+      ? null
+      : !plan.canAutoEstimate
+        ? plan.usedManualCalories && calories >= 1200
+          ? t('setup.summary.explanationManual')
+          : t('setup.summary.explanationNeedManual')
+        : t('setup.summary.explanationAuto');
 
   return (
     <SetupShell
-      title="Your plan"
-      subtitle="Here’s your starting estimate from the answers you gave. Use Back if something looks off."
+      title={t('setup.summary.title')}
+      subtitle={t('setup.summary.subtitle')}
       stepIndex={progress.index}
       stepTotal={progress.total}
       onBack={() => void goBack()}
-      continueLabel="Start using Trackwise"
+      continueLabel={t('setup.summary.start')}
       continueDisabled={completing || busy || !plan || calories < 1200}
       continueLoading={completing || busy}
       onContinue={() => {
@@ -135,11 +159,11 @@ export function SummaryStep() {
           ]}
         >
           <Text variant="label" tone="muted">
-            Profile & goal
+            {t('setup.summary.profileGoal')}
           </Text>
           <Text variant="bodyStrong" style={{ color: colors.textPrimary }}>
             {goalLabel}
-            {answers.ageYears != null ? ` · age ${answers.ageYears}` : ''}
+            {answers.ageYears != null ? ` · ${t('setup.summary.age', { years: answers.ageYears })}` : ''}
           </Text>
           <Text variant="bodySmall" tone="muted">
             {answers.heightCm != null ? formatHeight(answers.heightCm, answers.units) : '—'}
@@ -150,46 +174,49 @@ export function SummaryStep() {
               : ''}
           </Text>
           <Text variant="bodySmall" tone="muted">
-            Exercise: {exerciseLabel}
+            {t('setup.summary.exercise', { label: exerciseLabel })}
             {answers.sessionsPerWeek != null && answers.sessionsPerWeek > 0
-              ? ` · ${answers.sessionsPerWeek}/week`
+              ? ` · ${t('setup.summary.perWeek', { count: answers.sessionsPerWeek })}`
               : ''}
           </Text>
         </View>
 
         {plan?.tdee != null ? (
           <Text variant="bodySmall" tone="muted">
-            Estimated maintenance: {plan.tdee} kcal/day
-            {plan.bmr != null ? ` (BMR ~${plan.bmr})` : ''}
+            {t('setup.summary.maintenance', { tdee: plan.tdee })}
+            {plan.bmr != null ? t('setup.summary.bmr', { bmr: plan.bmr }) : ''}
           </Text>
         ) : null}
 
         <View style={styles.statsGrid}>
           <View style={styles.statWide}>
-            <StatTile label="Daily calories" value={calories} unit="kcal" />
+            <StatTile label={t('setup.summary.dailyCalories')} value={calories} unit="kcal" />
           </View>
-          <StatTile label="Protein" value={protein} unit="g" />
-          <StatTile label="Carbs" value={carbs} unit="g" />
-          <StatTile label="Fat" value={fat} unit="g" />
+          <StatTile label={t('setup.summary.protein')} value={protein} unit="g" />
+          <StatTile label={t('setup.summary.carbs')} value={carbs} unit="g" />
+          <StatTile label={t('setup.summary.fat')} value={fat} unit="g" />
         </View>
 
         {plan && plan.weeklyChangeKg !== 0 ? (
           <Text variant="bodySmall" tone="muted">
-            Weekly change: {plan.weeklyChangeKg > 0 ? '+' : ''}
-            {plan.weeklyChangeKg} kg
-            {plan.estimatedWeeks != null ? ` · ~${plan.estimatedWeeks} weeks (estimate)` : ''}
+            {t('setup.summary.weeklyChange', {
+              sign: plan.weeklyChangeKg > 0 ? '+' : '',
+              kg: plan.weeklyChangeKg,
+            })}
+            {plan.estimatedWeeks != null
+              ? t('setup.summary.weeksEstimate', { weeks: plan.estimatedWeeks })
+              : ''}
           </Text>
         ) : null}
 
-        {plan?.explanation ? (
+        {explanation ? (
           <Text variant="caption" tone="muted">
-            {plan.explanation}
+            {explanation}
           </Text>
         ) : null}
 
         <Text variant="caption" tone="muted">
-          Targets are locked to Trackwise’s estimate for a consistent start. You can adjust goals later
-          from Account once you’re in the app.
+          {t('setup.summary.lockedNote')}
         </Text>
 
         {error ? (

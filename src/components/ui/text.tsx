@@ -13,12 +13,13 @@ const variantClass = {
   bodyStrong: 'text-body',
   bodySmall: 'text-bodySmall',
   caption: 'text-caption',
+  fine: 'text-fine',
   label: 'text-label',
   button: 'text-button',
   metric: 'text-metric',
 } as const;
 
-/** Replicate-inspired stack: Bricolage display, Geist body, JetBrains metrics. */
+/** Trackwise stack: Bricolage display + body, JetBrains metrics. */
 const variantFont: Record<keyof typeof variantClass, TextStyle> = {
   display: {
     fontFamily: fonts.displayExtraBold,
@@ -40,6 +41,7 @@ const variantFont: Record<keyof typeof variantClass, TextStyle> = {
   bodyStrong: { fontFamily: fonts.bodySemiBold },
   bodySmall: { fontFamily: fonts.bodyRegular },
   caption: { fontFamily: fonts.bodyMedium },
+  fine: { fontFamily: fonts.bodyMedium },
   label: { fontFamily: fonts.bodySemiBold },
   button: { fontFamily: fonts.bodySemiBold },
   metric: { fontFamily: fonts.monoSemiBold },

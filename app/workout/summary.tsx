@@ -1,5 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { View } from 'react-native';
+import { useMemo } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
@@ -7,11 +8,17 @@ import { Card } from '@/components/ui/card';
 import { Screen } from '@/components/ui/screen';
 import { Text } from '@/components/ui/text';
 import { useWorkoutDetail } from '@/features/workout/hooks';
+import { formatWorkoutDay, resolveWorkoutName } from '@/features/workout/session-display';
+import { fonts } from '@/theme/fonts';
+import { spacing } from '@/theme';
+import { useThemeColors } from '@/theme/theme-provider';
 
 export default function WorkoutSummaryScreen() {
   const { t } = useTranslation();
+  const colors = useThemeColors();
   const params = useLocalSearchParams<{
     id?: string;
+    prs?: string;
     estimated?: string;
     volume?: string;
     durationMin?: string;
@@ -24,87 +31,91 @@ export default function WorkoutSummaryScreen() {
     params.durationMin ?? Math.round((detail.data?.active_duration_sec ?? 0) / 60) ?? 0,
   );
   const volume = Number(params.volume ?? 0);
-  const intensity =
-    params.intensity === 'light' ||
-    params.intensity === 'moderate' ||
-    params.intensity === 'vigorous'
-      ? params.intensity
-      : null;
+  const personalRecords = useMemo(() => {
+    if (!params.prs) return [];
+    try {
+      const parsed = JSON.parse(params.prs) as {
+        exerciseName: string;
+        kind: string;
+        value: number;
+        previous: number | null;
+      }[];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }, [params.prs]);
   const exerciseCount = detail.data?.exercises.length ?? 0;
   const setCount =
     detail.data?.exercises.reduce((sum, exercise) => sum + exercise.sets.length, 0) ?? 0;
 
   return (
     <Screen scroll edges={['top', 'bottom', 'left', 'right']}>
-      <View className="gap-4">
-        <Text variant="headingLarge">{t('workout.summaryTitle')}</Text>
-        <Text variant="bodySmall" tone="secondary">
-          {t('workout.summarySubtitle')}
-        </Text>
+      <View style={{ gap: spacing[4] }}>
+        <View style={{ gap: spacing[1] }}>
+          <Text variant="headingLarge">{t('workout.summaryTitle')}</Text>
+          <Text variant="bodySmall" tone="secondary">
+            {t('workout.summarySubtitle')}
+          </Text>
+        </View>
 
-        <Card className="gap-2">
-          <Text variant="headingSmall">{detail.data?.name ?? t('workout.defaultName')}</Text>
+        <Card style={{ gap: spacing[3], alignItems: 'center', paddingVertical: spacing[5] }}>
+          <Text variant="headingSmall" style={{ textAlign: 'center' }} numberOfLines={2}>
+            {resolveWorkoutName(detail.data?.name, t('workout.defaultName'))}
+          </Text>
+          {detail.data?.started_at ? (
+            <Text variant="caption" tone="secondary">
+              {formatWorkoutDay(detail.data.started_at)}
+            </Text>
+          ) : null}
+          <Text
+            tone="brand"
+            style={{ fontFamily: fonts.monoBold, fontSize: 44, lineHeight: 50 }}
+          >
+            {Math.round(estimated)}
+          </Text>
           <Text variant="label" tone="secondary">
             {t('workout.estimatedActiveCalories')}
           </Text>
-          <Text variant="headingLarge" tone="brand">
-            {t('workout.summaryCalories', { value: Math.round(estimated) })}
-          </Text>
-          <Text variant="caption" tone="secondary">
-            {intensity
-              ? t('workout.caloriesEstimateMetaIntensity', {
-                  minutes: durationMin,
-                  intensity: t(`workout.intensity.${intensity}`),
-                })
-              : t('workout.caloriesEstimateMeta', { minutes: durationMin })}
-          </Text>
-          <Text variant="caption" tone="muted">
+          <Text variant="caption" tone="muted" style={{ textAlign: 'center' }}>
             {t('workout.sessionCaloriesSumNote')}
-          </Text>
-          <Text variant="body">{t('workout.summaryDuration', { value: durationMin })}</Text>
-          <Text variant="body">{t('workout.summaryVolume', { value: volume })}</Text>
-          <Text variant="body">
-            {t('workout.summaryCounts', { exercises: exerciseCount, sets: setCount })}
           </Text>
         </Card>
 
-        {detail.data?.exercises?.length ? (
-          <Card className="gap-2">
+        <Card style={{ gap: 0, paddingVertical: 0, paddingHorizontal: 0, overflow: 'hidden' }}>
+          <SummaryStat
+            label={t('workout.summaryDuration', { value: durationMin })}
+            borderColor={colors.border}
+          />
+          <SummaryStat
+            label={t('workout.summaryVolume', { value: volume })}
+            borderColor={colors.border}
+          />
+          <SummaryStat
+            label={t('workout.summaryCounts', { exercises: exerciseCount, sets: setCount })}
+            last
+          />
+        </Card>
+
+        {personalRecords.length ? (
+          <Card style={{ gap: spacing[2] }}>
             <Text variant="label" tone="secondary">
-              {t('workout.perExerciseCalories')}
+              {t('phase1.prTitle')}
             </Text>
-            {detail.data.exercises.map((exercise) => (
-              <View
-                key={exercise.id}
-                className="flex-row items-center justify-between gap-3"
-              >
-                <View className="min-w-0 flex-1 gap-0.5">
-                  <Text variant="bodyStrong" numberOfLines={1}>
-                    {exercise.exercise_name}
-                  </Text>
-                  <Text variant="caption" tone="muted">
-                    {exercise.estimate_method === 'allocated'
-                      ? t('workout.estimateMethodAllocated')
-                      : t('workout.estimateMethodDirect')}
-                  </Text>
-                </View>
-                <Text variant="bodyStrong" tone="brand">
-                  {t('workout.summaryCalories', {
-                    value: Math.round(Number(exercise.estimated_calories ?? 0)),
-                  })}
-                </Text>
-              </View>
+            {personalRecords.map((record, index) => (
+              <Text key={`${record.exerciseName}-${record.kind}-${index}`} variant="bodyStrong">
+                {t('phase1.prLine', {
+                  name: record.exerciseName,
+                  kind: t(`phase1.kindLabel.${record.kind}`),
+                  value: record.value,
+                })}
+              </Text>
             ))}
           </Card>
         ) : null}
 
         <Button
-          label={t('workout.backToDiary')}
-          onPress={() => router.replace('/')}
-        />
-        <Button
           label={t('workout.viewHistory')}
-          variant="secondary"
           onPress={() => {
             if (params.id) {
               router.replace({ pathname: '/workout/[id]', params: { id: params.id } });
@@ -113,7 +124,35 @@ export default function WorkoutSummaryScreen() {
             }
           }}
         />
+        <Button
+          label={t('workout.backToWorkouts')}
+          variant="secondary"
+          onPress={() => router.replace('/(tabs)/workout')}
+        />
       </View>
     </Screen>
+  );
+}
+
+function SummaryStat({
+  label,
+  borderColor,
+  last = false,
+}: {
+  label: string;
+  borderColor?: string;
+  last?: boolean;
+}) {
+  return (
+    <View
+      style={{
+        paddingHorizontal: spacing[4],
+        paddingVertical: spacing[3],
+        borderBottomWidth: last ? 0 : StyleSheet.hairlineWidth,
+        borderBottomColor: borderColor,
+      }}
+    >
+      <Text variant="body">{label}</Text>
+    </View>
   );
 }

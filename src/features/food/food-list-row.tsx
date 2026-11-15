@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
 import { Plus } from 'lucide-react-native';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
@@ -15,6 +16,8 @@ type FoodListRowProps = {
   name: string;
   brand?: string | null;
   imageUrl?: string | null;
+  /** Provider / origin label, e.g. "FatSecret" */
+  sourceLabel?: string | null;
   /** Secondary line, e.g. "480 kcal · 400 g" */
   detail: string;
   onPress: () => void;
@@ -29,23 +32,27 @@ export function FoodListRow({
   name,
   brand,
   imageUrl,
+  sourceLabel,
   detail,
   onPress,
   showDivider = true,
   disabled = false,
   loading = false,
 }: FoodListRowProps) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const [imageFailed, setImageFailed] = useState(false);
   const initial = (name.trim().charAt(0) || '?').toUpperCase();
   const isDisabled = disabled || loading;
-  const subtitle = brand?.trim() ? `${brand.trim()} · ${detail}` : detail;
+  const subtitle = [sourceLabel?.trim(), brand?.trim(), detail]
+    .filter(Boolean)
+    .join(' · ');
   const showImage = Boolean(imageUrl) && !imageFailed;
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`Add ${name}`}
+      accessibilityLabel={t('food.add.addFoodA11y', { name })}
       accessibilityState={{ disabled: isDisabled, busy: loading }}
       disabled={isDisabled}
       onPress={onPress}
@@ -117,6 +124,7 @@ export function FoodListRow({
 export function formatFoodNutritionDetail(input: {
   calories?: number | null;
   servingLabel?: string | null;
+  unavailableLabel?: string;
 }): string {
   const parts: string[] = [];
   if (input.calories != null && Number.isFinite(input.calories)) {
@@ -124,7 +132,28 @@ export function formatFoodNutritionDetail(input: {
   }
   const serving = input.servingLabel?.trim();
   if (serving) parts.push(serving);
-  return parts.length > 0 ? parts.join(' · ') : 'Nutrition unavailable';
+  return parts.length > 0 ? parts.join(' · ') : (input.unavailableLabel ?? 'Nutrition unavailable');
+}
+
+/** Localized short label for a foods.source / provider id. */
+export function formatFoodSourceLabel(
+  source: string | null | undefined,
+  t: (key: string) => string,
+): string | null {
+  const key = (source ?? '').trim().toLowerCase();
+  if (!key || key === 'local') return null;
+  switch (key) {
+    case 'fatsecret':
+      return t('food.add.source.fatsecret');
+    case 'usda':
+      return t('food.add.source.usda');
+    case 'open_food_facts':
+      return t('food.add.source.openFoodFacts');
+    case 'manual':
+      return t('food.add.source.manual');
+    default:
+      return null;
+  }
 }
 
 const styles = StyleSheet.create({

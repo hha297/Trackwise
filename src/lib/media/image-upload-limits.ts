@@ -63,7 +63,9 @@ export function validateUserImageSelection(input: {
 }): SelectedUserImage {
   const uri = input.uri.trim();
   if (!uri) {
-    throw new Error(input.emptyUriMessage ?? 'Could not read the selected image. Try another photo.');
+    throw new Error(
+      input.emptyUriMessage ?? 'Could not read the selected image. Try another photo.',
+    );
   }
 
   const mimeType = normalizeUserImageMimeType(input.mimeType, uri);

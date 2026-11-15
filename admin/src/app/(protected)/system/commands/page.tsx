@@ -13,11 +13,6 @@ const commands = [
     command: 'npx supabase migration up',
   },
   {
-    title: 'Sync system exercises',
-    body: 'Push rich coaching copy + local exercise images into Storage/DB.',
-    command: 'npm run sync:exercises',
-  },
-  {
     title: 'Bootstrap first admin',
     body: 'SQL Editor / postgres only. Fails if an admin already exists.',
     command: "select public.admin_bootstrap_grant('<user-uuid>');",

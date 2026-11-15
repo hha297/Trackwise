@@ -13,11 +13,14 @@ import {
 import {
   Beef,
   CalendarDays,
+  Candy,
   ChevronLeft,
   ChevronRight,
   Droplets,
   Flame,
+  Leaf,
   PackageOpen,
+  Waves,
   Wheat,
   X,
 } from 'lucide-react-native';
@@ -83,8 +86,11 @@ export type ScanSaveInput = {
   };
 };
 
+export type ScanResultPurpose = 'diary' | 'recipe-ingredient';
+
 type Props = {
   result: ScanModalResult | null;
+  purpose?: ScanResultPurpose;
   initialDateKey: string;
   initialMealType: MealType | null;
   onClose: () => void;
@@ -97,6 +103,7 @@ const mealTypes: MealType[] = ['breakfast', 'lunch', 'dinner', 'snacks'];
 
 export function ScanResultModal({
   result,
+  purpose = 'diary',
   initialDateKey,
   initialMealType,
   onClose,
@@ -142,6 +149,7 @@ export function ScanResultModal({
     sugarsG: manual ? null : (food?.sugarsG ?? null),
     saturatedFatG: manual ? null : (food?.saturatedFatG ?? null),
     sodiumMg: manual ? null : (food?.sodiumMg ?? null),
+    saltG: manual ? null : (food?.saltG ?? null),
   };
   const parsedAmount = parsePositiveAmount(amount);
   const totals = (() => {
@@ -162,8 +170,14 @@ export function ScanResultModal({
     (value) => value !== null,
   );
   const nutritionUserEdited = manual;
+  const forIngredient = purpose === 'recipe-ingredient';
   const canSave = Boolean(
-    name.trim() && mealType && parsedAmount && totals && nutritionComplete && !saving,
+    name.trim() &&
+      (forIngredient || mealType) &&
+      parsedAmount &&
+      totals &&
+      nutritionComplete &&
+      !saving,
   );
 
   const enterManual = () => {
@@ -180,7 +194,8 @@ export function ScanResultModal({
   };
 
   const save = async () => {
-    if (!result || !parsedAmount || !mealType || !totals || !nutritionComplete) return;
+    if (!result || !parsedAmount || !totals || !nutritionComplete) return;
+    if (!forIngredient && !mealType) return;
     setSaving(true);
     setSaveError(null);
     try {
@@ -191,7 +206,7 @@ export function ScanResultModal({
         source: manual ? 'manual' : 'open_food_facts',
         imageUrl: manual ? null : (food?.imageUrl ?? null),
         dateKey,
-        mealType,
+        mealType: mealType ?? 'snacks',
         amount: parsedAmount,
         amountUnit,
         nutritionBasis: basis.kind,
@@ -359,12 +374,14 @@ export function ScanResultModal({
                   onUnit={setAmountUnit}
                   totals={totals}
                 />
-                <FoodLogContextPicker
-                  dateKey={dateKey}
-                  mealType={mealType}
-                  onDate={setDateKey}
-                  onMeal={setMealType}
-                />
+                {forIngredient ? null : (
+                  <FoodLogContextPicker
+                    dateKey={dateKey}
+                    mealType={mealType}
+                    onDate={setDateKey}
+                    onMeal={setMealType}
+                  />
+                )}
 
                 {!nutritionComplete ? (
                   <Text variant="bodySmall" tone="error">
@@ -377,7 +394,13 @@ export function ScanResultModal({
                   </Text>
                 ) : null}
                 <Button
-                  label={t('scan.saveLog')}
+                  label={
+                    forIngredient
+                      ? saving
+                        ? t('recipes.addingIngredient')
+                        : t('recipes.addIngredientCta')
+                      : t('scan.saveLog')
+                  }
                   size="lg"
                   disabled={!canSave}
                   loading={saving}
@@ -450,15 +473,12 @@ function ProductHeader({
           </Text>
         </View>
       </View>
-      {[food.fiberG, food.sugarsG, food.saltG].some((value) => value !== null) ? (
-        <Text variant="caption" tone="secondary">
-          {t('scan.extraNutrition', {
-            fiber: displayNutrient(food.fiberG),
-            sugars: displayNutrient(food.sugarsG),
-            salt: displayNutrient(food.saltG),
-          })}
-        </Text>
-      ) : null}
+      <ExtraNutritionChips
+        t={t}
+        fiberG={food.fiberG}
+        sugarsG={food.sugarsG}
+        saltG={food.saltG}
+      />
     </Card>
   );
 }
@@ -680,8 +700,111 @@ function AmountCard({
           value={totals?.fatG ?? null}
           unit="g"
         />
+        {totals?.fiberG != null ? (
+          <TotalCell
+            icon={<Leaf size={18} color={colors.macroFiber} />}
+            color={colors.macroFiber}
+            label={t('scan.fiber')}
+            value={totals.fiberG}
+            unit="g"
+          />
+        ) : null}
+        {totals?.sugarsG != null ? (
+          <TotalCell
+            icon={<Candy size={18} color={colors.macroSugars} />}
+            color={colors.macroSugars}
+            label={t('scan.sugars')}
+            value={totals.sugarsG}
+            unit="g"
+          />
+        ) : null}
+        {totals?.saltG != null ? (
+          <TotalCell
+            icon={<Waves size={18} color={colors.macroSalt} />}
+            color={colors.macroSalt}
+            label={t('scan.salt')}
+            value={totals.saltG}
+            unit="g"
+          />
+        ) : null}
       </View>
     </Card>
+  );
+}
+
+function ExtraNutritionChips({
+  t,
+  fiberG,
+  sugarsG,
+  saltG,
+}: {
+  t: T;
+  fiberG: number | null;
+  sugarsG: number | null;
+  saltG: number | null;
+}) {
+  const colors = useThemeColors();
+  const items = [
+    fiberG != null
+      ? {
+          key: 'fiber',
+          label: t('scan.fiber'),
+          value: fiberG,
+          color: colors.macroFiber,
+          icon: <Leaf size={16} color={colors.macroFiber} strokeWidth={2.2} />,
+        }
+      : null,
+    sugarsG != null
+      ? {
+          key: 'sugars',
+          label: t('scan.sugars'),
+          value: sugarsG,
+          color: colors.macroSugars,
+          icon: <Candy size={16} color={colors.macroSugars} strokeWidth={2.2} />,
+        }
+      : null,
+    saltG != null
+      ? {
+          key: 'salt',
+          label: t('scan.salt'),
+          value: saltG,
+          color: colors.macroSalt,
+          icon: <Waves size={16} color={colors.macroSalt} strokeWidth={2.2} />,
+        }
+      : null,
+  ].filter(Boolean) as Array<{
+    key: string;
+    label: string;
+    value: number;
+    color: string;
+    icon: ReactNode;
+  }>;
+
+  if (items.length === 0) return null;
+
+  return (
+    <View style={styles.extraGrid}>
+      {items.map((item) => (
+        <View
+          key={item.key}
+          style={[styles.extraChip, { backgroundColor: colors.surfaceMuted }]}
+        >
+          <View
+            style={[styles.extraIcon, { backgroundColor: withAlpha(item.color, 0.14) }]}
+          >
+            {item.icon}
+          </View>
+          <View className="min-w-0 flex-1 gap-0.5">
+            <Text variant="caption" tone="secondary" numberOfLines={1}>
+              {item.label}
+            </Text>
+            <Text variant="bodySmall" numberOfLines={1} style={{ color: item.color }}>
+              {formatNumber(item.value)} g
+            </Text>
+          </View>
+        </View>
+      ))}
+    </View>
   );
 }
 
@@ -707,12 +830,14 @@ function TotalCell({
       ]}
     >
       <View className="flex-row items-center gap-2">
-        {icon}
+        <View style={[styles.totalIcon, { backgroundColor: withAlpha(color, 0.14) }]}>
+          {icon}
+        </View>
         <Text variant="caption" tone="secondary">
           {label}
         </Text>
       </View>
-      <Text variant="bodyStrong" style={{ color: colors.textPrimary }}>
+      <Text variant="bodyStrong" style={{ color }}>
         {value === null ? '—' : `${formatNumber(value)} ${unit}`}
       </Text>
     </View>
@@ -733,10 +858,8 @@ export function FoodLogContextPicker({
   const colors = useThemeColors();
   const { t, i18n } = useTranslation();
   const appLanguage = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0];
-  // Scan copy is currently localized in Vietnamese and English. FI/SV scan copy still
-  // falls back to English, so its calendar must stay English instead of leaking the
-  // device's Finnish/Swedish date labels into an otherwise English modal.
-  const locale = appLanguage === 'vi' ? 'vi' : 'en';
+  const locale =
+    appLanguage === 'vi' || appLanguage === 'fi' || appLanguage === 'sv' ? appLanguage : 'en';
   const selectedDate = parseDiaryDateKey(dateKey);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [visibleMonth, setVisibleMonth] = useState(startOfMonth(selectedDate));
@@ -1021,9 +1144,6 @@ function parseNonNegative(value: string) {
 function formatNumber(value: number) {
   return new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }).format(value);
 }
-function displayNutrient(value: number | null) {
-  return value === null ? '—' : `${formatNumber(value)} g`;
-}
 function basisLabel(basis: NutritionBasis, t: T) {
   return basis.kind === 'per100'
     ? t('scan.per100', { unit: basis.unit })
@@ -1086,7 +1206,32 @@ const styles = StyleSheet.create({
   segment: { flex: 1, alignItems: 'center', justifyContent: 'center', borderRadius: radii.pill },
   segmentActive: { borderWidth: 0 },
   totalGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  totalCell: { width: '48%', gap: 2, borderWidth: 0, borderRadius: radii.md, padding: 10 },
+  totalCell: { width: '48%', gap: 6, borderWidth: 0, borderRadius: radii.md, padding: 10 },
+  totalIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: radii.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  extraGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  extraChip: {
+    width: '31%',
+    flexGrow: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    borderRadius: radii.md,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+  },
+  extraIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: radii.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   nutritionField: {
     flexDirection: 'row',
     alignItems: 'center',

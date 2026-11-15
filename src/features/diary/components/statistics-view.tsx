@@ -186,11 +186,14 @@ export function StatisticsView({
               onPress={() => setMode(item)}
               className="flex-1 items-center py-2.5"
               style={{
-                backgroundColor: selected ? colors.surface : 'transparent',
-                borderRadius: radii.md,
+                backgroundColor: selected ? colors.primary : 'transparent',
+                borderRadius: radii.lg,
               }}
             >
-              <Text variant="label" tone={selected ? 'brand' : 'secondary'}>
+              <Text
+                variant="label"
+                style={{ color: selected ? colors.textOnPrimary : colors.textSecondary }}
+              >
                 {t(`diary.stats.${item}`)}
               </Text>
             </Pressable>

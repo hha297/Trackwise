@@ -39,7 +39,7 @@ export function formatEquipmentLabel(equipment: string | null | undefined, t: TF
   const key = equipment.trim().toLowerCase();
   const translated = t(`workout.equipment.${key}`, { defaultValue: '' });
   if (translated) return translated;
-  return titleCaseWords(key);
+  return equipment.trim();
 }
 
 export function formatMovementPattern(

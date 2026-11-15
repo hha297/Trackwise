@@ -9,6 +9,8 @@ export type NullableNutrition = {
   sugarsG?: number | null;
   saturatedFatG?: number | null;
   sodiumMg?: number | null;
+  /** Open Food Facts salt (g); distinct from sodium mg. */
+  saltG?: number | null;
 };
 
 export function parsePositiveAmount(value: string) {
@@ -62,6 +64,7 @@ export function scaleNutritionForAmount(
     sugarsG: scaleNullable(nutrition.sugarsG ?? null, factor),
     saturatedFatG: scaleNullable(nutrition.saturatedFatG ?? null, factor),
     sodiumMg: scaleNullable(nutrition.sodiumMg ?? null, factor),
+    saltG: scaleNullable(nutrition.saltG ?? null, factor),
   };
 }
 
@@ -90,6 +93,7 @@ export function rescaleLoggedNutrition<T extends NullableNutrition>(
     sugarsG: scale(nutrition.sugarsG),
     saturatedFatG: scale(nutrition.saturatedFatG),
     sodiumMg: scale(nutrition.sodiumMg),
+    saltG: scale(nutrition.saltG),
   };
 }
 

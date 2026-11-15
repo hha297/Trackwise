@@ -8,6 +8,8 @@ import {
   EXERCISE_IMAGE_PLACEHOLDER,
   resolveExerciseImage,
 } from '@/features/workout/catalog/exercise-images';
+import { formatEquipmentLabel } from '@/features/workout/exercise-display';
+import { localizedTemplateNote } from '@/features/workout/template-i18n';
 import type { WorkoutTemplateExercise } from '@/features/workout/types';
 import { radii } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
@@ -17,6 +19,8 @@ type TemplateExerciseRowProps = {
   index?: number;
   showImage?: boolean;
   onPress?: () => void;
+  /** System templates localize known coaching notes. Custom notes stay as written. */
+  isSystem?: boolean;
 };
 
 function formatPlan(
@@ -43,6 +47,7 @@ export function TemplateExerciseRow({
   index,
   showImage = true,
   onPress,
+  isSystem = false,
 }: TemplateExerciseRowProps) {
   const { t } = useTranslation();
   const colors = useThemeColors();
@@ -122,16 +127,18 @@ export function TemplateExerciseRow({
         {muscleLabel ? (
           <Text variant="caption" tone="muted" numberOfLines={1}>
             {muscleLabel}
-            {exercise.equipment ? ` · ${exercise.equipment}` : ''}
+            {exercise.equipment
+              ? ` · ${formatEquipmentLabel(exercise.equipment, t)}`
+              : ''}
           </Text>
         ) : exercise.equipment ? (
           <Text variant="caption" tone="muted" numberOfLines={1}>
-            {exercise.equipment}
+            {formatEquipmentLabel(exercise.equipment, t)}
           </Text>
         ) : null}
         {exercise.notes ? (
           <Text variant="caption" tone="muted" numberOfLines={2}>
-            {exercise.notes}
+            {localizedTemplateNote(t, exercise.notes, { isSystem })}
           </Text>
         ) : null}
       </View>

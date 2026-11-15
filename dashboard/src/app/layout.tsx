@@ -1,7 +1,6 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
 import { Bricolage_Grotesque, JetBrains_Mono } from 'next/font/google';
-import { GeistSans } from 'geist/font/sans';
 
 import { SiteShell } from '@/components/layout/site-shell';
 import { siteConfig } from '@/config/site';
@@ -9,10 +8,10 @@ import { createPageMetadata } from '@/lib/seo';
 
 import './globals.css';
 
-const display = Bricolage_Grotesque({
+const sans = Bricolage_Grotesque({
   subsets: ['latin'],
-  variable: '--font-display',
-  weight: ['600', '700', '800'],
+  variable: '--font-bricolage',
+  weight: ['400', '500', '600', '700', '800'],
   display: 'swap',
 });
 
@@ -51,18 +50,11 @@ const themeInitScript = `(function(){try{var t=localStorage.getItem('trackwise.d
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${display.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${sans.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body
-        className="bg-canvas text-ink antialiased"
-        style={
-          {
-            '--font-geist': GeistSans.style.fontFamily,
-          } as CSSProperties
-        }
-      >
+      <body className="bg-canvas text-ink antialiased">
         <SiteShell>{children}</SiteShell>
       </body>
     </html>

@@ -22,7 +22,7 @@
     "image_key": "90-hip-stretch",
     "image_storage_path": "exercises/shared/90-hip-stretch.webp",
     "slug": "90-hip-stretch",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Ab Wheel Rollout",
@@ -47,7 +47,7 @@
     "image_key": "ab-wheel-rollout",
     "image_storage_path": "exercises/shared/ab-wheel-rollout.webp",
     "slug": "ab-wheel-rollout",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Adductor Rock Back",
@@ -70,9 +70,9 @@
       "flexibility/hips"
     ],
     "image_key": "adductor-rock-back",
-    "image_storage_path": "exercises/shared/adductor-rock-back.webp",
+    "image_storage_path": "exercises/shared/adductor-rock-back.jpg",
     "slug": "adductor-rock-back",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Agility Ladder Drills",
@@ -99,7 +99,7 @@
     "image_key": "agility-ladder-drills",
     "image_storage_path": "exercises/shared/agility-ladder-drills.webp",
     "slug": "agility-ladder-drills",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Ankle Alphabet",
@@ -122,9 +122,9 @@
       "flexibility/ankles"
     ],
     "image_key": "ankle-alphabet",
-    "image_storage_path": "exercises/shared/ankle-alphabet.webp",
+    "image_storage_path": "exercises/shared/ankle-alphabet.jpg",
     "slug": "ankle-alphabet",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Ankle Circle",
@@ -147,9 +147,9 @@
       "flexibility/ankles"
     ],
     "image_key": "ankle-circle",
-    "image_storage_path": "exercises/shared/ankle-circle.webp",
+    "image_storage_path": "exercises/shared/ankle-circle.jpg",
     "slug": "ankle-circle",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Arc Trainer",
@@ -174,9 +174,9 @@
       "cardio/machines"
     ],
     "image_key": "arc-trainer",
-    "image_storage_path": "exercises/shared/arc-trainer.webp",
+    "image_storage_path": "exercises/shared/arc-trainer.jpg",
     "slug": "arc-trainer",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Archer Push-Up",
@@ -202,7 +202,7 @@
     "image_key": "archer-push-up",
     "image_storage_path": "exercises/shared/archer-push-up.webp",
     "slug": "archer-push-up",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Arnold Press",
@@ -227,7 +227,7 @@
     "image_key": "arnold-press",
     "image_storage_path": "exercises/shared/arnold-press.webp",
     "slug": "arnold-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Assault Bike",
@@ -255,7 +255,7 @@
     "image_key": "assault-bike",
     "image_storage_path": "exercises/shared/assault-bike.webp",
     "slug": "assault-bike",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Australian Pull-Up",
@@ -278,9 +278,9 @@
       "bodyweight/back"
     ],
     "image_key": "australia-pull-up",
-    "image_storage_path": "exercises/shared/australia-pull-up.webp",
+    "image_storage_path": "exercises/shared/australia-pull-up.jpg",
     "slug": "australia-pull-up",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Back Extension",
@@ -307,7 +307,7 @@
     "image_key": "back-extension",
     "image_storage_path": "exercises/shared/back-extension.webp",
     "slug": "back-extension",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Back Squat",
@@ -332,9 +332,9 @@
       "strength/quadriceps"
     ],
     "image_key": "back-squat",
-    "image_storage_path": "exercises/shared/back-squat.webp",
+    "image_storage_path": "exercises/shared/back-squat.jpg",
     "slug": "back-squat",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Backstroke Swim",
@@ -360,9 +360,9 @@
       "cardio/swimming"
     ],
     "image_key": "backstroke-swim",
-    "image_storage_path": "exercises/shared/backstroke-swim.webp",
+    "image_storage_path": "exercises/shared/backstroke-swim.avif",
     "slug": "backstroke-swim",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Badminton Game",
@@ -387,9 +387,9 @@
       "cardio/sports-cardio"
     ],
     "image_key": "badminton-game",
-    "image_storage_path": "exercises/shared/badminton-game.webp",
+    "image_storage_path": "exercises/shared/badminton-game.jpg",
     "slug": "badminton-game",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Band Dislocate",
@@ -415,9 +415,9 @@
       "flexibility/chest-shoulder"
     ],
     "image_key": "band-dislocate",
-    "image_storage_path": "exercises/shared/band-dislocate.webp",
+    "image_storage_path": "exercises/shared/band-dislocate.jpg",
     "slug": "band-dislocate",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Banded Ankle Distraction",
@@ -440,9 +440,9 @@
       "flexibility/ankles"
     ],
     "image_key": "banded-ankle-distraction",
-    "image_storage_path": "exercises/shared/banded-ankle-distraction.webp",
+    "image_storage_path": "exercises/shared/banded-ankle-distraction.jpg",
     "slug": "banded-ankle-distraction",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Barbell Bench Press",
@@ -465,9 +465,9 @@
       "strength/chest"
     ],
     "image_key": "barbell-bench-press",
-    "image_storage_path": "exercises/shared/barbell-bench-press.webp",
+    "image_storage_path": "exercises/shared/barbell-bench-press.jpg",
     "slug": "barbell-bench-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Barbell Curl",
@@ -492,7 +492,7 @@
     "image_key": "barbell-curl",
     "image_storage_path": "exercises/shared/barbell-curl.webp",
     "slug": "barbell-curl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Barbell Front Squat",
@@ -515,9 +515,9 @@
       "strength/quadriceps"
     ],
     "image_key": "barbell-front-squat",
-    "image_storage_path": "exercises/shared/barbell-front-squat.webp",
+    "image_storage_path": "exercises/shared/barbell-front-squat.avif",
     "slug": "barbell-front-squat",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Baseball Game",
@@ -542,9 +542,9 @@
       "cardio/sports-cardio"
     ],
     "image_key": "baseball-game",
-    "image_storage_path": "exercises/shared/baseball-game.webp",
+    "image_storage_path": "exercises/shared/baseball-game.jpg",
     "slug": "baseball-game",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Basketball Pickup",
@@ -569,9 +569,9 @@
       "cardio/sports-cardio"
     ],
     "image_key": "basketball-pickup",
-    "image_storage_path": "exercises/shared/basketball-pickup.webp",
+    "image_storage_path": "exercises/shared/basketball-pickup.jpg",
     "slug": "basketball-pickup",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Battle Ropes",
@@ -600,7 +600,7 @@
     "image_key": "battle-ropes",
     "image_storage_path": "exercises/shared/battle-ropes.webp",
     "slug": "battle-ropes",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Bayesian Cable Curl",
@@ -623,9 +623,9 @@
       "strength/biceps"
     ],
     "image_key": "bayesian-cable-curl",
-    "image_storage_path": "exercises/shared/bayesian-cable-curl.webp",
+    "image_storage_path": "exercises/shared/bayesian-cable-curl.png",
     "slug": "bayesian-cable-curl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Bear Crawl",
@@ -651,7 +651,7 @@
     "image_key": "bear-crawl",
     "image_storage_path": "exercises/shared/bear-crawl.webp",
     "slug": "bear-crawl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Behind The Back Wrist Curl",
@@ -676,7 +676,7 @@
     "image_key": "behind-the-back-wrist-curl",
     "image_storage_path": "exercises/shared/behind-the-back-wrist-curl.webp",
     "slug": "behind-the-back-wrist-curl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Belt Squat",
@@ -701,7 +701,7 @@
     "image_key": "belt-squat",
     "image_storage_path": "exercises/shared/belt-squat.webp",
     "slug": "belt-squat",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Bench Dip",
@@ -728,7 +728,7 @@
     "image_key": "bench-dip",
     "image_storage_path": "exercises/shared/bench-dip.webp",
     "slug": "bench-dip",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Bent Over Barbell Row",
@@ -751,9 +751,9 @@
       "strength/back"
     ],
     "image_key": "bent-over-barbell-row",
-    "image_storage_path": "exercises/shared/bent-over-barbell-row.webp",
+    "image_storage_path": "exercises/shared/bent-over-barbell-row.jpg",
     "slug": "bent-over-barbell-row",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Bent Over Reverse Fly",
@@ -778,7 +778,7 @@
     "image_key": "bent-over-reverse-fly",
     "image_storage_path": "exercises/shared/bent-over-reverse-fly.webp",
     "slug": "bent-over-reverse-fly",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Bicycle Crunch",
@@ -802,9 +802,9 @@
       "strength/core"
     ],
     "image_key": "bicycles-crunches",
-    "image_storage_path": "exercises/shared/bicycles-crunches.webp",
+    "image_storage_path": "exercises/shared/bicycles-crunches.jpg",
     "slug": "bicycles-crunches",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Bird Dog",
@@ -829,9 +829,35 @@
       "strength/core"
     ],
     "image_key": "bird-dog",
-    "image_storage_path": "exercises/shared/bird-dog.webp",
+    "image_storage_path": "exercises/shared/bird-dog.jpg",
     "slug": "bird-dog",
-    "content_version": 4
+    "content_version": 5
+  },
+  {
+    "name": "Chest Dip",
+    "category": "Strength",
+    "primary_muscles": [
+      "chest"
+    ],
+    "secondary_muscles": [],
+    "equipment": "bodyweight",
+    "exercise_type": "strength",
+    "movement_pattern": null,
+    "difficulty": "intermediate",
+    "instructions": "1) Plant your feet for Chest Dip, grip your bodyweight, and set the shoulder blades on a stable base with wrists stacked roughly under elbows at the bottom.\n2) Lower with control as the shoulder blades stay gently retracted/depressed; stop at a depth you can reverse without the shoulders dumping forward.\n3) Press back to the start by driving through the palms/chest, keeping ribs down and neck neutral.\n4) Exhale near the sticking point of the press; keep elbows from flaring into a hard 90° \"T\" unless the variation specifically requires it.",
+    "tips": "- Stack wrists over elbows at the bottom for a stronger press path.\n- Reduce range, support, or load when positions start to drift.\n- Progress by improving range quality first, then load or density.\n- Leave a little tension in the mid-back so the shoulders have a stable shelf.\n- Use a challenge you can repeat with the same quality on the last rep as the first.",
+    "description": "Chest Dip is a horizontal pushing pattern that trains the chest, shoulders, and triceps to move a load away from the torso. Primary emphasis is on chest. Strong horizontal pressing supports pressing strength in daily tasks and balances heavy pulling volume. Keep every rep of Chest Dip looking like the demo rep you would coach a friend through.",
+    "common_mistakes": "- Flaring elbows aggressively → bring elbows closer to ~45° and feel the chest/triceps share the load.\n- Ribs flaring / low-back arching for leverage → shorten range and re-brace.\n- Partial lockouts every rep → finish with control without snapping elbows.\n- Bouncing off the chest → pause lightly and press from muscle, not rebound.",
+    "safety_notes": "- Shoulder pinching in the bottom is a cue to reduce depth or widen/narrow the grip slightly.\n- Regress to an incline or knee variation of Chest Dip if you cannot control the full range.\n- Warm up with lighter sets or easier leverage before hard working sets.",
+    "met_value": 5,
+    "library_paths": [
+      "bodyweight/chest",
+      "strength/chest"
+    ],
+    "image_key": "bodyweight-chest-chest-dip",
+    "image_storage_path": "exercises/shared/bodyweight-chest-chest-dip.webp",
+    "slug": "bodyweight-chest-chest-dip",
+    "content_version": 5
   },
   {
     "name": "Box Jump",
@@ -859,9 +885,9 @@
       "cardio/jumping"
     ],
     "image_key": "box-jump",
-    "image_storage_path": "exercises/shared/box-jump.webp",
+    "image_storage_path": "exercises/shared/box-jump.jpg",
     "slug": "box-jump",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Breaststroke",
@@ -887,9 +913,9 @@
       "cardio/swimming"
     ],
     "image_key": "breaststroke",
-    "image_storage_path": "exercises/shared/breaststroke.webp",
+    "image_storage_path": "exercises/shared/breaststroke.jpg",
     "slug": "breaststroke",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Bridge Pose Yoga",
@@ -916,7 +942,7 @@
     "image_key": "bridge-pose-yoga",
     "image_storage_path": "exercises/shared/bridge-pose-yoga.webp",
     "slug": "bridge-pose-yoga",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Brisk Walking",
@@ -942,9 +968,9 @@
       "cardio/walking"
     ],
     "image_key": "brisk-walking",
-    "image_storage_path": "exercises/shared/brisk-walking.webp",
+    "image_storage_path": "exercises/shared/brisk-walking.jpg",
     "slug": "brisk-walking",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Broad Jump",
@@ -974,7 +1000,7 @@
     "image_key": "broad-jump",
     "image_storage_path": "exercises/shared/broad-jump.webp",
     "slug": "broad-jump",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Bulgarian Split Squat",
@@ -1000,9 +1026,9 @@
       "strength/quadriceps"
     ],
     "image_key": "bulgarian-split-squat",
-    "image_storage_path": "exercises/shared/bulgarian-split-squat.webp",
+    "image_storage_path": "exercises/shared/bulgarian-split-squat.jpg",
     "slug": "bulgarian-split-squat",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Burpees",
@@ -1033,7 +1059,7 @@
     "image_key": "burpees",
     "image_storage_path": "exercises/shared/burpees.webp",
     "slug": "burpees",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Butterfly Stretch",
@@ -1056,9 +1082,9 @@
       "flexibility/hips"
     ],
     "image_key": "butterfly-stretch",
-    "image_storage_path": "exercises/shared/butterfly-stretch.webp",
+    "image_storage_path": "exercises/shared/butterfly-stretch.jpg",
     "slug": "butterfly-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Cable Chest Fly",
@@ -1083,7 +1109,7 @@
     "image_key": "cable-chest-fly",
     "image_storage_path": "exercises/shared/cable-chest-fly.webp",
     "slug": "cable-chest-fly",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Cable Crunch",
@@ -1106,9 +1132,9 @@
       "strength/core"
     ],
     "image_key": "cable-crunch",
-    "image_storage_path": "exercises/shared/cable-crunch.webp",
+    "image_storage_path": "exercises/shared/cable-crunch.jpg",
     "slug": "cable-crunch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Cable Curl",
@@ -1131,9 +1157,9 @@
       "strength/biceps"
     ],
     "image_key": "cable-curl",
-    "image_storage_path": "exercises/shared/cable-curl.webp",
+    "image_storage_path": "exercises/shared/cable-curl.png",
     "slug": "cable-curl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Cable Front Raise",
@@ -1156,9 +1182,9 @@
       "strength/shoulders"
     ],
     "image_key": "cable-front-raise",
-    "image_storage_path": "exercises/shared/cable-front-raise.webp",
+    "image_storage_path": "exercises/shared/cable-front-raise.jpg",
     "slug": "cable-front-raise",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Cable Kick Back",
@@ -1183,7 +1209,7 @@
     "image_key": "cable-kick-back",
     "image_storage_path": "exercises/shared/cable-kick-back.webp",
     "slug": "cable-kick-back",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Cable Lateral Raise",
@@ -1208,7 +1234,7 @@
     "image_key": "cable-lateral-raise",
     "image_storage_path": "exercises/shared/cable-lateral-raise.webp",
     "slug": "cable-lateral-raise",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Cable Overhead Extension",
@@ -1233,7 +1259,7 @@
     "image_key": "cable-overhead-extension",
     "image_storage_path": "exercises/shared/cable-overhead-extension.webp",
     "slug": "cable-overhead-extension",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Cable Pull Through",
@@ -1260,7 +1286,7 @@
     "image_key": "cable-pull-through",
     "image_storage_path": "exercises/shared/cable-pull-through.webp",
     "slug": "cable-pull-through",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Cadence Intervals",
@@ -1288,7 +1314,7 @@
     "image_key": "cadence-intervals",
     "image_storage_path": "exercises/shared/cadence-intervals.webp",
     "slug": "cadence-intervals",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Calf Stretch On Step",
@@ -1311,9 +1337,9 @@
       "flexibility/ankles"
     ],
     "image_key": "calf-stretch-on-step",
-    "image_storage_path": "exercises/shared/calf-stretch-on-step.webp",
+    "image_storage_path": "exercises/shared/calf-stretch-on-step.jpg",
     "slug": "calf-stretch-on-step",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Calf Wall Stretch",
@@ -1336,9 +1362,9 @@
       "flexibility/hamstrings-legs"
     ],
     "image_key": "calf-wall-stretch",
-    "image_storage_path": "exercises/shared/calf-wall-stretch.webp",
+    "image_storage_path": "exercises/shared/calf-wall-stretch.avif",
     "slug": "calf-wall-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Captain's Chair Leg Raise",
@@ -1361,9 +1387,9 @@
       "strength/core"
     ],
     "image_key": "captain-chair-leg-raise",
-    "image_storage_path": "exercises/shared/captain-chair-leg-raise.webp",
+    "image_storage_path": "exercises/shared/captain-chair-leg-raise.jpg",
     "slug": "captain-chair-leg-raise",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Cat Cow Flow",
@@ -1390,33 +1416,7 @@
     "image_key": "cat-cow-flow",
     "image_storage_path": "exercises/shared/cat-cow-flow.webp",
     "slug": "cat-cow-flow",
-    "content_version": 4
-  },
-  {
-    "name": "Chest Dip",
-    "category": "Strength",
-    "primary_muscles": [
-      "chest"
-    ],
-    "secondary_muscles": [],
-    "equipment": "bodyweight",
-    "exercise_type": "strength",
-    "movement_pattern": null,
-    "difficulty": "intermediate",
-    "instructions": "1) Plant your feet for Chest Dip, grip your bodyweight, and set the shoulder blades on a stable base with wrists stacked roughly under elbows at the bottom.\n2) Lower with control as the shoulder blades stay gently retracted/depressed; stop at a depth you can reverse without the shoulders dumping forward.\n3) Press back to the start by driving through the palms/chest, keeping ribs down and neck neutral.\n4) Exhale near the sticking point of the press; keep elbows from flaring into a hard 90° \"T\" unless the variation specifically requires it.",
-    "tips": "- Stack wrists over elbows at the bottom for a stronger press path.\n- Reduce range, support, or load when positions start to drift.\n- Progress by improving range quality first, then load or density.\n- Leave a little tension in the mid-back so the shoulders have a stable shelf.\n- Use a challenge you can repeat with the same quality on the last rep as the first.",
-    "description": "Chest Dip is a horizontal pushing pattern that trains the chest, shoulders, and triceps to move a load away from the torso. Primary emphasis is on chest. Strong horizontal pressing supports pressing strength in daily tasks and balances heavy pulling volume. Keep every rep of Chest Dip looking like the demo rep you would coach a friend through.",
-    "common_mistakes": "- Flaring elbows aggressively → bring elbows closer to ~45° and feel the chest/triceps share the load.\n- Ribs flaring / low-back arching for leverage → shorten range and re-brace.\n- Partial lockouts every rep → finish with control without snapping elbows.\n- Bouncing off the chest → pause lightly and press from muscle, not rebound.",
-    "safety_notes": "- Shoulder pinching in the bottom is a cue to reduce depth or widen/narrow the grip slightly.\n- Regress to an incline or knee variation of Chest Dip if you cannot control the full range.\n- Warm up with lighter sets or easier leverage before hard working sets.",
-    "met_value": 5,
-    "library_paths": [
-      "bodyweight/chest",
-      "strength/chest"
-    ],
-    "image_key": "bodyweight-chest-chest-dip",
-    "image_storage_path": "exercises/shared/bodyweight-chest-chest-dip.webp",
-    "slug": "bodyweight-chest-chest-dip",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Chest Opener Hold",
@@ -1444,7 +1444,7 @@
     "image_key": "chest-opener-hold",
     "image_storage_path": "exercises/shared/chest-opener-hold.webp",
     "slug": "chest-opener-hold",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Chest Press Machine",
@@ -1469,7 +1469,7 @@
     "image_key": "chest-press-machine",
     "image_storage_path": "exercises/shared/chest-press-machine.webp",
     "slug": "chest-press-machine",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Chest Squeeze Press",
@@ -1494,7 +1494,7 @@
     "image_key": "chest-squeeze-press",
     "image_storage_path": "exercises/shared/chest-squeeze-press.webp",
     "slug": "chest-squeeze-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Chest Supported Row",
@@ -1519,7 +1519,7 @@
     "image_key": "chest-supported-row",
     "image_storage_path": "exercises/shared/chest-supported-row.webp",
     "slug": "chest-supported-row",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Child's Pose to Down Dog",
@@ -1573,7 +1573,7 @@
     "image_key": "chin-up",
     "image_storage_path": "exercises/shared/chin-up.webp",
     "slug": "chin-up",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Chin Up Hold",
@@ -1597,9 +1597,9 @@
       "strength/biceps"
     ],
     "image_key": "chin-up-hold",
-    "image_storage_path": "exercises/shared/chin-up-hold.webp",
+    "image_storage_path": "exercises/shared/chin-up-hold.jpg",
     "slug": "chin-up-hold",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Clapping Push-Up",
@@ -1625,7 +1625,7 @@
     "image_key": "clapping-push-up",
     "image_storage_path": "exercises/shared/clapping-push-up.webp",
     "slug": "clapping-push-up",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "ClimbMill",
@@ -1652,7 +1652,7 @@
     "image_key": "climbmill",
     "image_storage_path": "exercises/shared/climbmill.webp",
     "slug": "climbmill",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Close Grip Bench Press",
@@ -1677,9 +1677,9 @@
       "strength/triceps"
     ],
     "image_key": "close-grip-bench-press",
-    "image_storage_path": "exercises/shared/close-grip-bench-press.webp",
+    "image_storage_path": "exercises/shared/close-grip-bench-press.jpg",
     "slug": "close-grip-bench-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Close Grip Lat Pull Down",
@@ -1704,7 +1704,7 @@
     "image_key": "close-grip-lat-pull-down",
     "image_storage_path": "exercises/shared/close-grip-lat-pull-down.webp",
     "slug": "close-grip-lat-pull-down",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Concentration Curl",
@@ -1727,9 +1727,9 @@
       "strength/biceps"
     ],
     "image_key": "concentration-curl",
-    "image_storage_path": "exercises/shared/concentration-curl.webp",
+    "image_storage_path": "exercises/shared/concentration-curl.jpg",
     "slug": "concentration-curl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Conventional Deadlift",
@@ -1756,9 +1756,9 @@
       "strength/hamstrings"
     ],
     "image_key": "conventional-deadlift",
-    "image_storage_path": "exercises/shared/conventional-deadlift.webp",
+    "image_storage_path": "exercises/shared/conventional-deadlift.jpg",
     "slug": "conventional-deadlift",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Couch Stretch",
@@ -1783,7 +1783,7 @@
     "image_key": "couch-stretch",
     "image_storage_path": "exercises/shared/couch-stretch.webp",
     "slug": "couch-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Crab Walk",
@@ -1810,7 +1810,7 @@
     "image_key": "crab-walk",
     "image_storage_path": "exercises/shared/crab-walk.webp",
     "slug": "crab-walk",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Cricket",
@@ -1835,9 +1835,9 @@
       "cardio/sports-cardio"
     ],
     "image_key": "cricket",
-    "image_storage_path": "exercises/shared/cricket.webp",
+    "image_storage_path": "exercises/shared/cricket.jpg",
     "slug": "cricket",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Cross Body Shoulder Stretch",
@@ -1863,9 +1863,9 @@
       "flexibility/chest-shoulder"
     ],
     "image_key": "cross-body-shoulder-stretch",
-    "image_storage_path": "exercises/shared/cross-body-shoulder-stretch.webp",
+    "image_storage_path": "exercises/shared/cross-body-shoulder-stretch.jpg",
     "slug": "cross-body-shoulder-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Crunch",
@@ -1890,7 +1890,7 @@
     "image_key": "crunch",
     "image_storage_path": "exercises/shared/crunch.webp",
     "slug": "crunch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Cycling",
@@ -1916,9 +1916,9 @@
       "cardio/cycling"
     ],
     "image_key": "cycling",
-    "image_storage_path": "exercises/shared/cycling.webp",
+    "image_storage_path": "exercises/shared/cycling.jpg",
     "slug": "cycling",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Damper Cap Row",
@@ -1945,9 +1945,9 @@
       "cardio/rowing"
     ],
     "image_key": "damper-cap-row",
-    "image_storage_path": "exercises/shared/damper-cap-row.webp",
+    "image_storage_path": "exercises/shared/damper-cap-row.jpg",
     "slug": "damper-cap-row",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Dead Bug",
@@ -1973,7 +1973,7 @@
     "image_key": "dead-bug",
     "image_storage_path": "exercises/shared/dead-bug.webp",
     "slug": "dead-bug",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Dead Bug Mobility",
@@ -1996,9 +1996,9 @@
       "flexibility/mobility"
     ],
     "image_key": "dead-bug-mobility",
-    "image_storage_path": "exercises/shared/dead-bug-mobility.webp",
+    "image_storage_path": "exercises/shared/dead-bug-mobility.jpg",
     "slug": "dead-bug-mobility",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Dead Hang",
@@ -2023,9 +2023,9 @@
       "strength/forearms"
     ],
     "image_key": "dead-hang",
-    "image_storage_path": "exercises/shared/dead-hang.webp",
+    "image_storage_path": "exercises/shared/dead-hang.avif",
     "slug": "dead-hang",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Decline Barbell Bench Press",
@@ -2050,7 +2050,7 @@
     "image_key": "decline-barbell-bench-press",
     "image_storage_path": "exercises/shared/decline-barbell-bench-press.webp",
     "slug": "decline-barbell-bench-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Decline Dumbbell Bench Press",
@@ -2075,7 +2075,7 @@
     "image_key": "decline-dumbbell-bench-press",
     "image_storage_path": "exercises/shared/decline-dumbbell-bench-press.webp",
     "slug": "decline-dumbbell-bench-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Decline Push Up",
@@ -2099,9 +2099,9 @@
       "strength/chest"
     ],
     "image_key": "decline-push-up",
-    "image_storage_path": "exercises/shared/decline-push-up.webp",
+    "image_storage_path": "exercises/shared/decline-push-up.jpg",
     "slug": "decline-push-up",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Deep Squat Hold",
@@ -2124,9 +2124,9 @@
       "flexibility/mobility"
     ],
     "image_key": "deep-squat-hold",
-    "image_storage_path": "exercises/shared/deep-squat-hold.webp",
+    "image_storage_path": "exercises/shared/deep-squat-hold.jpg",
     "slug": "deep-squat-hold",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Depth Jump",
@@ -2156,7 +2156,7 @@
     "image_key": "depth-jump",
     "image_storage_path": "exercises/shared/depth-jump.webp",
     "slug": "depth-jump",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Diamond Push-Up",
@@ -2180,10 +2180,10 @@
       "bodyweight/chest",
       "strength/triceps"
     ],
-    "image_key": "diamond-pushup",
-    "image_storage_path": "exercises/shared/diamond-pushup.webp",
-    "slug": "diamond-pushup",
-    "content_version": 4
+    "image_key": "diamond-push-up",
+    "image_storage_path": "exercises/shared/diamond-push-up.jpg",
+    "slug": "diamond-push-up",
+    "content_version": 5
   },
   {
     "name": "Dip",
@@ -2235,9 +2235,9 @@
       "strength/calves"
     ],
     "image_key": "donkey-calf-raise",
-    "image_storage_path": "exercises/shared/donkey-calf-raise.webp",
+    "image_storage_path": "exercises/shared/donkey-calf-raise.jpg",
     "slug": "donkey-calf-raise",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Doorway Chest Stretch",
@@ -2263,9 +2263,9 @@
       "flexibility/chest-shoulder"
     ],
     "image_key": "doorway-chest-stretch",
-    "image_storage_path": "exercises/shared/doorway-chest-stretch.webp",
+    "image_storage_path": "exercises/shared/doorway-chest-stretch.jpg",
     "slug": "doorway-chest-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Double Under",
@@ -2294,7 +2294,7 @@
     "image_key": "double-under",
     "image_storage_path": "exercises/shared/double-under.webp",
     "slug": "double-under",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Downward Dog Hamstring Focus",
@@ -2319,7 +2319,7 @@
     "image_key": "downard-dog-hamstring-focus",
     "image_storage_path": "exercises/shared/downard-dog-hamstring-focus.webp",
     "slug": "downard-dog-hamstring-focus",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Downward Facing Dog",
@@ -2344,9 +2344,9 @@
       "flexibility/yoga"
     ],
     "image_key": "downward-facing-dog",
-    "image_storage_path": "exercises/shared/downward-facing-dog.webp",
+    "image_storage_path": "exercises/shared/downward-facing-dog.avif",
     "slug": "downward-facing-dog",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Dumbbell Bench Press",
@@ -2369,9 +2369,9 @@
       "strength/chest"
     ],
     "image_key": "dumbbell-bench-press",
-    "image_storage_path": "exercises/shared/dumbbell-bench-press.webp",
+    "image_storage_path": "exercises/shared/dumbbell-bench-press.jpg",
     "slug": "dumbbell-bench-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Dumbbell Bicep Curl",
@@ -2396,7 +2396,7 @@
     "image_key": "dumbbell-bicep-curl",
     "image_storage_path": "exercises/shared/dumbbell-bicep-curl.webp",
     "slug": "dumbbell-bicep-curl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Dumbbell Chest Fly",
@@ -2419,9 +2419,9 @@
       "strength/chest"
     ],
     "image_key": "dumbbell-chest-fly",
-    "image_storage_path": "exercises/shared/dumbbell-chest-fly.webp",
+    "image_storage_path": "exercises/shared/dumbbell-chest-fly.jpg",
     "slug": "dumbbell-chest-fly",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Dumbbell Pullover",
@@ -2446,7 +2446,7 @@
     "image_key": "dumbbell-pullover",
     "image_storage_path": "exercises/shared/dumbbell-pullover.webp",
     "slug": "dumbbell-pullover",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Dumbbell Reverse Wrist Curl",
@@ -2471,7 +2471,35 @@
     "image_key": "dumbbell-reverse-wrist-curl",
     "image_storage_path": "exercises/shared/dumbbell-reverse-wrist-curl.webp",
     "slug": "dumbbell-reverse-wrist-curl",
-    "content_version": 4
+    "content_version": 5
+  },
+  {
+    "name": "Dumbbell Row",
+    "category": "Strength",
+    "primary_muscles": [
+      "lats"
+    ],
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "dumbbell",
+    "exercise_type": "strength",
+    "movement_pattern": "horizontal_pull",
+    "difficulty": null,
+    "instructions": "Brace on a bench and row the dumbbell to the hip.",
+    "tips": "Choose a load or pace that lets you keep good form for every repetition.",
+    "description": "Dumbbell Row is an exercise that targets Lats.",
+    "common_mistakes": null,
+    "safety_notes": null,
+    "met_value": 5,
+    "library_paths": [
+      "strength/back"
+    ],
+    "image_key": "dumbbell-row",
+    "image_storage_path": "exercises/shared/dumbbell-row.png",
+    "slug": "dumbbell-row",
+    "content_version": 6
   },
   {
     "name": "Dumbbell Walking Lunge",
@@ -2502,7 +2530,7 @@
     "image_key": "dumbbell-walking-lunge",
     "image_storage_path": "exercises/shared/dumbbell-walking-lunge.webp",
     "slug": "dumbbell-walking-lunge",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Dynamic Warm-Up",
@@ -2525,9 +2553,9 @@
       "flexibility/full-body"
     ],
     "image_key": "dynamic-warmup",
-    "image_storage_path": "exercises/shared/dynamic-warmup.webp",
+    "image_storage_path": "exercises/shared/dynamic-warmup.jpg",
     "slug": "dynamic-warmup",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Easy Jog",
@@ -2554,9 +2582,9 @@
       "cardio/running"
     ],
     "image_key": "easy-jog",
-    "image_storage_path": "exercises/shared/easy-jog.webp",
+    "image_storage_path": "exercises/shared/easy-jog.jpg",
     "slug": "easy-jog",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Easy Spin",
@@ -2584,7 +2612,7 @@
     "image_key": "easy-spin",
     "image_storage_path": "exercises/shared/easy-spin.webp",
     "slug": "easy-spin",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Elliptical",
@@ -2611,7 +2639,7 @@
     "image_key": "elliptical",
     "image_storage_path": "exercises/shared/elliptical.webp",
     "slug": "elliptical",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Ez Bar Curl",
@@ -2634,9 +2662,9 @@
       "strength/biceps"
     ],
     "image_key": "ez-bar-curl",
-    "image_storage_path": "exercises/shared/ez-bar-curl.webp",
+    "image_storage_path": "exercises/shared/ez-bar-curl.png",
     "slug": "ez-bar-curl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Face Pull",
@@ -2662,7 +2690,7 @@
     "image_key": "face-pull",
     "image_storage_path": "exercises/shared/face-pull.webp",
     "slug": "face-pull",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Fan Bike Intervals",
@@ -2688,9 +2716,9 @@
       "cardio/machines"
     ],
     "image_key": "fan-bike-intervals",
-    "image_storage_path": "exercises/shared/fan-bike-intervals.webp",
+    "image_storage_path": "exercises/shared/fan-bike-intervals.avif",
     "slug": "fan-bike-intervals",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Farmer Carry",
@@ -2715,7 +2743,7 @@
     "image_key": "farmer-carry",
     "image_storage_path": "exercises/shared/farmer-carry.webp",
     "slug": "farmer-carry",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Fartlek Run",
@@ -2769,9 +2797,9 @@
       "cardio/sports-cardio"
     ],
     "image_key": "field-hockey",
-    "image_storage_path": "exercises/shared/field-hockey.webp",
+    "image_storage_path": "exercises/shared/field-hockey.avif",
     "slug": "field-hockey",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Figure 4 Stretch",
@@ -2794,9 +2822,9 @@
       "flexibility/hips"
     ],
     "image_key": "figure-4-stretch",
-    "image_storage_path": "exercises/shared/figure-4-stretch.webp",
+    "image_storage_path": "exercises/shared/figure-4-stretch.jpg",
     "slug": "figure-4-stretch",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Floor Press",
@@ -2819,9 +2847,9 @@
       "strength/chest"
     ],
     "image_key": "floor-press",
-    "image_storage_path": "exercises/shared/floor-press.webp",
+    "image_storage_path": "exercises/shared/floor-press.jpg",
     "slug": "floor-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Football",
@@ -2848,7 +2876,7 @@
     "image_key": "football",
     "image_storage_path": "exercises/shared/football.webp",
     "slug": "football",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Freestyle Swim",
@@ -2901,7 +2929,7 @@
     "image_key": "frog-pose-stretch",
     "image_storage_path": "exercises/shared/frog-pose-stretch.webp",
     "slug": "frog-pose-stretch",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Frog Pump",
@@ -2925,9 +2953,9 @@
       "strength/glutes"
     ],
     "image_key": "frog-pump",
-    "image_storage_path": "exercises/shared/frog-pump.webp",
+    "image_storage_path": "exercises/shared/frog-pump.jpg",
     "slug": "frog-pump",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Front Raise",
@@ -2950,9 +2978,9 @@
       "strength/shoulders"
     ],
     "image_key": "front-raise",
-    "image_storage_path": "exercises/shared/front-raise.webp",
+    "image_storage_path": "exercises/shared/front-raise.jpeg",
     "slug": "front-raise",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Full Bod Stretch",
@@ -2977,7 +3005,7 @@
     "image_key": "full-bod-stretch",
     "image_storage_path": "exercises/shared/full-bod-stretch.webp",
     "slug": "full-bod-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Glute Bridge",
@@ -3001,9 +3029,9 @@
       "strength/glutes"
     ],
     "image_key": "glute-bridge",
-    "image_storage_path": "exercises/shared/glute-bridge.webp",
+    "image_storage_path": "exercises/shared/glute-bridge.jpg",
     "slug": "glute-bridge",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Goblet Squat",
@@ -3029,7 +3057,7 @@
     "image_key": "goblet-squat",
     "image_storage_path": "exercises/shared/goblet-squat.webp",
     "slug": "goblet-squat",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Good Morning",
@@ -3053,9 +3081,9 @@
       "strength/hamstrings"
     ],
     "image_key": "good-morning",
-    "image_storage_path": "exercises/shared/good-morning.webp",
+    "image_storage_path": "exercises/shared/good-morning.jpg",
     "slug": "good-morning",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Gripper Squeeze",
@@ -3080,7 +3108,7 @@
     "image_key": "gripper-squeeze",
     "image_storage_path": "exercises/shared/gripper-squeeze.webp",
     "slug": "gripper-squeeze",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Hack Squat",
@@ -3105,7 +3133,7 @@
     "image_key": "hack-squat",
     "image_storage_path": "exercises/shared/hack-squat.webp",
     "slug": "hack-squat",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Hammer Curl",
@@ -3130,7 +3158,7 @@
     "image_key": "hammer-curl",
     "image_storage_path": "exercises/shared/hammer-curl.webp",
     "slug": "hammer-curl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Hamstring Stretch with Yoga Strap",
@@ -3157,7 +3185,7 @@
     "image_key": "hamstring-stretch-with-yoga-strap",
     "image_storage_path": "exercises/shared/hamstring-stretch-with-yoga-strap.webp",
     "slug": "hamstring-stretch-with-yoga-strap",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Handstand Hold",
@@ -3181,9 +3209,9 @@
       "bodyweight/shoulders"
     ],
     "image_key": "handstand-hold",
-    "image_storage_path": "exercises/shared/handstand-hold.webp",
+    "image_storage_path": "exercises/shared/handstand-hold.avif",
     "slug": "handstand-hold",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Hanging Knee Raise",
@@ -3209,7 +3237,7 @@
     "image_key": "hanging-knee-raise",
     "image_storage_path": "exercises/shared/hanging-knee-raise.webp",
     "slug": "hanging-knee-raise",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Hanging Leg Raise",
@@ -3234,9 +3262,9 @@
       "strength/core"
     ],
     "image_key": "hanging-leg-raise",
-    "image_storage_path": "exercises/shared/hanging-leg-raise.webp",
+    "image_storage_path": "exercises/shared/hanging-leg-raise.jpg",
     "slug": "hanging-leg-raise",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Heels Elevated Squat",
@@ -3259,9 +3287,9 @@
       "strength/quadriceps"
     ],
     "image_key": "heels-elevated-squat",
-    "image_storage_path": "exercises/shared/heels-elevated-squat.webp",
+    "image_storage_path": "exercises/shared/heels-elevated-squat.jpg",
     "slug": "heels-elevated-squat",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "High Knee",
@@ -3285,9 +3313,9 @@
       "cardio/hiit"
     ],
     "image_key": "high-knee",
-    "image_storage_path": "exercises/shared/high-knee.webp",
+    "image_storage_path": "exercises/shared/high-knee.avif",
     "slug": "high-knee",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "High to Low Cable Fly",
@@ -3312,7 +3340,7 @@
     "image_key": "high-to-low-cable-fly",
     "image_storage_path": "exercises/shared/high-to-low-cable-fly.webp",
     "slug": "high-to-low-cable-fly",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Hiit Circuit",
@@ -3338,9 +3366,9 @@
       "cardio/hiit"
     ],
     "image_key": "hiit-circuit",
-    "image_storage_path": "exercises/shared/hiit-circuit.webp",
+    "image_storage_path": "exercises/shared/hiit-circuit.jpg",
     "slug": "hiit-circuit",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Hiking",
@@ -3368,7 +3396,7 @@
     "image_key": "hiking",
     "image_storage_path": "exercises/shared/hiking.webp",
     "slug": "hiking",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Hill Sprint",
@@ -3395,9 +3423,9 @@
       "cardio/running"
     ],
     "image_key": "hill-sprint",
-    "image_storage_path": "exercises/shared/hill-sprint.webp",
+    "image_storage_path": "exercises/shared/hill-sprint.jpg",
     "slug": "hill-sprint",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Hip Cars",
@@ -3424,7 +3452,7 @@
     "image_key": "hip-cars",
     "image_storage_path": "exercises/shared/hip-cars.webp",
     "slug": "hip-cars",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Hip Flexor Lunge Stretch",
@@ -3447,9 +3475,9 @@
       "flexibility/hips"
     ],
     "image_key": "hip-flexor-lunge-stretch",
-    "image_storage_path": "exercises/shared/hip-flexor-lunge-stretch.webp",
+    "image_storage_path": "exercises/shared/hip-flexor-lunge-stretch.jpg",
     "slug": "hip-flexor-lunge-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Hip Thrust",
@@ -3476,7 +3504,7 @@
     "image_key": "hip-thrust",
     "image_storage_path": "exercises/shared/hip-thrust.webp",
     "slug": "hip-thrust",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Hollow Body Hold",
@@ -3501,9 +3529,9 @@
       "strength/core"
     ],
     "image_key": "hollow-body-hold",
-    "image_storage_path": "exercises/shared/hollow-body-hold.webp",
+    "image_storage_path": "exercises/shared/hollow-body-hold.jpg",
     "slug": "hollow-body-hold",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Ice Hockey",
@@ -3530,7 +3558,7 @@
     "image_key": "ice-hockey",
     "image_storage_path": "exercises/shared/ice-hockey.webp",
     "slug": "ice-hockey",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Incline Barbell Bench Press",
@@ -3555,7 +3583,7 @@
     "image_key": "incline-barbell-bench-press",
     "image_storage_path": "exercises/shared/incline-barbell-bench-press.webp",
     "slug": "incline-barbell-bench-press",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Incline Dumbbell Bench Press",
@@ -3580,7 +3608,7 @@
     "image_key": "incline-dumbbell-bench-press",
     "image_storage_path": "exercises/shared/incline-dumbbell-bench-press.webp",
     "slug": "incline-dumbbell-bench-press",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Incline Dumbbell Curl",
@@ -3605,7 +3633,7 @@
     "image_key": "incline-dumbbell-curl",
     "image_storage_path": "exercises/shared/incline-dumbbell-curl.webp",
     "slug": "incline-dumbbell-curl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Incline Dumbbell Fly",
@@ -3630,7 +3658,7 @@
     "image_key": "incline-dumbbell-fly",
     "image_storage_path": "exercises/shared/incline-dumbbell-fly.webp",
     "slug": "incline-dumbbell-fly",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Incline Push Up",
@@ -3654,9 +3682,9 @@
       "strength/chest"
     ],
     "image_key": "incline-push-up",
-    "image_storage_path": "exercises/shared/incline-push-up.webp",
+    "image_storage_path": "exercises/shared/incline-push-up.jpg",
     "slug": "incline-push-up",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Incline Treadmill Walk",
@@ -3684,7 +3712,7 @@
     "image_key": "incline-treadmill-walk",
     "image_storage_path": "exercises/shared/incline-treadmill-walk.webp",
     "slug": "incline-treadmill-walk",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Interval Run",
@@ -3713,7 +3741,7 @@
     "image_key": "interval-run",
     "image_storage_path": "exercises/shared/interval-run.webp",
     "slug": "interval-run",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Inverted Row",
@@ -3739,7 +3767,7 @@
     "image_key": "inverted-row",
     "image_storage_path": "exercises/shared/inverted-row.webp",
     "slug": "inverted-row",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "IT Band Cross-Over Stretch",
@@ -3762,9 +3790,9 @@
       "flexibility/hamstrings-legs"
     ],
     "image_key": "it-band-stretch",
-    "image_storage_path": "exercises/shared/it-band-stretch.webp",
+    "image_storage_path": "exercises/shared/it-band-stretch.jpg",
     "slug": "it-band-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Jm Press",
@@ -3787,9 +3815,9 @@
       "strength/triceps"
     ],
     "image_key": "jm-press",
-    "image_storage_path": "exercises/shared/jm-press.webp",
+    "image_storage_path": "exercises/shared/jm-press.jpg",
     "slug": "jm-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Jump Rope",
@@ -3816,9 +3844,9 @@
       "cardio/jumping"
     ],
     "image_key": "jump-rope",
-    "image_storage_path": "exercises/shared/jump-rope.webp",
+    "image_storage_path": "exercises/shared/jump-rope.avif",
     "slug": "jump-rope",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Jump Rope Calf Bounce",
@@ -3844,7 +3872,7 @@
     "image_key": "jump-rope-calf-bounce",
     "image_storage_path": "exercises/shared/jump-rope-calf-bounce.webp",
     "slug": "jump-rope-calf-bounce",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Jump Rope Sprints Interval",
@@ -3873,7 +3901,7 @@
     "image_key": "jump-rope-sprints-interval",
     "image_storage_path": "exercises/shared/jump-rope-sprints-interval.webp",
     "slug": "jump-rope-sprints-interval",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Jumping Jacks",
@@ -3901,9 +3929,9 @@
       "cardio/hiit"
     ],
     "image_key": "jumping-jacks",
-    "image_storage_path": "exercises/shared/jumping-jacks.webp",
+    "image_storage_path": "exercises/shared/jumping-jacks.jpg",
     "slug": "jumping-jacks",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "KB Snatch Intervals",
@@ -3928,9 +3956,9 @@
       "cardio/hiit"
     ],
     "image_key": "kb-snatch-intervals",
-    "image_storage_path": "exercises/shared/kb-snatch-intervals.webp",
+    "image_storage_path": "exercises/shared/kb-snatch-intervals.jpg",
     "slug": "kb-snatch-intervals",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Kettlebell Swings",
@@ -3958,7 +3986,7 @@
     "image_key": "kettlebell-swings",
     "image_storage_path": "exercises/shared/kettlebell-swings.webp",
     "slug": "kettlebell-swings",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Kickboard Drill",
@@ -3981,9 +4009,9 @@
       "cardio/swimming"
     ],
     "image_key": "kickboard-drill",
-    "image_storage_path": "exercises/shared/kickboard-drill.webp",
+    "image_storage_path": "exercises/shared/kickboard-drill.jpg",
     "slug": "kickboard-drill",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Knee Over Toe Rocks",
@@ -4006,9 +4034,9 @@
       "flexibility/ankles"
     ],
     "image_key": "knee-over-toe-rocks",
-    "image_storage_path": "exercises/shared/knee-over-toe-rocks.webp",
+    "image_storage_path": "exercises/shared/knee-over-toe-rocks.jpg",
     "slug": "knee-over-toe-rocks",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Knee-to-Chest Stretch",
@@ -4057,9 +4085,9 @@
       "bodyweight/core"
     ],
     "image_key": "l-sit",
-    "image_storage_path": "exercises/shared/l-sit.webp",
+    "image_storage_path": "exercises/shared/l-sit.jpg",
     "slug": "l-sit",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Landmine Press",
@@ -4084,7 +4112,7 @@
     "image_key": "landmine-press",
     "image_storage_path": "exercises/shared/landmine-press.webp",
     "slug": "landmine-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Lat Pulldown",
@@ -4109,7 +4137,7 @@
     "image_key": "lat-pulldown",
     "image_storage_path": "exercises/shared/lat-pulldown.webp",
     "slug": "lat-pulldown",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Lateral Bounds",
@@ -4135,7 +4163,7 @@
     "image_key": "lateral-bounds",
     "image_storage_path": "exercises/shared/lateral-bounds.webp",
     "slug": "lateral-bounds",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Lateral Raise",
@@ -4160,7 +4188,7 @@
     "image_key": "lateral-raise",
     "image_storage_path": "exercises/shared/lateral-raise.webp",
     "slug": "lateral-raise",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Leg Extension",
@@ -4183,9 +4211,9 @@
       "strength/quadriceps"
     ],
     "image_key": "leg-extension",
-    "image_storage_path": "exercises/shared/leg-extension.webp",
+    "image_storage_path": "exercises/shared/leg-extension.jpg",
     "slug": "leg-extension",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Leg Press",
@@ -4212,7 +4240,7 @@
     "image_key": "leg-press",
     "image_storage_path": "exercises/shared/leg-press.webp",
     "slug": "leg-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Leg Press Calf Raise",
@@ -4237,7 +4265,7 @@
     "image_key": "leg-press-calf-raise",
     "image_storage_path": "exercises/shared/leg-press-calf-raise.webp",
     "slug": "leg-press-calf-raise",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Low Lunge Yoga",
@@ -4262,9 +4290,9 @@
       "flexibility/yoga"
     ],
     "image_key": "low-lunge-yoga",
-    "image_storage_path": "exercises/shared/low-lunge-yoga.webp",
+    "image_storage_path": "exercises/shared/low-lunge-yoga.jpg",
     "slug": "low-lunge-yoga",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Low to High Cable Fly",
@@ -4287,9 +4315,9 @@
       "strength/chest"
     ],
     "image_key": "low-to-high-cable-fly",
-    "image_storage_path": "exercises/shared/low-to-high-cable-fly.webp",
+    "image_storage_path": "exercises/shared/low-to-high-cable-fly.avif",
     "slug": "low-to-high-cable-fly",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Lying Leg Curl",
@@ -4314,7 +4342,7 @@
     "image_key": "lying-leg-curl",
     "image_storage_path": "exercises/shared/lying-leg-curl.webp",
     "slug": "lying-leg-curl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Lying Twist Hold",
@@ -4339,9 +4367,9 @@
       "flexibility/stretching"
     ],
     "image_key": "lying-twist-hold",
-    "image_storage_path": "exercises/shared/lying-twist-hold.webp",
+    "image_storage_path": "exercises/shared/lying-twist-hold.jpg",
     "slug": "lying-twist-hold",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Machine Row",
@@ -4366,7 +4394,7 @@
     "image_key": "machine-row",
     "image_storage_path": "exercises/shared/machine-row.webp",
     "slug": "machine-row",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Machine Shoulder Press",
@@ -4391,7 +4419,7 @@
     "image_key": "machine-shoulder-press",
     "image_storage_path": "exercises/shared/machine-shoulder-press.webp",
     "slug": "machine-shoulder-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Martial Arts Sparring",
@@ -4416,9 +4444,9 @@
       "cardio/sports-cardio"
     ],
     "image_key": "martial-arts-sparring",
-    "image_storage_path": "exercises/shared/martial-arts-sparring.webp",
+    "image_storage_path": "exercises/shared/martial-arts-sparring.jpg",
     "slug": "martial-arts-sparring",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Meadow Row",
@@ -4443,7 +4471,7 @@
     "image_key": "meadow-row",
     "image_storage_path": "exercises/shared/meadow-row.webp",
     "slug": "meadow-row",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Mixed Row Pyramid",
@@ -4470,9 +4498,9 @@
       "cardio/cycling"
     ],
     "image_key": "mixed-row-pyramid",
-    "image_storage_path": "exercises/shared/mixed-row-pyramid.webp",
+    "image_storage_path": "exercises/shared/mixed-row-pyramid.jpg",
     "slug": "mixed-row-pyramid",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Mountain Climber",
@@ -4501,7 +4529,7 @@
     "image_key": "mountain-climber",
     "image_storage_path": "exercises/shared/mountain-climber.webp",
     "slug": "mountain-climber",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Muscle Up",
@@ -4528,7 +4556,7 @@
     "image_key": "muscle-up",
     "image_storage_path": "exercises/shared/muscle-up.webp",
     "slug": "muscle-up",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Neck Side Stretch",
@@ -4553,7 +4581,7 @@
     "image_key": "neck-side-stretch",
     "image_storage_path": "exercises/shared/neck-side-stretch.webp",
     "slug": "neck-side-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Nordic Hamstring Curl",
@@ -4580,7 +4608,7 @@
     "image_key": "nordic-hamstring-curl",
     "image_storage_path": "exercises/shared/nordic-hamstring-curl.webp",
     "slug": "nordic-hamstring-curl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "One Arm Dumbbell Row",
@@ -4603,9 +4631,9 @@
       "strength/back"
     ],
     "image_key": "one-arm-dumbbell-row",
-    "image_storage_path": "exercises/shared/one-arm-dumbbell-row.webp",
+    "image_storage_path": "exercises/shared/one-arm-dumbbell-row.jpg",
     "slug": "one-arm-dumbbell-row",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Open Book Stretch",
@@ -4631,9 +4659,9 @@
       "flexibility/chest-shoulder"
     ],
     "image_key": "open-book-stretch",
-    "image_storage_path": "exercises/shared/open-book-stretch.webp",
+    "image_storage_path": "exercises/shared/open-book-stretch.jpg",
     "slug": "open-book-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Open Water Swim",
@@ -4659,9 +4687,9 @@
       "cardio/swimming"
     ],
     "image_key": "open-water-swim",
-    "image_storage_path": "exercises/shared/open-water-swim.webp",
+    "image_storage_path": "exercises/shared/open-water-swim.jpg",
     "slug": "open-water-swim",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Outdoor Bike Hill",
@@ -4687,9 +4715,9 @@
       "cardio/cycling"
     ],
     "image_key": "outdoor-bike-hill",
-    "image_storage_path": "exercises/shared/outdoor-bike-hill.webp",
+    "image_storage_path": "exercises/shared/outdoor-bike-hill.jpg",
     "slug": "outdoor-bike-hill",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Overhead Press",
@@ -4714,7 +4742,7 @@
     "image_key": "overhead-press",
     "image_storage_path": "exercises/shared/overhead-press.webp",
     "slug": "overhead-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Overhead Triceps Extension",
@@ -4737,9 +4765,9 @@
       "strength/triceps"
     ],
     "image_key": "overhead-triceps-extension",
-    "image_storage_path": "exercises/shared/overhead-triceps-extension.webp",
+    "image_storage_path": "exercises/shared/overhead-triceps-extension.jpg",
     "slug": "overhead-triceps-extension",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Overhead Triceps Stretch",
@@ -4791,9 +4819,9 @@
       "strength/core"
     ],
     "image_key": "pallof-press",
-    "image_storage_path": "exercises/shared/pallof-press.webp",
+    "image_storage_path": "exercises/shared/pallof-press.jpg",
     "slug": "pallof-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Pec Deck Fly",
@@ -4816,9 +4844,9 @@
       "strength/chest"
     ],
     "image_key": "pec-deck-fly",
-    "image_storage_path": "exercises/shared/pec-deck-fly.webp",
+    "image_storage_path": "exercises/shared/pec-deck-fly.jpg",
     "slug": "pec-deck-fly",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Pec Minor Stretch",
@@ -4844,9 +4872,9 @@
       "flexibility/chest-shoulder"
     ],
     "image_key": "pec-minor-stretch",
-    "image_storage_path": "exercises/shared/pec-minor-stretch.webp",
+    "image_storage_path": "exercises/shared/pec-minor-stretch.jpg",
     "slug": "pec-minor-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Pendlay Row",
@@ -4869,9 +4897,9 @@
       "strength/back"
     ],
     "image_key": "pendlay-row",
-    "image_storage_path": "exercises/shared/pendlay-row.webp",
+    "image_storage_path": "exercises/shared/pendlay-row.jpg",
     "slug": "pendlay-row",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Pickleball",
@@ -4896,9 +4924,9 @@
       "cardio/sports-cardio"
     ],
     "image_key": "pickleball",
-    "image_storage_path": "exercises/shared/pickleball.webp",
+    "image_storage_path": "exercises/shared/pickleball.jpg",
     "slug": "pickleball",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Pigeon Pose",
@@ -4921,9 +4949,9 @@
       "flexibility/hips"
     ],
     "image_key": "pigeon-pose",
-    "image_storage_path": "exercises/shared/pigeon-pose.webp",
+    "image_storage_path": "exercises/shared/pigeon-pose.jpg",
     "slug": "pigeon-pose",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Pike Push Up",
@@ -4947,9 +4975,9 @@
       "strength/shoulders"
     ],
     "image_key": "pike-push-up",
-    "image_storage_path": "exercises/shared/pike-push-up.webp",
+    "image_storage_path": "exercises/shared/pike-push-up.jpg",
     "slug": "pike-push-up",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Pingpong",
@@ -4974,9 +5002,9 @@
       "cardio/sports-cardio"
     ],
     "image_key": "pingpong",
-    "image_storage_path": "exercises/shared/pingpong.webp",
+    "image_storage_path": "exercises/shared/pingpong.jpg",
     "slug": "pingpong",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Pistol Squat",
@@ -5002,7 +5030,7 @@
     "image_key": "pistol-squat",
     "image_storage_path": "exercises/shared/pistol-squat.webp",
     "slug": "pistol-squat",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Plank",
@@ -5028,7 +5056,7 @@
     "image_key": "plank",
     "image_storage_path": "exercises/shared/plank.webp",
     "slug": "plank",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Plate Pinches",
@@ -5051,9 +5079,9 @@
       "strength/forearms"
     ],
     "image_key": "plate-pinches",
-    "image_storage_path": "exercises/shared/plate-pinches.webp",
+    "image_storage_path": "exercises/shared/plate-pinches.jpg",
     "slug": "plate-pinches",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Power Walk",
@@ -5079,9 +5107,9 @@
       "cardio/walking"
     ],
     "image_key": "power-walk",
-    "image_storage_path": "exercises/shared/power-walk.webp",
+    "image_storage_path": "exercises/shared/power-walk.avif",
     "slug": "power-walk",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Preacher Curl",
@@ -5106,7 +5134,7 @@
     "image_key": "preacher-curl",
     "image_storage_path": "exercises/shared/preacher-curl.webp",
     "slug": "preacher-curl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Prone Press Up",
@@ -5129,9 +5157,9 @@
       "flexibility/back-spine"
     ],
     "image_key": "prone-press-up",
-    "image_storage_path": "exercises/shared/prone-press-up.webp",
+    "image_storage_path": "exercises/shared/prone-press-up.png",
     "slug": "prone-press-up",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Pseudo Planche Lean",
@@ -5155,9 +5183,9 @@
       "bodyweight/shoulders"
     ],
     "image_key": "pseudo-planche-lean",
-    "image_storage_path": "exercises/shared/pseudo-planche-lean.webp",
+    "image_storage_path": "exercises/shared/pseudo-planche-lean.jpg",
     "slug": "pseudo-planche-lean",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Pull Buoy Swim",
@@ -5183,9 +5211,9 @@
       "cardio/swimming"
     ],
     "image_key": "pull-buoy-swim",
-    "image_storage_path": "exercises/shared/pull-buoy-swim.webp",
+    "image_storage_path": "exercises/shared/pull-buoy-swim.jpg",
     "slug": "pull-buoy-swim",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Pull Up",
@@ -5210,9 +5238,9 @@
       "strength/back"
     ],
     "image_key": "pull-up",
-    "image_storage_path": "exercises/shared/pull-up.webp",
+    "image_storage_path": "exercises/shared/pull-up.jpg",
     "slug": "pull-up",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Push Press",
@@ -5235,9 +5263,9 @@
       "strength/shoulders"
     ],
     "image_key": "push-press",
-    "image_storage_path": "exercises/shared/push-press.webp",
+    "image_storage_path": "exercises/shared/push-press.jpg",
     "slug": "push-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Push-Up",
@@ -5261,9 +5289,9 @@
       "strength/chest"
     ],
     "image_key": "push-up",
-    "image_storage_path": "exercises/shared/push-up.webp",
+    "image_storage_path": "exercises/shared/push-up.jpg",
     "slug": "push-up",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Quad Couch Stretch",
@@ -5286,9 +5314,9 @@
       "flexibility/hamstrings-legs"
     ],
     "image_key": "quad-couch-stretch",
-    "image_storage_path": "exercises/shared/quad-couch-stretch.webp",
+    "image_storage_path": "exercises/shared/quad-couch-stretch.png",
     "slug": "quad-couch-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Rear Delt Fly",
@@ -5313,7 +5341,7 @@
     "image_key": "rear-delt-fly",
     "image_storage_path": "exercises/shared/rear-delt-fly.webp",
     "slug": "rear-delt-fly",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Recovery Walk",
@@ -5339,9 +5367,9 @@
       "cardio/walking"
     ],
     "image_key": "recovery-walk",
-    "image_storage_path": "exercises/shared/recovery-walk.webp",
+    "image_storage_path": "exercises/shared/recovery-walk.jpeg",
     "slug": "recovery-walk",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Recumbent Bike",
@@ -5369,7 +5397,7 @@
     "image_key": "recumbent-bike",
     "image_storage_path": "exercises/shared/recumbent-bike.webp",
     "slug": "recumbent-bike",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Reverse Crunch",
@@ -5393,9 +5421,9 @@
       "strength/core"
     ],
     "image_key": "reverse-crunch",
-    "image_storage_path": "exercises/shared/reverse-crunch.webp",
+    "image_storage_path": "exercises/shared/reverse-crunch.jpg",
     "slug": "reverse-crunch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Reverse Curl",
@@ -5418,9 +5446,34 @@
       "strength/biceps"
     ],
     "image_key": "reverse-curl",
-    "image_storage_path": "exercises/shared/reverse-curl.webp",
+    "image_storage_path": "exercises/shared/reverse-curl.jpg",
     "slug": "reverse-curl",
-    "content_version": 4
+    "content_version": 5
+  },
+  {
+    "name": "Reverse-Grip Triceps Pushdown",
+    "category": "Strength",
+    "primary_muscles": [
+      "triceps"
+    ],
+    "secondary_muscles": [],
+    "equipment": null,
+    "exercise_type": "strength",
+    "movement_pattern": null,
+    "difficulty": "intermediate",
+    "instructions": "1) Set a stable posture for Reverse-Grip Triceps Pushdown with the working implement, isolating the intended joint while the rest of the body stays quiet.\n2) Move through the target range with a smooth tempo—no snapping out of the bottom.\n3) Pause briefly where the muscle is most challenged if it helps you feel the right tissue working.\n4) Return under control to the start position and reset brace/posture before the next rep.",
+    "tips": "- Smaller muscles win with crisp control, not ego load.\n- Reduce range, support, or load when positions start to drift.\n- Progress by improving range quality first, then load or density.\n- If other muscles take over, reduce load until the target tissue leads.\n- Use a challenge you can repeat with the same quality on the last rep as the first.",
+    "description": "Reverse-Grip Triceps Pushdown is an accessory pattern focused on strengthening a specific muscle group with a controlled joint action. Primary emphasis is on triceps. Used after compound lifts (or on recovery-focused days), it helps shore up weak links without needing maximal systemic fatigue. Focus on smooth eccentrics throughout each rep of Reverse-Grip Triceps Pushdown.",
+    "common_mistakes": "- Swinging the weight → shorten range and slow the eccentric.\n- Shrugging or leaning to finish reps → fix posture first, then move the joint.\n- Rushing the stretch position → own the lengthened end without pain.\n- Partial lockouts every set → use a range you can repeat cleanly.",
+    "safety_notes": "- Stop for sharp joint pain; mild muscle burn is expected, pinching is not.\n- Keep wrists neutral on curl/extension patterns when possible.\n- Pair isolation work with compounds rather than replacing foundational patterns entirely.",
+    "met_value": 5,
+    "library_paths": [
+      "strength/triceps"
+    ],
+    "image_key": "reverse-grip-tricep-pushdown",
+    "image_storage_path": "exercises/shared/reverse-grip-tricep-pushdown.webp",
+    "slug": "reverse-grip-tricep-pushdown",
+    "content_version": 5
   },
   {
     "name": "Reverse Hyperextension",
@@ -5447,7 +5500,7 @@
     "image_key": "reverse-hyperextension",
     "image_storage_path": "exercises/shared/reverse-hyperextension.webp",
     "slug": "reverse-hyperextension",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Reverse Lunge",
@@ -5474,7 +5527,7 @@
     "image_key": "reverse-lunge",
     "image_storage_path": "exercises/shared/reverse-lunge.webp",
     "slug": "reverse-lunge",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Reverse Pec Deck",
@@ -5499,32 +5552,7 @@
     "image_key": "reverse-pec-deck",
     "image_storage_path": "exercises/shared/reverse-pec-deck.webp",
     "slug": "reverse-pec-deck",
-    "content_version": 4
-  },
-  {
-    "name": "Reverse-Grip Triceps Pushdown",
-    "category": "Strength",
-    "primary_muscles": [
-      "triceps"
-    ],
-    "secondary_muscles": [],
-    "equipment": null,
-    "exercise_type": "strength",
-    "movement_pattern": null,
-    "difficulty": "intermediate",
-    "instructions": "1) Set a stable posture for Reverse-Grip Triceps Pushdown with the working implement, isolating the intended joint while the rest of the body stays quiet.\n2) Move through the target range with a smooth tempo—no snapping out of the bottom.\n3) Pause briefly where the muscle is most challenged if it helps you feel the right tissue working.\n4) Return under control to the start position and reset brace/posture before the next rep.",
-    "tips": "- Smaller muscles win with crisp control, not ego load.\n- Reduce range, support, or load when positions start to drift.\n- Progress by improving range quality first, then load or density.\n- If other muscles take over, reduce load until the target tissue leads.\n- Use a challenge you can repeat with the same quality on the last rep as the first.",
-    "description": "Reverse-Grip Triceps Pushdown is an accessory pattern focused on strengthening a specific muscle group with a controlled joint action. Primary emphasis is on triceps. Used after compound lifts (or on recovery-focused days), it helps shore up weak links without needing maximal systemic fatigue. Focus on smooth eccentrics throughout each rep of Reverse-Grip Triceps Pushdown.",
-    "common_mistakes": "- Swinging the weight → shorten range and slow the eccentric.\n- Shrugging or leaning to finish reps → fix posture first, then move the joint.\n- Rushing the stretch position → own the lengthened end without pain.\n- Partial lockouts every set → use a range you can repeat cleanly.",
-    "safety_notes": "- Stop for sharp joint pain; mild muscle burn is expected, pinching is not.\n- Keep wrists neutral on curl/extension patterns when possible.\n- Pair isolation work with compounds rather than replacing foundational patterns entirely.",
-    "met_value": 5,
-    "library_paths": [
-      "strength/triceps"
-    ],
-    "image_key": "reverse-grip-tricep-pushdown",
-    "image_storage_path": "exercises/shared/reverse-grip-tricep-pushdown.webp",
-    "slug": "reverse-grip-tricep-pushdown",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Ring Dip",
@@ -5548,9 +5576,9 @@
       "bodyweight/chest"
     ],
     "image_key": "ring-dips",
-    "image_storage_path": "exercises/shared/ring-dips.webp",
+    "image_storage_path": "exercises/shared/ring-dips.jpg",
     "slug": "ring-dips",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Ring Row",
@@ -5576,7 +5604,7 @@
     "image_key": "ring-row",
     "image_storage_path": "exercises/shared/ring-row.webp",
     "slug": "ring-row",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Romanian Deadlift",
@@ -5603,9 +5631,9 @@
       "strength/hamstrings"
     ],
     "image_key": "romanian-deadlift",
-    "image_storage_path": "exercises/shared/romanian-deadlift.webp",
+    "image_storage_path": "exercises/shared/romanian-deadlift.jpg",
     "slug": "romanian-deadlift",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Rope Crunch",
@@ -5630,7 +5658,7 @@
     "image_key": "rope-crunch",
     "image_storage_path": "exercises/shared/rope-crunch.webp",
     "slug": "rope-crunch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Rope Pushdown",
@@ -5655,7 +5683,7 @@
     "image_key": "rope-pushdown",
     "image_storage_path": "exercises/shared/rope-pushdown.webp",
     "slug": "rope-pushdown",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Row Intervals",
@@ -5682,9 +5710,9 @@
       "cardio/cycling"
     ],
     "image_key": "row-intervals",
-    "image_storage_path": "exercises/shared/row-intervals.webp",
+    "image_storage_path": "exercises/shared/row-intervals.jpeg",
     "slug": "row-intervals",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Row Sprints",
@@ -5742,7 +5770,7 @@
     "image_key": "rowing-machine",
     "image_storage_path": "exercises/shared/rowing-machine.webp",
     "slug": "rowing-machine",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Ruck Walk",
@@ -5770,7 +5798,7 @@
     "image_key": "ruck-walk",
     "image_storage_path": "exercises/shared/ruck-walk.webp",
     "slug": "ruck-walk",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Running",
@@ -5799,7 +5827,7 @@
     "image_key": "running",
     "image_storage_path": "exercises/shared/running.webp",
     "slug": "running",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Russian Twist",
@@ -5823,9 +5851,9 @@
       "strength/core"
     ],
     "image_key": "russian-twist",
-    "image_storage_path": "exercises/shared/russian-twist.webp",
+    "image_storage_path": "exercises/shared/russian-twist.jpg",
     "slug": "russian-twist",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Savasana Breath",
@@ -5852,7 +5880,7 @@
     "image_key": "savasana-breath",
     "image_storage_path": "exercises/shared/savasana-breath.webp",
     "slug": "savasana-breath",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Scapular Cars",
@@ -5878,9 +5906,9 @@
       "flexibility/mobility"
     ],
     "image_key": "scapular-cars",
-    "image_storage_path": "exercises/shared/scapular-cars.webp",
+    "image_storage_path": "exercises/shared/scapular-cars.jpg",
     "slug": "scapular-cars",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Seated Butterfly Hold",
@@ -5905,9 +5933,9 @@
       "flexibility/stretching"
     ],
     "image_key": "seated-butterfly-hold",
-    "image_storage_path": "exercises/shared/seated-butterfly-hold.webp",
+    "image_storage_path": "exercises/shared/seated-butterfly-hold.avif",
     "slug": "seated-butterfly-hold",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Seated Cable Row",
@@ -5930,9 +5958,9 @@
       "strength/back"
     ],
     "image_key": "seated-cable-row",
-    "image_storage_path": "exercises/shared/seated-cable-row.webp",
+    "image_storage_path": "exercises/shared/seated-cable-row.avif",
     "slug": "seated-cable-row",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Seated Calf Raise",
@@ -5957,7 +5985,7 @@
     "image_key": "seated-calf-raise",
     "image_storage_path": "exercises/shared/seated-calf-raise.webp",
     "slug": "seated-calf-raise",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Seated Dumbbell Shoulder Press",
@@ -5980,9 +6008,9 @@
       "strength/shoulders"
     ],
     "image_key": "seated-dumbbell-shoulder-press",
-    "image_storage_path": "exercises/shared/seated-dumbbell-shoulder-press.webp",
+    "image_storage_path": "exercises/shared/seated-dumbbell-shoulder-press.jpg",
     "slug": "seated-dumbbell-shoulder-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Seated Elliptical",
@@ -6007,9 +6035,9 @@
       "cardio/machines"
     ],
     "image_key": "seated-elliptical",
-    "image_storage_path": "exercises/shared/seated-elliptical.webp",
+    "image_storage_path": "exercises/shared/seated-elliptical.jpg",
     "slug": "seated-elliptical",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Seated Hamstring Stretch",
@@ -6032,9 +6060,9 @@
       "flexibility/hamstrings-legs"
     ],
     "image_key": "seated-hamstring-stretch",
-    "image_storage_path": "exercises/shared/seated-hamstring-stretch.webp",
+    "image_storage_path": "exercises/shared/seated-hamstring-stretch.jpg",
     "slug": "seated-hamstring-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Seated Leg Curl",
@@ -6057,9 +6085,9 @@
       "strength/hamstrings"
     ],
     "image_key": "seated-leg-curl",
-    "image_storage_path": "exercises/shared/seated-leg-curl.webp",
+    "image_storage_path": "exercises/shared/seated-leg-curl.jpg",
     "slug": "seated-leg-curl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Seated Plantar Flex Stretch",
@@ -6084,7 +6112,7 @@
     "image_key": "seated-plantar-flex-stretch",
     "image_storage_path": "exercises/shared/seated-plantar-flex-stretch.webp",
     "slug": "seated-plantar-flex-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Seated Spinal Twist",
@@ -6107,9 +6135,9 @@
       "flexibility/back-spine"
     ],
     "image_key": "seated-spinal-twist",
-    "image_storage_path": "exercises/shared/seated-spinal-twist.webp",
+    "image_storage_path": "exercises/shared/seated-spinal-twist.jpg",
     "slug": "seated-spinal-twist",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Shadow Boxing",
@@ -6136,7 +6164,7 @@
     "image_key": "shadow-boxing",
     "image_storage_path": "exercises/shared/shadow-boxing.webp",
     "slug": "shadow-boxing",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Shoulder Capsule Stretch",
@@ -6164,7 +6192,7 @@
     "image_key": "shoulder-capsule-stretch",
     "image_storage_path": "exercises/shared/shoulder-capsule-stretch.webp",
     "slug": "shoulder-capsule-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Shoulder Cars",
@@ -6190,9 +6218,9 @@
       "flexibility/mobility"
     ],
     "image_key": "shoulder-cars",
-    "image_storage_path": "exercises/shared/shoulder-cars.webp",
+    "image_storage_path": "exercises/shared/shoulder-cars.jpg",
     "slug": "shoulder-cars",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Shrimp Squat",
@@ -6216,9 +6244,9 @@
       "bodyweight/quadriceps"
     ],
     "image_key": "shrimp-squats",
-    "image_storage_path": "exercises/shared/shrimp-squats.webp",
+    "image_storage_path": "exercises/shared/shrimp-squats.jpg",
     "slug": "shrimp-squats",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Side Plank",
@@ -6244,7 +6272,7 @@
     "image_key": "side-plank",
     "image_storage_path": "exercises/shared/side-plank.webp",
     "slug": "side-plank",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Single Arm Cable Row",
@@ -6267,9 +6295,9 @@
       "strength/back"
     ],
     "image_key": "single-arm-cable-row",
-    "image_storage_path": "exercises/shared/single-arm-cable-row.webp",
+    "image_storage_path": "exercises/shared/single-arm-cable-row.jpg",
     "slug": "single-arm-cable-row",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Single Leg Calf Raise",
@@ -6292,9 +6320,9 @@
       "bodyweight/calves"
     ],
     "image_key": "single-leg-calf-raise",
-    "image_storage_path": "exercises/shared/single-leg-calf-raise.webp",
+    "image_storage_path": "exercises/shared/single-leg-calf-raise.jpg",
     "slug": "single-leg-calf-raise",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Single Leg Forward Fold",
@@ -6317,9 +6345,9 @@
       "flexibility/hamstrings-legs"
     ],
     "image_key": "single-leg-forward-fold",
-    "image_storage_path": "exercises/shared/single-leg-forward-fold.webp",
+    "image_storage_path": "exercises/shared/single-leg-forward-fold.jpg",
     "slug": "single-leg-forward-fold",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Single Leg Glute Bridge",
@@ -6345,7 +6373,7 @@
     "image_key": "single-leg-glute-bridge",
     "image_storage_path": "exercises/shared/single-leg-glute-bridge.webp",
     "slug": "single-leg-glute-bridge",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Single Leg Romanian Deadlift",
@@ -6372,7 +6400,7 @@
     "image_key": "single-leg-romanian-deadlift",
     "image_storage_path": "exercises/shared/single-leg-romanian-deadlift.webp",
     "slug": "single-leg-romanian-deadlift",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Sissy Squat",
@@ -6398,7 +6426,7 @@
     "image_key": "sissy-squat",
     "image_storage_path": "exercises/shared/sissy-squat.webp",
     "slug": "sissy-squat",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Skater Jump",
@@ -6426,9 +6454,9 @@
       "cardio/hiit"
     ],
     "image_key": "skater-jump",
-    "image_storage_path": "exercises/shared/skater-jump.webp",
+    "image_storage_path": "exercises/shared/skater-jump.jpg",
     "slug": "skater-jump",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Skierg",
@@ -6455,9 +6483,9 @@
       "cardio/machines"
     ],
     "image_key": "skierg",
-    "image_storage_path": "exercises/shared/skierg.webp",
+    "image_storage_path": "exercises/shared/skierg.jpg",
     "slug": "skierg",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Skull Crusher",
@@ -6480,9 +6508,9 @@
       "strength/triceps"
     ],
     "image_key": "skull-crusher",
-    "image_storage_path": "exercises/shared/skull-crusher.webp",
+    "image_storage_path": "exercises/shared/skull-crusher.jpg",
     "slug": "skull-crusher",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Sleeper Stretch",
@@ -6510,7 +6538,7 @@
     "image_key": "sleeper-stretch",
     "image_storage_path": "exercises/shared/sleeper-stretch.webp",
     "slug": "sleeper-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Smith Machine Bench Press",
@@ -6535,7 +6563,7 @@
     "image_key": "smith-machine-bench-press",
     "image_storage_path": "exercises/shared/smith-machine-bench-press.webp",
     "slug": "smith-machine-bench-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Smith Machine Calf Raise",
@@ -6560,7 +6588,7 @@
     "image_key": "smith-machine-calf-raise",
     "image_storage_path": "exercises/shared/smith-machine-calf-raise.webp",
     "slug": "smith-machine-calf-raise",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Smith Machine Squat",
@@ -6583,9 +6611,9 @@
       "strength/quadriceps"
     ],
     "image_key": "smith-machine-squat",
-    "image_storage_path": "exercises/shared/smith-machine-squat.webp",
+    "image_storage_path": "exercises/shared/smith-machine-squat.jpeg",
     "slug": "smith-machine-squat",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Soccer Scrimmage",
@@ -6610,9 +6638,9 @@
       "cardio/sports-cardio"
     ],
     "image_key": "soccer-scrimmage",
-    "image_storage_path": "exercises/shared/soccer-scrimmage.webp",
+    "image_storage_path": "exercises/shared/soccer-scrimmage.jpg",
     "slug": "soccer-scrimmage",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Sphinx Pose",
@@ -6637,7 +6665,7 @@
     "image_key": "sphinx-pose",
     "image_storage_path": "exercises/shared/sphinx-pose.webp",
     "slug": "sphinx-pose",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Spider Curl",
@@ -6662,7 +6690,7 @@
     "image_key": "spider-curl",
     "image_storage_path": "exercises/shared/spider-curl.webp",
     "slug": "spider-curl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Spin Class Interval",
@@ -6688,9 +6716,9 @@
       "cardio/cycling"
     ],
     "image_key": "spin-class-interval",
-    "image_storage_path": "exercises/shared/spin-class-interval.webp",
+    "image_storage_path": "exercises/shared/spin-class-interval.jpg",
     "slug": "spin-class-interval",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Stair Climber",
@@ -6715,9 +6743,9 @@
       "cardio/machines"
     ],
     "image_key": "stair-climber",
-    "image_storage_path": "exercises/shared/stair-climber.webp",
+    "image_storage_path": "exercises/shared/stair-climber.avif",
     "slug": "stair-climber",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Stair Walk",
@@ -6743,9 +6771,9 @@
       "cardio/walking"
     ],
     "image_key": "stair-walk",
-    "image_storage_path": "exercises/shared/stair-walk.webp",
+    "image_storage_path": "exercises/shared/stair-walk.jpg",
     "slug": "stair-walk",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Standing Calf Raise",
@@ -6768,9 +6796,9 @@
       "strength/calves"
     ],
     "image_key": "standing-calf-raise",
-    "image_storage_path": "exercises/shared/standing-calf-raise.webp",
+    "image_storage_path": "exercises/shared/standing-calf-raise.jpg",
     "slug": "standing-calf-raise",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Standing Dumbbell Shoulder Press",
@@ -6793,9 +6821,9 @@
       "strength/shoulders"
     ],
     "image_key": "standing-dumbbell-shoulder-press",
-    "image_storage_path": "exercises/shared/standing-dumbbell-shoulder-press.webp",
+    "image_storage_path": "exercises/shared/standing-dumbbell-shoulder-press.jpg",
     "slug": "standing-dumbbell-shoulder-press",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Standing Forward Stretch",
@@ -6818,9 +6846,9 @@
       "flexibility/full-body"
     ],
     "image_key": "standing-forward-stretch",
-    "image_storage_path": "exercises/shared/standing-forward-stretch.webp",
+    "image_storage_path": "exercises/shared/standing-forward-stretch.avif",
     "slug": "standing-forward-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Standing Hamstring Stretch",
@@ -6843,9 +6871,34 @@
       "flexibility/hamstrings-legs"
     ],
     "image_key": "standing-hamstring-stretch",
-    "image_storage_path": "exercises/shared/standing-hamstring-stretch.webp",
+    "image_storage_path": "exercises/shared/standing-hamstring-stretch.png",
     "slug": "standing-hamstring-stretch",
-    "content_version": 4
+    "content_version": 5
+  },
+  {
+    "name": "Standing Side Bend",
+    "category": "Mobility",
+    "primary_muscles": [
+      "back"
+    ],
+    "secondary_muscles": [],
+    "equipment": "mat",
+    "exercise_type": "other",
+    "movement_pattern": "mobility",
+    "difficulty": "beginner",
+    "instructions": "1) Set a stable base for Standing Side Bend on a mat with an easy breath.\n2) Initiate the spinal motion from the intended region (neck, mid-back, or low back as prescribed) rather than heaving from one stuck spot.\n3) Move through a comfortable arc, matching breath to the motion (often exhale into flexion, inhale into extension—but comfort rules).\n4) Return to neutral with control.",
+    "tips": "- Small, honest ranges beat dramatic collapsing shapes.\n- Shorten the range or use support until the pattern feels stable.\n- Add a small pause in the hardest position before increasing load or volume.\n- Keep hips relatively quiet unless the drill includes hip motion.\n- Start light and prioritize clean positions over speed or load.",
+    "description": "Standing Side Bend explores controlled spinal flexion, extension, or rotation to keep the trunk moving segment by segment. Primary emphasis is on back. Move like you are oiling each vertebra—smooth and pain-free beats aggressive end-range forcing. Treat Standing Side Bend as practice for positions you want under fatigue—not just a checkbox set.",
+    "common_mistakes": "- Dumping into one hinge point → distribute motion along the spine.\n- Holding breath → keep air moving.\n- Rushing rotations → move as if balancing a glass on the head.\n- Forcing end range with arms → let the torso lead.",
+    "safety_notes": "- Stop for sharp spine pain, dizziness, or neurological symptoms.\n- Disc-sensitive individuals may prefer smaller ranges and more support.\n- Warm up before deep end-range twisting under load.",
+    "met_value": 2.5,
+    "library_paths": [
+      "flexibility/back-spine"
+    ],
+    "image_key": "standing-side-bend",
+    "image_storage_path": "exercises/shared/standing-side-bend.png",
+    "slug": "standing-side-bend",
+    "content_version": 5
   },
   {
     "name": "Standing Quad Stretch",
@@ -6870,32 +6923,7 @@
     "image_key": "standing-squad-stretch",
     "image_storage_path": "exercises/shared/standing-squad-stretch.webp",
     "slug": "standing-squad-stretch",
-    "content_version": 4
-  },
-  {
-    "name": "Standing Side Bend",
-    "category": "Mobility",
-    "primary_muscles": [
-      "back"
-    ],
-    "secondary_muscles": [],
-    "equipment": "mat",
-    "exercise_type": "other",
-    "movement_pattern": "mobility",
-    "difficulty": "beginner",
-    "instructions": "1) Set a stable base for Standing Side Bend on a mat with an easy breath.\n2) Initiate the spinal motion from the intended region (neck, mid-back, or low back as prescribed) rather than heaving from one stuck spot.\n3) Move through a comfortable arc, matching breath to the motion (often exhale into flexion, inhale into extension—but comfort rules).\n4) Return to neutral with control.",
-    "tips": "- Small, honest ranges beat dramatic collapsing shapes.\n- Shorten the range or use support until the pattern feels stable.\n- Add a small pause in the hardest position before increasing load or volume.\n- Keep hips relatively quiet unless the drill includes hip motion.\n- Start light and prioritize clean positions over speed or load.",
-    "description": "Standing Side Bend explores controlled spinal flexion, extension, or rotation to keep the trunk moving segment by segment. Primary emphasis is on back. Move like you are oiling each vertebra—smooth and pain-free beats aggressive end-range forcing. Treat Standing Side Bend as practice for positions you want under fatigue—not just a checkbox set.",
-    "common_mistakes": "- Dumping into one hinge point → distribute motion along the spine.\n- Holding breath → keep air moving.\n- Rushing rotations → move as if balancing a glass on the head.\n- Forcing end range with arms → let the torso lead.",
-    "safety_notes": "- Stop for sharp spine pain, dizziness, or neurological symptoms.\n- Disc-sensitive individuals may prefer smaller ranges and more support.\n- Warm up before deep end-range twisting under load.",
-    "met_value": 2.5,
-    "library_paths": [
-      "flexibility/back-spine"
-    ],
-    "image_key": "standing-side-bend",
-    "image_storage_path": "exercises/shared/standing-side-bend.webp",
-    "slug": "standing-side-bend",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Static Full Body Stretch",
@@ -6920,7 +6948,7 @@
     "image_key": "static-full-body-stretch",
     "image_storage_path": "exercises/shared/static-full-body-stretch.webp",
     "slug": "static-full-body-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Stationary Bike",
@@ -6948,7 +6976,7 @@
     "image_key": "stationary-bike",
     "image_storage_path": "exercises/shared/stationary-bike.webp",
     "slug": "stationary-bike",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Steady-State Row",
@@ -6974,10 +7002,10 @@
     "library_paths": [
       "cardio/cycling"
     ],
-    "image_key": "stead-state-row",
-    "image_storage_path": "exercises/shared/stead-state-row.webp",
-    "slug": "stead-state-row",
-    "content_version": 4
+    "image_key": "steady-state-row",
+    "image_storage_path": "exercises/shared/steady-state-row.jpg",
+    "slug": "steady-state-row",
+    "content_version": 5
   },
   {
     "name": "Step Up",
@@ -7004,7 +7032,7 @@
     "image_key": "step-up",
     "image_storage_path": "exercises/shared/step-up.webp",
     "slug": "step-up",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Stiff Leg Deadlifts",
@@ -7031,7 +7059,7 @@
     "image_key": "stiff-leg-deadlifts",
     "image_storage_path": "exercises/shared/stiff-leg-deadlifts.webp",
     "slug": "stiff-leg-deadlifts",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Straight Arm Pulldown",
@@ -7054,9 +7082,9 @@
       "strength/back"
     ],
     "image_key": "straight-arm-pulldown",
-    "image_storage_path": "exercises/shared/straight-arm-pulldown.webp",
+    "image_storage_path": "exercises/shared/straight-arm-pulldown.jpg",
     "slug": "straight-arm-pulldown",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Sumo Deadlift",
@@ -7085,7 +7113,7 @@
     "image_key": "sumo-deadlift",
     "image_storage_path": "exercises/shared/sumo-deadlift.webp",
     "slug": "sumo-deadlift",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Sun Salutation A",
@@ -7112,7 +7140,7 @@
     "image_key": "sun-salutation-a",
     "image_storage_path": "exercises/shared/sun-salutation-a.webp",
     "slug": "sun-salutation-a",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Supine Hamstring Strap Stretch",
@@ -7137,7 +7165,7 @@
     "image_key": "supine-hamstring-strap-stretch",
     "image_storage_path": "exercises/shared/supine-hamstring-strap-stretch.webp",
     "slug": "supine-hamstring-strap-stretch",
-    "content_version": 4
+    "content_version": 6
   },
   {
     "name": "Supine Twist",
@@ -7162,9 +7190,9 @@
       "flexibility/full-body"
     ],
     "image_key": "supine-twist",
-    "image_storage_path": "exercises/shared/supine-twist.webp",
+    "image_storage_path": "exercises/shared/supine-twist.jpg",
     "slug": "supine-twist",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Swim Easy Laps",
@@ -7190,9 +7218,9 @@
       "cardio/swimming"
     ],
     "image_key": "swim-easy-laps",
-    "image_storage_path": "exercises/shared/swim-easy-laps.webp",
+    "image_storage_path": "exercises/shared/swim-easy-laps.jpg",
     "slug": "swim-easy-laps",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Swim Intervals",
@@ -7218,9 +7246,9 @@
       "cardio/swimming"
     ],
     "image_key": "swim-intervals",
-    "image_storage_path": "exercises/shared/swim-intervals.webp",
+    "image_storage_path": "exercises/shared/swim-intervals.jpg",
     "slug": "swim-intervals",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "T-Bar Row",
@@ -7245,7 +7273,7 @@
     "image_key": "t-bar-row",
     "image_storage_path": "exercises/shared/t-bar-row.webp",
     "slug": "t-bar-row",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Tabata",
@@ -7271,9 +7299,9 @@
       "cardio/hiit"
     ],
     "image_key": "tabata",
-    "image_storage_path": "exercises/shared/tabata.webp",
+    "image_storage_path": "exercises/shared/tabata.jpg",
     "slug": "tabata",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Technique Row",
@@ -7300,9 +7328,9 @@
       "cardio/cycling"
     ],
     "image_key": "technique-row",
-    "image_storage_path": "exercises/shared/technique-row.webp",
+    "image_storage_path": "exercises/shared/technique-row.jpeg",
     "slug": "technique-row",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Tempo Run",
@@ -7329,9 +7357,9 @@
       "cardio/running"
     ],
     "image_key": "tempo-run",
-    "image_storage_path": "exercises/shared/tempo-run.webp",
+    "image_storage_path": "exercises/shared/tempo-run.jpg",
     "slug": "tempo-run",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Tennis Rally",
@@ -7356,9 +7384,9 @@
       "cardio/sports-cardio"
     ],
     "image_key": "tennis-rally",
-    "image_storage_path": "exercises/shared/tennis-rally.webp",
+    "image_storage_path": "exercises/shared/tennis-rally.jpg",
     "slug": "tennis-rally",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Thoracic Opener",
@@ -7386,7 +7414,7 @@
     "image_key": "thoracic-opener",
     "image_storage_path": "exercises/shared/thoracic-opener.webp",
     "slug": "thoracic-opener",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Thread The Needle",
@@ -7411,9 +7439,9 @@
       "flexibility/full-body"
     ],
     "image_key": "thread-the-needle",
-    "image_storage_path": "exercises/shared/thread-the-needle.webp",
+    "image_storage_path": "exercises/shared/thread-the-needle.jpeg",
     "slug": "thread-the-needle",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Tibialis Raise Stretch",
@@ -7438,7 +7466,7 @@
     "image_key": "tibialis-raise-stretch",
     "image_storage_path": "exercises/shared/tibialis-raise-stretch.webp",
     "slug": "tibialis-raise-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Towel Pull-Up Hold",
@@ -7492,9 +7520,9 @@
       "cardio/running"
     ],
     "image_key": "track-repeats",
-    "image_storage_path": "exercises/shared/track-repeats.webp",
+    "image_storage_path": "exercises/shared/track-repeats.jpg",
     "slug": "track-repeats",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Trapbar Deadlift",
@@ -7517,9 +7545,9 @@
       "strength/quadriceps"
     ],
     "image_key": "trapbar-deadlift",
-    "image_storage_path": "exercises/shared/trapbar-deadlift.webp",
+    "image_storage_path": "exercises/shared/trapbar-deadlift.jpg",
     "slug": "trapbar-deadlift",
-    "content_version": 5
+    "content_version": 6
   },
   {
     "name": "Treadmill Incline Interval",
@@ -7546,9 +7574,9 @@
       "cardio/machines"
     ],
     "image_key": "treadmill-incline-interval",
-    "image_storage_path": "exercises/shared/treadmill-incline-interval.webp",
+    "image_storage_path": "exercises/shared/treadmill-incline-interval.avif",
     "slug": "treadmill-incline-interval",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Treadmill Run",
@@ -7575,9 +7603,9 @@
       "cardio/running"
     ],
     "image_key": "treadmill-run",
-    "image_storage_path": "exercises/shared/treadmill-run.webp",
+    "image_storage_path": "exercises/shared/treadmill-run.jpg",
     "slug": "treadmill-run",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Tree Pose",
@@ -7602,9 +7630,9 @@
       "flexibility/yoga"
     ],
     "image_key": "tree-pose",
-    "image_storage_path": "exercises/shared/tree-pose.webp",
+    "image_storage_path": "exercises/shared/tree-pose.jpg",
     "slug": "tree-pose",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Triceps Kickback",
@@ -7629,7 +7657,7 @@
     "image_key": "tricep-kickback",
     "image_storage_path": "exercises/shared/tricep-kickback.webp",
     "slug": "tricep-kickback",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Triceps Pushdown",
@@ -7652,9 +7680,9 @@
       "strength/triceps"
     ],
     "image_key": "tricep-pushdown",
-    "image_storage_path": "exercises/shared/tricep-pushdown.webp",
+    "image_storage_path": "exercises/shared/tricep-pushdown.jpg",
     "slug": "tricep-pushdown",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Tuck Jump",
@@ -7684,7 +7712,7 @@
     "image_key": "tuck-jump",
     "image_storage_path": "exercises/shared/tuck-jump.webp",
     "slug": "tuck-jump",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Upright Row",
@@ -7709,7 +7737,7 @@
     "image_key": "upright-row",
     "image_storage_path": "exercises/shared/upright-row.webp",
     "slug": "upright-row",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Volleyball Game",
@@ -7736,7 +7764,7 @@
     "image_key": "volleyball-game",
     "image_storage_path": "exercises/shared/volleyball-game.webp",
     "slug": "volleyball-game",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Walking",
@@ -7762,9 +7790,9 @@
       "cardio/walking"
     ],
     "image_key": "walking",
-    "image_storage_path": "exercises/shared/walking.webp",
+    "image_storage_path": "exercises/shared/walking.jpg",
     "slug": "walking",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Wall Angel",
@@ -7790,9 +7818,9 @@
       "flexibility/chest-shoulder"
     ],
     "image_key": "wall-angel",
-    "image_storage_path": "exercises/shared/wall-angel.webp",
+    "image_storage_path": "exercises/shared/wall-angel.jpg",
     "slug": "wall-angel",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Wall Ankle Mobilization",
@@ -7815,9 +7843,9 @@
       "flexibility/ankles"
     ],
     "image_key": "wall-ankle-mobilization",
-    "image_storage_path": "exercises/shared/wall-ankle-mobilization.webp",
+    "image_storage_path": "exercises/shared/wall-ankle-mobilization.jpg",
     "slug": "wall-ankle-mobilization",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Wall Sit",
@@ -7842,7 +7870,7 @@
     "image_key": "wall-sit",
     "image_storage_path": "exercises/shared/wall-sit.webp",
     "slug": "wall-sit",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Warrior II",
@@ -7867,9 +7895,9 @@
       "flexibility/yoga"
     ],
     "image_key": "warrior-2",
-    "image_storage_path": "exercises/shared/warrior-2.webp",
+    "image_storage_path": "exercises/shared/warrior-2.jpg",
     "slug": "warrior-2",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Wide Grip Lat Pulldown",
@@ -7892,9 +7920,9 @@
       "strength/back"
     ],
     "image_key": "wide-grip-lat-pulldown",
-    "image_storage_path": "exercises/shared/wide-grip-lat-pulldown.webp",
+    "image_storage_path": "exercises/shared/wide-grip-lat-pulldown.jpg",
     "slug": "wide-grip-lat-pulldown",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Wide-Grip Push-Up",
@@ -7920,7 +7948,7 @@
     "image_key": "wide-grip-push-up",
     "image_storage_path": "exercises/shared/wide-grip-push-up.webp",
     "slug": "wide-grip-push-up",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "World's Greatest Stretch",
@@ -7946,7 +7974,7 @@
     "image_key": "world-greatest-stretch",
     "image_storage_path": "exercises/shared/world-greatest-stretch.webp",
     "slug": "world-greatest-stretch",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Wrist Curl",
@@ -7971,7 +7999,7 @@
     "image_key": "wrist-curl",
     "image_storage_path": "exercises/shared/wrist-curl.webp",
     "slug": "wrist-curl",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Wrist Mobility Circles",
@@ -7996,7 +8024,7 @@
     "image_key": "wrist-mobility-circles",
     "image_storage_path": "exercises/shared/wrist-mobility-circles.webp",
     "slug": "wrist-mobility-circles",
-    "content_version": 4
+    "content_version": 5
   },
   {
     "name": "Yoga Flow",
@@ -8023,6 +8051,6 @@
     "image_key": "yoga-flow",
     "image_storage_path": "exercises/shared/yoga-flow.webp",
     "slug": "yoga-flow",
-    "content_version": 4
+    "content_version": 5
   }
 ]

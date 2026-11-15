@@ -59,8 +59,8 @@ html.dark {
   --color-carbs: var(--carbs);
   --color-fat: var(--fat);
   --color-warning: #c47f1a;
-  --font-display: var(--font-display);
-  --font-sans: var(--font-geist);
+  --font-display: var(--font-bricolage);
+  --font-sans: var(--font-bricolage);
   --font-mono: var(--font-mono);
   --shadow-phone: var(--shadow);
   --shadow-soft: var(--shadow-soft);
@@ -79,7 +79,7 @@ html,
 body {
   background: var(--canvas);
   color: var(--ink);
-  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   min-height: 100%;
 }
 

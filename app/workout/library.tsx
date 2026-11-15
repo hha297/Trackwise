@@ -26,6 +26,7 @@ import {
 } from '@/features/workout/calculations';
 import { ExerciseListCard } from '@/features/workout/components/exercise-list-card';
 import { TemplateCard } from '@/features/workout/components/template-card';
+import { WorkoutFilterChip as FilterChip } from '@/features/workout/components/workout-filter-chip';
 import {
   useExerciseFavorites,
   useExercises,
@@ -36,34 +37,6 @@ import { getMuscleImage } from '@/features/workout/muscle-assets';
 import type { Exercise } from '@/features/workout/types';
 import { radii, withAlpha } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
-
-function FilterChip({
-  label,
-  selected,
-  onPress,
-}: {
-  label: string;
-  selected: boolean;
-  onPress: () => void;
-}) {
-  const colors = useThemeColors();
-  return (
-    <Pressable
-      onPress={onPress}
-      className="px-3 py-2"
-      style={{
-        borderRadius: radii.pill,
-        backgroundColor: selected ? colors.surface : colors.surfaceMuted,
-        borderWidth: selected ? 1.5 : 1,
-        borderColor: selected ? colors.borderStrong : colors.border,
-      }}
-    >
-      <Text variant="caption" tone={selected ? 'primary' : 'secondary'}>
-        {label}
-      </Text>
-    </Pressable>
-  );
-}
 
 export default function WorkoutLibraryScreen() {
   const { t } = useTranslation();
@@ -113,8 +86,8 @@ function SubcategoryPicker({ top }: { top: LibraryTopCategory }) {
               {t(`workout.categorySubtitle.${top}`)}
             </Text>
           </View>
-          <Pressable onPress={() => router.back()}>
-            <Text variant="bodyStrong" tone="brand">
+          <Pressable onPress={() => router.back()} hitSlop={8}>
+            <Text variant="bodyStrong" tone="secondary">
               {t('workout.back')}
             </Text>
           </Pressable>
@@ -340,8 +313,8 @@ function ExerciseLibrary({ top, sub }: { top: LibraryTopCategory; sub: string })
                 : ''}
             </Text>
           </View>
-          <Pressable onPress={() => router.back()}>
-            <Text variant="bodyStrong" tone="brand">
+          <Pressable onPress={() => router.back()} hitSlop={8}>
+            <Text variant="bodyStrong" tone="secondary">
               {t('workout.back')}
             </Text>
           </Pressable>

@@ -8,6 +8,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BrandMark } from '@/components/brand-mark';
@@ -45,14 +46,16 @@ export function SetupShell({
   children,
   onBack,
   onContinue,
-  continueLabel = 'Continue',
+  continueLabel,
   continueDisabled,
   continueLoading,
   footer,
   hideContinue,
 }: SetupShellProps) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const progress = stepTotal > 0 ? (stepIndex + 1) / stepTotal : 0;
+  const resolvedContinueLabel = continueLabel ?? t('setup.continue');
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -68,21 +71,21 @@ export function SetupShell({
             {onBack ? (
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Back"
+                accessibilityLabel={t('setup.back')}
                 onPress={onBack}
                 hitSlop={10}
                 style={styles.backRow}
               >
                 <ArrowLeft size={18} color={colors.primary} strokeWidth={2.5} />
                 <Text variant="bodyStrong" style={{ color: colors.primary }}>
-                  Back
+                  {t('setup.back')}
                 </Text>
               </Pressable>
             ) : (
               <View style={styles.topSpacer} />
             )}
             <Text variant="caption" tone="muted">
-              Step {stepIndex + 1} of {stepTotal}
+              {t('setup.stepOf', { current: stepIndex + 1, total: stepTotal })}
             </Text>
           </View>
 
@@ -137,7 +140,7 @@ export function SetupShell({
               {!hideContinue && onContinue ? (
                 <View style={styles.cta}>
                   <Button
-                    label={continueLabel}
+                    label={resolvedContinueLabel}
                     variant="primary"
                     size="lg"
                     onPress={onContinue}

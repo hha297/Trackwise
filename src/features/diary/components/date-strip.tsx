@@ -98,12 +98,7 @@ export function DateStrip({
                 justifyContent: 'center',
               }}
             >
-              <Text
-                variant="caption"
-                tone="secondary"
-                numberOfLines={1}
-                style={{ fontSize: 11, marginBottom: 4 }}
-              >
+              <Text variant="fine" tone="secondary" numberOfLines={1} style={{ marginBottom: 4 }}>
                 {item.weekday}
               </Text>
               <View

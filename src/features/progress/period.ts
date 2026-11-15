@@ -61,11 +61,12 @@ export function mergeWeekBuckets(
   return merged;
 }
 
-/** 7 → daily, 30 → weekly, 90 → biweekly (keeps charts readable). */
-export function trendBucketMode(period: ProgressPeriod): TrendBucketMode {
-  if (period === 7) return 'daily';
-  if (period === 90) return 'biweekly';
-  return 'weekly';
+/**
+ * Progress nutrition/workout charts use one column per day for every period
+ * (7 / 30 / 90). Weekly/biweekly modes remain for helpers that still need them.
+ */
+export function trendBucketMode(_period: ProgressPeriod): TrendBucketMode {
+  return 'daily';
 }
 
 export function trendSourceBuckets(

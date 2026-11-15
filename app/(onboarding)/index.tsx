@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BrandMark } from '@/components/brand-mark';
@@ -12,32 +13,16 @@ import { reportError } from '@/lib/errors/report-error';
 import { elevation, radii, spacing, withAlpha } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 
-const steps = [
-  {
-    title: 'Log meals without the fuss',
-    body: 'Search, scan, or add a food. Calories and macros land in your diary automatically.',
-  },
-  {
-    title: 'See the day at a glance',
-    body: 'Track intake against your target so cutting or bulking stays intentional.',
-  },
-  {
-    title: 'Train in the same place',
-    body: 'Log strength and cardio next to your food — no extra notebook.',
-  },
-  {
-    title: 'Goals that match your phase',
-    body: 'Set a cut, maintain, or bulk target and keep the daily balance clear.',
-  },
-];
+const STEP_KEYS = ['meals', 'glance', 'train', 'goals'] as const;
 
 export default function OnboardingScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const { completeOnboarding } = useBootstrap();
   const [index, setIndex] = useState(0);
   const [busy, setBusy] = useState(false);
-  const step = steps[index];
-  const isLast = index === steps.length - 1;
+  const stepKey = STEP_KEYS[index];
+  const isLast = index === STEP_KEYS.length - 1;
 
   async function finish(href: '/(auth)/sign-up' | '/(auth)/sign-in') {
     if (busy) return;
@@ -60,7 +45,7 @@ export default function OnboardingScreen() {
             {!isLast ? (
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Skip onboarding"
+                accessibilityLabel={t('onboarding.skipA11y')}
                 disabled={busy}
                 onPress={() => {
                   void finish('/(auth)/sign-up');
@@ -68,7 +53,7 @@ export default function OnboardingScreen() {
                 hitSlop={12}
               >
                 <Text variant="bodyStrong" style={{ color: colors.primary }}>
-                  Skip
+                  {t('onboarding.skip')}
                 </Text>
               </Pressable>
             ) : (
@@ -92,17 +77,17 @@ export default function OnboardingScreen() {
               ]}
             >
               <Text variant="display" className="mb-3">
-                {step.title}
+                {t(`onboarding.steps.${stepKey}.title`)}
               </Text>
               <Text variant="body" tone="secondary">
-                {step.body}
+                {t(`onboarding.steps.${stepKey}.body`)}
               </Text>
             </View>
 
             <View className="flex-row items-center gap-2">
-              {steps.map((item, stepIndex) => (
+              {STEP_KEYS.map((key, stepIndex) => (
                 <View
-                  key={item.title}
+                  key={key}
                   style={{
                     height: 8,
                     width: stepIndex === index ? 24 : 8,
@@ -121,7 +106,7 @@ export default function OnboardingScreen() {
 
           <View className="gap-3 pb-2">
             <Button
-              label={isLast ? 'Get started' : 'Next'}
+              label={isLast ? t('onboarding.getStarted') : t('onboarding.next')}
               variant="primary"
               size="lg"
               loading={busy && isLast}
@@ -143,7 +128,7 @@ export default function OnboardingScreen() {
                 className="items-center py-2"
               >
                 <Text variant="bodyStrong" style={{ color: colors.primary }}>
-                  I already have an account
+                  {t('onboarding.alreadyHaveAccount')}
                 </Text>
               </Pressable>
             ) : null}

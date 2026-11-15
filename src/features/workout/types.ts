@@ -44,6 +44,15 @@ export type WorkoutListItem = {
   estimated_calories: number;
   status?: string;
   active_duration_sec?: number | null;
+  set_count?: number;
+  volume_kg?: number;
+  previews?: {
+    name: string;
+    image_url?: string | null;
+    image_storage_path?: string | null;
+    image_key?: string | null;
+    slug?: string | null;
+  }[];
 };
 
 export type WorkoutTemplateGoal =

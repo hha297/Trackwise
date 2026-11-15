@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
@@ -8,30 +9,10 @@ import { SelectionCard } from '@/features/setup/selection-card';
 import { useSetup } from '@/features/setup/setup-provider';
 import { SetupShell } from '@/features/setup/setup-shell';
 
-const OPTIONS: { value: ActivityLevel; label: string; description: string }[] = [
-  {
-    value: 'sedentary',
-    label: 'Mostly sitting',
-    description: 'Desk work, little walking outside workouts.',
-  },
-  {
-    value: 'light',
-    label: 'Light activity',
-    description: 'Occasional walking or light chores.',
-  },
-  {
-    value: 'moderate',
-    label: 'On your feet often',
-    description: 'Frequent walking or standing through the day.',
-  },
-  {
-    value: 'demanding',
-    label: 'Physically demanding work',
-    description: 'Manual labor or being very active most of the day.',
-  },
-];
+const LEVELS: ActivityLevel[] = ['sedentary', 'light', 'moderate', 'demanding'];
 
 export function ActivityStep() {
+  const { t } = useTranslation();
   const { answers, progress, goNext, goBack, saving, error } = useSetup();
   const [level, setLevel] = useState<ActivityLevel | null>(answers.activityLevel);
   const [steps, setSteps] = useState(
@@ -41,8 +22,8 @@ export function ActivityStep() {
 
   return (
     <SetupShell
-      title="Daily activity"
-      subtitle="Outside of workouts — how active is a typical day?"
+      title={t('setup.activity.title')}
+      subtitle={t('setup.activity.subtitle')}
       stepIndex={progress.index}
       stepTotal={progress.total}
       onBack={() => void goBack()}
@@ -59,25 +40,25 @@ export function ActivityStep() {
       }}
     >
       <View className="gap-3">
-        {OPTIONS.map((option) => (
+        {LEVELS.map((value) => (
           <SelectionCard
-            key={option.value}
-            label={option.label}
-            description={option.description}
-            selected={level === option.value}
-            onPress={() => setLevel(option.value)}
+            key={value}
+            label={t(`setup.activity.${value}.label`)}
+            description={t(`setup.activity.${value}.description`)}
+            selected={level === value}
+            onPress={() => setLevel(value)}
           />
         ))}
         <Input
-          label="Average daily steps (optional)"
+          label={t('setup.activity.stepsLabel')}
           value={steps}
           onChangeText={setSteps}
           keyboardType="number-pad"
-          placeholder="e.g. 8000"
+          placeholder={t('setup.activity.stepsPlaceholder')}
         />
         {touched && !level ? (
           <Text variant="caption" tone="error">
-            Choose an activity level
+            {t('setup.activity.error')}
           </Text>
         ) : null}
         {error ? (

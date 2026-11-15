@@ -27,7 +27,7 @@ Warm bone/cream developer-notebook surfaces with dark ink type and a single scar
 | Role      | Reference                         | Trackwise substitute    | Notes                       |
 | --------- | --------------------------------- | ----------------------- | --------------------------- |
 | Display   | `rb-freigeist-neue` (proprietary) | **Bricolage Grotesque** | OFL via Google Fonts / Expo |
-| Body / UI | `basier-square` (proprietary)     | **Geist**               | OFL via Google Fonts / Expo |
+| Body / UI | `basier-square` (proprietary)     | **Bricolage Grotesque** | Same family as display      |
 | Mono      | JetBrains Mono                    | **JetBrains Mono**      | Metrics / small data labels |
 
 ### Mobile scale
@@ -37,11 +37,12 @@ Warm bone/cream developer-notebook surfaces with dark ink type and a single scar
 | `display`           | 36–40 | Bricolage 800     | ≈ −1.2   |
 | `headingLarge`      | 28    | Bricolage 700     | ≈ −0.8   |
 | `headingMedium`     | 22    | Bricolage 600     | ≈ −0.4   |
-| `headingSmall`      | 18    | Geist 600         | ≈ −0.2   |
-| `body` / strong     | 16    | Geist 400 / 600   | 0        |
-| `caption` / `label` | 13–14 | Geist 500–600     | 0        |
-| `button`            | 16    | Geist 600         | 0        |
-| `metric` (mono)     | 14–18 | JetBrains 600–700 | 0        |
+| `headingSmall`      | 18    | Bricolage 600     | ≈ −0.2   |
+| `body` / strong     | 16    | Bricolage 400 / 600 | 0      |
+| `caption` / `label` / `bodySmall` | 16 | Bricolage 500–600 | 0 |
+| `fine`              | 14    | Bricolage 500     | 0        |
+| `button`            | 16    | Bricolage 600     | 0        |
+| `metric` (mono)     | 18    | JetBrains 600–700 | 0        |
 
 Use display type for screen titles, calorie totals, and key nutrition stats. Use mono sparingly for numeric metadata.
 
@@ -123,8 +124,8 @@ Minimal floating dock on surface; soft hairline; pill Scan in primary; active la
 
 ## 6. Do / Don't
 
-**Do:** typography-first hierarchy; Bricolage display; Geist UI; scarce green CTAs; pill actions; warm bone canvas.  
-**Don't:** Freigeist/Basier without license; Replicate orange brand; Sentry/PostHog palettes; mono everywhere; change `#00D95F`.
+**Do:** typography-first hierarchy; Bricolage for display + UI; scarce green CTAs; pill actions; warm bone canvas.  
+**Don't:** Freigeist/Basier/Geist; Replicate orange brand; Sentry/PostHog palettes; mono everywhere; change `#00D95F`.
 
 ---
 
@@ -139,6 +140,7 @@ Minimal floating dock on surface; soft hairline; pill Scan in primary; active la
 | Green        | `primary`                                    |
 | Display type | `fonts.display*` + Text `display` / headings |
 | Body type    | `fonts.body*`                                |
+| Fine meta    | Text `fine` (14) — kcal / remaining / chips  |
 | Mono         | `fonts.mono*` / Text `metric`                |
 
 `src/theme/*`, `src/components/ui/*`. Prefer `useThemeColors()`.

@@ -1,13 +1,51 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@/features/auth/auth-provider';
 import { scaleNutrition, sumMacros, type MacroTotals } from '@/features/diary/balance';
 import { getSupabase } from '@/lib/supabase/client';
+import { useDebouncedValue } from '@/lib/use-debounced-value';
 
 import { fetchFoodEntries } from './api';
-import type { Food, FoodEntry, MealType } from './types';
+import { isOpenFoodFactsSearchId } from './open-food-facts';
+import { appFoodFromNormalized, isExternalProviderFoodId } from './providers/map-to-app-food';
+import { orchestrateFoodSearch } from './providers/orchestrate';
+import type { Food, FoodEntry, FoodEntrySource, MealType } from './types';
 
 export type { Food, FoodEntry, MealType };
+export { isOpenFoodFactsSearchId, isExternalProviderFoodId };
+
+const FOOD_SEARCH_COLUMNS =
+  'id, name, brand, barcode, serving_label, serving_grams, calories, protein_g, carbs_g, fat_g, source, image_url, nutrition_basis, basis_unit, basis_amount';
+
+/** Wait after typing stops before hitting FatSecret / OFF (rate-limit friendly). */
+const FOOD_SEARCH_DEBOUNCE_MS = 2500;
+
+function escapeIlikeTerm(term: string) {
+  // PostgREST `.or()` splits on commas; `%`/`_` are ILIKE wildcards.
+  return term.replace(/[%_,]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function mergeFoodSearchResults(local: Food[], remote: Food[], limit = 30): Food[] {
+  const seenBarcodes = new Set(
+    local.map((row) => row.barcode?.trim()).filter((value): value is string => Boolean(value)),
+  );
+  const seenNames = new Set(local.map((row) => row.name.trim().toLowerCase()));
+  const merged = [...local];
+
+  for (const row of remote) {
+    const barcode = row.barcode?.trim();
+    if (barcode && seenBarcodes.has(barcode)) continue;
+    const nameKey = row.name.trim().toLowerCase();
+    if (!barcode && seenNames.has(nameKey)) continue;
+    if (barcode) seenBarcodes.add(barcode);
+    seenNames.add(nameKey);
+    merged.push(row);
+    if (merged.length >= limit) break;
+  }
+
+  return merged.slice(0, limit);
+}
 
 export function useFoodEntries(dateKey: string) {
   const { session } = useAuth();
@@ -36,26 +74,54 @@ export function useDayFoodTotals(dateKey: string) {
 
 export function useSearchFoods(term: string) {
   const { session } = useAuth();
+  const { i18n } = useTranslation();
   const userId = session?.user.id;
-  const trimmed = term.trim();
+  const language = i18n.language;
+  const debouncedTerm = useDebouncedValue(term, FOOD_SEARCH_DEBOUNCE_MS);
+  const trimmed = escapeIlikeTerm(debouncedTerm);
+  const typingPending =
+    escapeIlikeTerm(term).length >= 2 && escapeIlikeTerm(term) !== trimmed;
 
-  return useQuery({
-    queryKey: ['foods', 'search', userId, trimmed],
+  const query = useQuery({
+    queryKey: ['foods', 'search', userId, trimmed, language],
     enabled: Boolean(userId) && trimmed.length >= 2,
-    queryFn: async (): Promise<Food[]> => {
+    queryFn: async ({ signal }): Promise<Food[]> => {
       const supabase = getSupabase();
       if (!supabase || !userId) return [];
+
       const { data, error } = await supabase
         .from('foods')
-        .select(
-          'id, name, brand, barcode, serving_label, serving_grams, calories, protein_g, carbs_g, fat_g, source, image_url',
-        )
+        .select(FOOD_SEARCH_COLUMNS)
         .or(`name.ilike.%${trimmed}%,brand.ilike.%${trimmed}%`)
+        .order('name', { ascending: true })
         .limit(30);
       if (error) throw error;
-      return data ?? [];
+
+      const local = (data ?? []) as Food[];
+      let remote: Food[] = [];
+      try {
+        const orchestrated = await orchestrateFoodSearch({
+          query: trimmed,
+          language,
+          signal,
+          limit: 24,
+        });
+        remote = orchestrated.foods.map(appFoodFromNormalized);
+      } catch {
+        // Soft-fail remote providers: show local hits or empty "not found".
+        remote = [];
+      }
+
+      // Local (user + catalog) first, then provider fill-ins.
+      return mergeFoodSearchResults(local, remote, 30);
     },
   });
+
+  return {
+    ...query,
+    /** True while the user is still typing (debounce window) or a fetch is in flight. */
+    isSearching: typingPending || query.isFetching,
+  };
 }
 
 export function useRecentFoods() {
@@ -107,6 +173,8 @@ type LogFoodInput = {
   basisAmount?: number;
   basisUnit?: 'g' | 'ml' | 'serving';
   nutritionUserEdited?: boolean;
+  entrySource?: FoodEntrySource;
+  recipeId?: string | null;
   dateKey: string;
   mealType: MealType;
   quantity: number;
@@ -149,6 +217,10 @@ export function useLogFoodEntry() {
       const scaleOptional = (value: number | null | undefined) =>
         value == null ? null : value * input.quantity;
 
+      const resolvedSource: FoodEntrySource =
+        input.entrySource ??
+        (input.food.id ? 'catalog' : 'manual');
+
       const row = {
         user_id: userId,
         food_id: input.food.id ?? null,
@@ -174,6 +246,8 @@ export function useLogFoodEntry() {
         sugars_g: scaleOptional(input.food.sugarsG),
         saturated_fat_g: scaleOptional(input.food.saturatedFatG),
         sodium_mg: scaleOptional(input.food.sodiumMg),
+        entry_source: resolvedSource,
+        recipe_id: input.recipeId ?? null,
       };
       const { error } = input.clientRequestId
         ? await supabase
@@ -189,7 +263,11 @@ export function useLogFoodEntry() {
       await queryClient.invalidateQueries({
         queryKey: ['food-entries', 'range', session?.user.id],
       });
+      await queryClient.invalidateQueries({
+        queryKey: ['food-entries', 'logged-days', session?.user.id],
+      });
       await queryClient.invalidateQueries({ queryKey: ['foods', 'recent', session?.user.id] });
+      await queryClient.invalidateQueries({ queryKey: ['planned-meals', session?.user.id] });
     },
   });
 }
@@ -242,7 +320,11 @@ export function useUpdateFoodEntryAmount() {
       await queryClient.invalidateQueries({
         queryKey: ['food-entries', 'range', session?.user.id],
       });
+      await queryClient.invalidateQueries({
+        queryKey: ['food-entries', 'logged-days', session?.user.id],
+      });
       await queryClient.invalidateQueries({ queryKey: ['foods', 'recent', session?.user.id] });
+      await queryClient.invalidateQueries({ queryKey: ['planned-meals', session?.user.id] });
     },
   });
 }
@@ -265,6 +347,10 @@ export function useDeleteFoodEntry() {
       await queryClient.invalidateQueries({
         queryKey: ['food-entries', 'range', session?.user.id],
       });
+      await queryClient.invalidateQueries({
+        queryKey: ['food-entries', 'logged-days', session?.user.id],
+      });
+      await queryClient.invalidateQueries({ queryKey: ['planned-meals', session?.user.id] });
     },
   });
 }
@@ -283,7 +369,7 @@ export function useCreateManualFood() {
       carbsG: number;
       fatG: number;
       barcode?: string;
-      source?: 'manual' | 'open_food_facts';
+      source?: 'manual' | 'open_food_facts' | 'usda' | 'fatsecret';
       imageUrl?: string;
       servingGrams?: number;
       nutritionBasis?: 'per100' | 'serving';
@@ -297,9 +383,7 @@ export function useCreateManualFood() {
       if (input.barcode) {
         const { data: existing, error: existingError } = await supabase
           .from('foods')
-          .select(
-            'id, name, brand, barcode, serving_label, serving_grams, calories, protein_g, carbs_g, fat_g, source, image_url',
-          )
+          .select(FOOD_SEARCH_COLUMNS)
           .eq('user_id', userId)
           .eq('barcode', input.barcode)
           .order('created_at', { ascending: false })
@@ -328,9 +412,7 @@ export function useCreateManualFood() {
           basis_amount: input.basisAmount ?? null,
           nutrition_user_edited: input.nutritionUserEdited ?? false,
         })
-        .select(
-          'id, name, brand, barcode, serving_label, serving_grams, calories, protein_g, carbs_g, fat_g, source, image_url',
-        )
+        .select(FOOD_SEARCH_COLUMNS)
         .single();
       if (error) throw error;
       return data as Food;
@@ -338,5 +420,49 @@ export function useCreateManualFood() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['foods'] });
     },
+  });
+}
+
+/** Persist an external provider search hit into the user's foods table before logging/planning. */
+export async function ensureSearchFoodRecord(
+  food: Food,
+  create: ReturnType<typeof useCreateManualFood>['mutateAsync'],
+): Promise<Food> {
+  if (!isExternalProviderFoodId(food.id) && !isOpenFoodFactsSearchId(food.id)) {
+    return food;
+  }
+
+  const per100 =
+    food.nutrition_basis === 'per100' ||
+    /^100\s*(g|ml)$/i.test(food.serving_label.trim()) ||
+    food.serving_grams === 100;
+
+  const source: 'open_food_facts' | 'usda' | 'fatsecret' = food.id.startsWith('usda:')
+    ? 'usda'
+    : food.id.startsWith('fatsecret:')
+      ? 'fatsecret'
+      : 'open_food_facts';
+
+  return create({
+    name: food.name,
+    brand: food.brand ?? undefined,
+    servingLabel: food.serving_label,
+    calories: food.calories,
+    proteinG: food.protein_g,
+    carbsG: food.carbs_g,
+    fatG: food.fat_g,
+    barcode: food.barcode ?? undefined,
+    source,
+    imageUrl: food.image_url ?? undefined,
+    servingGrams: food.serving_grams ?? undefined,
+    nutritionBasis: per100 ? 'per100' : 'serving',
+    basisUnit: per100
+      ? /ml/i.test(food.serving_label)
+        ? 'ml'
+        : 'g'
+      : food.basis_unit === 'g' || food.basis_unit === 'ml'
+        ? food.basis_unit
+        : 'serving',
+    basisAmount: per100 ? 100 : food.basis_amount ?? 1,
   });
 }

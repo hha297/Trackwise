@@ -22,6 +22,7 @@ import {
   ScanResultModal,
   type ScanSaveInput,
 } from '@/features/food/scan-result-modal';
+import { useRecipeIngredientScanStore } from '@/features/recipes/recipe-ingredient-scan-store';
 import { brand, iconSizes, radii, spacing, withAlpha } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 import { toDiaryDateKey } from '@/utils/date';
@@ -37,7 +38,11 @@ export default function ScanScreen() {
     meal?: string;
     source?: string;
     nonce?: string;
+    sessionId?: string;
   }>();
+  const recipeIngredientMode =
+    params.source === 'recipe-ingredient' && typeof params.sessionId === 'string';
+  const scanSessionId = typeof params.sessionId === 'string' ? params.sessionId : null;
   const [permission, requestPermission] = useCameraPermissions();
   const [torchEnabled, setTorchEnabled] = useState(false);
   const [result, setResult] = useState<ScanModalResult | null>(null);
@@ -97,10 +102,10 @@ export default function ScanScreen() {
       const lookupError =
         error instanceof FoodLookupError
           ? error
-          : new FoodLookupError('network', 'Could not connect to Open Food Facts.');
+          : new FoodLookupError('network', t('scan.errors.network'));
       setResult({ kind: 'error', barcode, error: lookupError });
     }
-  }, []);
+  }, [t]);
 
   const handleBarcode = useCallback(
     ({ data, type }: BarcodeScanningResult) => {
@@ -116,7 +121,81 @@ export default function ScanScreen() {
     [lookup, result],
   );
 
+  function leaveScanner() {
+    if (recipeIngredientMode) {
+      router.back();
+      return;
+    }
+    router.replace('/');
+  }
+
   async function saveScan(input: ScanSaveInput) {
+    if (recipeIngredientMode && scanSessionId) {
+      let calories = input.totals.calories;
+      let proteinG = input.totals.proteinG;
+      let carbsG = input.totals.carbsG;
+      let fatG = input.totals.fatG;
+      let servingLabel = input.servingLabel;
+      let servingGrams = input.servingGrams;
+      let nutritionBasis = input.nutritionBasis;
+      let basisUnit = input.basisUnit;
+      let basisAmount = input.basisAmount;
+      if (
+        input.nutritionBasis === 'per100' &&
+        (input.amountUnit === 'g' || input.amountUnit === 'ml') &&
+        input.amount > 0
+      ) {
+        const factor = input.amount / 100;
+        calories = input.totals.calories / factor;
+        proteinG = input.totals.proteinG / factor;
+        carbsG = input.totals.carbsG / factor;
+        fatG = input.totals.fatG / factor;
+        servingLabel = `100 ${input.amountUnit}`;
+        servingGrams = input.amountUnit === 'g' ? 100 : null;
+        basisAmount = 100;
+        basisUnit = input.amountUnit;
+      }
+
+      const created = await createFood.mutateAsync({
+        name: input.name,
+        brand: input.brand ?? undefined,
+        barcode: input.barcode,
+        source: input.source,
+        imageUrl: input.imageUrl ?? undefined,
+        servingLabel,
+        servingGrams: servingGrams ?? undefined,
+        nutritionBasis,
+        basisUnit,
+        basisAmount: basisAmount ?? undefined,
+        nutritionUserEdited: input.nutritionUserEdited,
+        calories,
+        proteinG,
+        carbsG,
+        fatG,
+      });
+
+      useRecipeIngredientScanStore.getState().setPendingFood(scanSessionId, {
+        id: created.id,
+        name: created.name,
+        brand: created.brand,
+        barcode: created.barcode,
+        serving_label: created.serving_label,
+        serving_grams: created.serving_grams,
+        calories: created.calories,
+        protein_g: created.protein_g,
+        carbs_g: created.carbs_g,
+        fat_g: created.fat_g,
+        source: created.source,
+        image_url: created.image_url ?? input.imageUrl,
+        nutrition_basis: created.nutrition_basis ?? nutritionBasis,
+        basis_unit: created.basis_unit ?? basisUnit,
+        basis_amount: created.basis_amount ?? basisAmount,
+      });
+      resetResult(false);
+      router.back();
+      return;
+    }
+
     let foodId = savedFood.current?.barcode === input.barcode ? savedFood.current.id : null;
     if (!foodId) {
       const created = await createFood.mutateAsync({
@@ -142,6 +221,7 @@ export default function ScanScreen() {
 
     await logFood.mutateAsync({
       clientRequestId: logRequestId.current,
+      entrySource: 'scanned_product',
       dateKey: input.dateKey,
       mealType: input.mealType,
       quantity: 1,
@@ -189,7 +269,7 @@ export default function ScanScreen() {
             {t('scan.cameraAccessBody')}
           </Text>
           <Button label={t('scan.allowCamera')} onPress={() => void requestPermission()} />
-          <Button label={t('scan.close')} variant="text" onPress={() => router.replace('/')} />
+          <Button label={t('scan.close')} variant="text" onPress={leaveScanner} />
         </View>
       </Screen>
     );
@@ -208,7 +288,7 @@ export default function ScanScreen() {
         <View style={[styles.topControls, { top: insets.top + spacing[3] }]}>
           <CameraControl
             label={t('scan.close')}
-            onPress={() => router.replace('/')}
+            onPress={leaveScanner}
             backgroundColor={colors.cameraOverlay}
             borderColor={colors.onOverlayBorder}
             activeBorderColor={brand.white}
@@ -237,22 +317,25 @@ export default function ScanScreen() {
           <Text variant="body" style={[styles.lightText, { color: colors.textOnOverlay }]}>
             {t('scan.align')}
           </Text>
-          <View style={styles.manualAction}>
-            <Button
-              label={t('scan.enterManually')}
-              variant="secondary"
-              onPress={() =>
-                router.push({
-                  pathname: '/food/add',
-                  params: {
-                    mode: 'manual',
-                    date: initialDateKey,
-                    meal: initialMealType ?? undefined,
-                  },
-                })
-              }
-            />
-          </View>
+          {recipeIngredientMode ? null : (
+            <View style={styles.manualAction}>
+              <Button
+                label={t('scan.enterManually')}
+                variant="secondary"
+                onPress={() =>
+                  router.push({
+                    pathname: '/food/add',
+                    params: {
+                      intent: 'log',
+                      source: 'create',
+                      date: initialDateKey,
+                      meal: initialMealType ?? undefined,
+                    },
+                  })
+                }
+              />
+            </View>
+          )}
           {!result && blockedBarcode ? (
             <Pressable
               accessibilityRole="button"
@@ -276,6 +359,7 @@ export default function ScanScreen() {
           <ScanResultModal
             key={`${result.kind}:${result.barcode}`}
             result={result}
+            purpose={recipeIngredientMode ? 'recipe-ingredient' : 'diary'}
             initialDateKey={initialDateKey}
             initialMealType={initialMealType}
             onClose={() => resetResult(true)}

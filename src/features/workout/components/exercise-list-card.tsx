@@ -1,15 +1,11 @@
-import { Image } from 'expo-image';
 import { Star } from 'lucide-react-native';
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
-import {
-  EXERCISE_IMAGE_PLACEHOLDER,
-  resolveExerciseImage,
-} from '@/features/workout/catalog/exercise-images';
+import { ExerciseArtwork } from '@/features/workout/components/exercise-artwork';
 import {
   formatEquipmentLabel,
   formatMuscleList,
@@ -44,15 +40,6 @@ function ExerciseListCardComponent({
 }: ExerciseListCardProps) {
   const { t } = useTranslation();
   const colors = useThemeColors();
-  const [failed, setFailed] = useState(false);
-  const resolved = resolveExerciseImage({
-    imageUrl: exercise.image_url,
-    imageStoragePath: exercise.image_storage_path,
-    imageKey: exercise.image_key,
-    slug: exercise.slug,
-    name: exercise.name,
-  });
-  const source = failed ? EXERCISE_IMAGE_PLACEHOLDER : resolved;
   const muscles = formatMuscleList((exercise.primary_muscles ?? []).slice(0, 2), t);
 
   return (
@@ -90,25 +77,15 @@ function ExerciseListCardComponent({
         ) : null}
 
         {showImage ? (
-          <View
-            style={{
-              width: 72,
-              height: 72,
-              borderRadius: radii.md,
-              overflow: 'hidden',
-              backgroundColor: colors.surfaceMuted,
-            }}
-          >
-            <Image
-              source={source}
-              style={{ width: '100%', height: '100%' }}
-              contentFit="cover"
-              recyclingKey={exercise.id}
-              transition={0}
-              cachePolicy="memory-disk"
-              onError={() => setFailed(true)}
-            />
-          </View>
+          <ExerciseArtwork
+            imageUrl={exercise.image_url}
+            imageStoragePath={exercise.image_storage_path}
+            imageKey={exercise.image_key}
+            slug={exercise.slug}
+            name={exercise.name}
+            size={72}
+            recyclingKey={`${exercise.id}:${exercise.image_url ?? ''}`}
+          />
         ) : null}
 
         <View

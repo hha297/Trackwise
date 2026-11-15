@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
-import { Link, router } from 'expo-router';
+import { Link, router, type Href } from 'expo-router';
 import {
+  BookOpen,
   CircleHelp,
   Download,
   Eraser,
@@ -10,7 +11,9 @@ import {
   LayoutDashboard,
   Lock,
   LogOut,
+  Bell,
   Moon,
+  CalendarDays,
   Ruler,
   Scale,
   Shield,
@@ -47,6 +50,7 @@ import {
 import { reportError } from '@/lib/errors/report-error';
 import { iconSizes, spacing } from '@/theme';
 import { useTheme, useThemeColors } from '@/theme/theme-provider';
+import { toDiaryDateKey } from '@/utils/date';
 
 function goalLabelKey(type: string): string {
   switch (type) {
@@ -256,6 +260,23 @@ export default function AccountScreen() {
             subtitle={t('account.measurementsSubtitle')}
             onPress={() => router.push('/measurements')}
           />
+          <SettingsRow
+            icon={CalendarDays}
+            title={t('account.mealPlan')}
+            subtitle={t('account.mealPlanSubtitle')}
+            onPress={() =>
+              router.push({
+                pathname: '/food/meal-plan',
+                params: { date: toDiaryDateKey() },
+              })
+            }
+          />
+          <SettingsRow
+            icon={BookOpen}
+            title={t('account.recipes')}
+            subtitle={t('account.recipesSubtitle')}
+            onPress={() => router.push('/food/recipes' as Href)}
+          />
         </SettingsSection>
 
         <SettingsSection title={t('account.preferences')}>
@@ -283,6 +304,12 @@ export default function AccountScreen() {
               profile.data?.units === 'imperial' ? t('account.imperial') : t('account.metric')
             }
             onPress={() => router.push('/account/units')}
+          />
+          <SettingsRow
+            icon={Bell}
+            title={t('account.reminders')}
+            subtitle={t('account.remindersSubtitle')}
+            onPress={() => router.push('/account/reminders')}
           />
         </SettingsSection>
 

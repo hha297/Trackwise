@@ -267,7 +267,7 @@ export async function uploadExerciseImage(formData: FormData) {
   if (!id || !(file instanceof File)) {
     redirect(`/exercises/${id}?error=image`);
   }
-  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+  if (!['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(file.type)) {
     redirect(`/exercises/${id}?error=image-type`);
   }
   if (file.size > 5 * 1024 * 1024) {
@@ -277,35 +277,46 @@ export async function uploadExerciseImage(formData: FormData) {
   const supabase = await createClient();
   const { data: exercise } = await supabase
     .from('exercises')
-    .select('slug, image_storage_path')
+    .select('slug, image_storage_path, content_version')
     .eq('id', id)
     .eq('is_system', true)
     .maybeSingle();
   if (!exercise) redirect('/exercises?error=notfound');
 
-  const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
+  const ext =
+    file.type === 'image/png'
+      ? 'png'
+      : file.type === 'image/webp'
+        ? 'webp'
+        : file.type === 'image/avif'
+          ? 'avif'
+          : 'jpg';
   const path = `exercises/shared/${exercise.slug || id}.${ext}`;
   const bytes = new Uint8Array(await file.arrayBuffer());
-
-  if (exercise.image_storage_path && exercise.image_storage_path !== path) {
-    await supabase.storage.from('exercise-images').remove([exercise.image_storage_path]);
-  }
 
   const { error: uploadError } = await supabase.storage
     .from('exercise-images')
     .upload(path, bytes, { contentType: file.type, upsert: true });
   if (uploadError) redirect(`/exercises/${id}?error=image-upload`);
 
+  const version = (exercise.content_version ?? 0) + 1;
   const { data: publicUrl } = supabase.storage.from('exercise-images').getPublicUrl(path);
-  await supabase
+  const imageUrl = `${publicUrl.publicUrl}${publicUrl.publicUrl.includes('?') ? '&' : '?'}v=${version}`;
+  const { error: updateError } = await supabase
     .from('exercises')
     .update({
       image_storage_path: path,
-      image_url: publicUrl.publicUrl,
+      image_url: imageUrl,
       image_key: exercise.slug || id,
+      content_version: version,
     })
     .eq('id', id)
     .eq('is_system', true);
+  if (updateError) redirect(`/exercises/${id}?error=image-upload`);
+
+  if (exercise.image_storage_path && exercise.image_storage_path !== path) {
+    await supabase.storage.from('exercise-images').remove([exercise.image_storage_path]);
+  }
 
   await supabase.rpc('admin_write_audit', {
     p_action: 'exercise.image',

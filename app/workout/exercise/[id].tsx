@@ -13,6 +13,7 @@ import { Text } from '@/components/ui/text';
 import { useLatestWeight } from '@/features/measurements/hooks';
 import {
   EXERCISE_IMAGE_PLACEHOLDER,
+  fallbackExerciseImage,
   resolveExerciseImage,
 } from '@/features/workout/catalog/exercise-images';
 import {
@@ -47,7 +48,10 @@ export default function ExerciseDetailScreen() {
   const startedAt = useActiveWorkoutStore((state) => state.startedAt);
   const addExercise = useActiveWorkoutStore((state) => state.addExercise);
   const start = useActiveWorkoutStore((state) => state.start);
-  const [imageFailed, setImageFailed] = useState(false);
+  const [imageStage, setImageStage] = useState<{
+    key: string;
+    stage: 'primary' | 'fallback' | 'placeholder';
+  }>({ key: '', stage: 'primary' });
 
   const exercise = detail.data;
   const favoriteIds = new Set(favorites.data ?? []);
@@ -95,7 +99,19 @@ export default function ExerciseDetailScreen() {
     slug: exercise.slug,
     name: exercise.name,
   });
-  const image = imageFailed ? EXERCISE_IMAGE_PLACEHOLDER : resolved;
+  const bundled = fallbackExerciseImage({
+    imageKey: exercise.image_key,
+    slug: exercise.slug,
+    name: exercise.name,
+  });
+  const imageKey = `${exercise.id}:${exercise.image_url ?? ''}`;
+  const stage = imageStage.key === imageKey ? imageStage.stage : 'primary';
+  const image =
+    stage === 'placeholder'
+      ? EXERCISE_IMAGE_PLACEHOLDER
+      : stage === 'fallback'
+        ? bundled
+        : resolved;
 
   const relatedList = (related.data ?? [])
     .filter((item) => item.id !== exercise.id)
@@ -132,7 +148,17 @@ export default function ExerciseDetailScreen() {
             contentFit="cover"
             transition={0}
             cachePolicy="memory-disk"
-            onError={() => setImageFailed(true)}
+            priority="high"
+            recyclingKey={`${exercise.id}:${exercise.image_url ?? ''}`}
+            onError={() =>
+              setImageStage((current) => {
+                const currentStage = current.key === imageKey ? current.stage : 'primary';
+                if (currentStage === 'primary' && bundled !== resolved) {
+                  return { key: imageKey, stage: 'fallback' };
+                }
+                return { key: imageKey, stage: 'placeholder' };
+              })
+            }
           />
         </View>
 
@@ -167,43 +193,74 @@ export default function ExerciseDetailScreen() {
           ) : null}
         </Card>
 
-        <Card className="gap-2">
-          <Text variant="label" tone="secondary">
-            {t('workout.estimatedCalories')}
+        {caloriePreview ? (
+          <Text variant="caption" tone="secondary">
+            {t('workout.summaryCalories', {
+              value: Math.round(caloriePreview.estimatedCalories),
+            })}
+            {' · '}
+            {t('workout.caloriesEstimateMetaIntensity', {
+              minutes: caloriePreview.durationMin,
+              intensity: t(`workout.intensity.${caloriePreview.intensity}`),
+            })}
           </Text>
-          {caloriePreview ? (
-            <>
-              <Text variant="headingLarge" tone="brand">
-                {t('workout.summaryCalories', {
-                  value: Math.round(caloriePreview.estimatedCalories),
-                })}
-              </Text>
-              <Text variant="caption" tone="secondary">
-                {t('workout.caloriesEstimateMetaIntensity', {
-                  minutes: caloriePreview.durationMin,
-                  intensity: t(`workout.intensity.${caloriePreview.intensity}`),
-                })}
-              </Text>
-              {caloriePreview.evidence !== 'compendium_activity' ? (
-                <Text variant="caption" tone="secondary">
-                  {t('workout.caloriesEstimateCategory', {
-                    activity: t(`workout.activityClass.${caloriePreview.activityLabelKey}`),
-                  })}
-                </Text>
-              ) : null}
-              <Text variant="caption" tone="muted">
-                {caloriePreview.evidence === 'compendium_category_proxy' ||
-                caloriePreview.evidence === 'intensity_band_proxy'
-                  ? t('workout.caloriesEstimateProxyNote')
-                  : t('workout.caloriesEstimateNote')}
-              </Text>
-            </>
-          ) : (
-            <Text variant="bodySmall" tone="secondary">
-              {t('workout.estimateNeedsWeight')}
-            </Text>
-          )}
-        </Card>
+        ) : null}
+
+        <Button
+          label={t('workout.addToWorkout')}
+          onPress={() => {
+            if (!startedAt) {
+              start({ name: t('workout.defaultName') });
+            }
+            addExercise({
+              exerciseId: exercise.id,
+              name: exercise.name,
+              exerciseType: exercise.exercise_type,
+              metValue: exercise.met_value,
+              primaryMuscles: exercise.primary_muscles,
+              imageUrl: exercise.image_url,
+              imageStoragePath: exercise.image_storage_path,
+              imageKey: exercise.image_key,
+              slug: exercise.slug,
+            });
+            router.push('/workout/active');
+          }}
+        />
+
+        <View className="flex-row gap-2">
+          <View className="flex-1">
+            <Button
+              label={t('phase1.openProgress')}
+              variant="secondary"
+              onPress={() =>
+                router.push({
+                  pathname: '/workout/exercise-progress',
+                  params: { id: exercise.id, name: exercise.name },
+                })
+              }
+            />
+          </View>
+          <View className="flex-1">
+            <Button
+              label={isFavorite ? t('workout.favorited') : t('workout.favorite')}
+              variant="secondary"
+              iconStart={() => (
+                <Star
+                  size={16}
+                  color={isFavorite ? colors.warning : colors.textMuted}
+                  fill={isFavorite ? colors.warning : 'transparent'}
+                  strokeWidth={1.75}
+                />
+              )}
+              onPress={() => {
+                void toggleFavorite.mutateAsync({
+                  exerciseId: exercise.id,
+                  favorite: !isFavorite,
+                });
+              }}
+            />
+          </View>
+        </View>
 
         {exercise.description ? (
           <Card className="gap-2">
@@ -233,8 +290,8 @@ export default function ExerciseDetailScreen() {
         ) : null}
 
         {exercise.common_mistakes ? (
-          <Card className="gap-2" style={{ borderColor: colors.warning, borderWidth: 1 }}>
-            <Text variant="label" style={{ color: colors.warning }}>
+          <Card className="gap-2">
+            <Text variant="label" tone="secondary">
               {t('workout.commonMistakes')}
             </Text>
             <CoachingBody text={exercise.common_mistakes} />
@@ -242,53 +299,13 @@ export default function ExerciseDetailScreen() {
         ) : null}
 
         {exercise.safety_notes ? (
-          <Card className="gap-2" style={{ borderColor: colors.error, borderWidth: 1 }}>
-            <Text variant="label" style={{ color: colors.error }}>
+          <Card className="gap-2">
+            <Text variant="label" tone="secondary">
               {t('workout.safetyInfo')}
             </Text>
             <CoachingBody text={exercise.safety_notes} />
           </Card>
         ) : null}
-
-        <Button
-          label={t('workout.addToWorkout')}
-          onPress={() => {
-            if (!startedAt) {
-              start({ name: t('workout.defaultName') });
-            }
-            addExercise({
-              exerciseId: exercise.id,
-              name: exercise.name,
-              exerciseType: exercise.exercise_type,
-              metValue: exercise.met_value,
-              primaryMuscles: exercise.primary_muscles,
-              imageUrl: exercise.image_url,
-              imageStoragePath: exercise.image_storage_path,
-              imageKey: exercise.image_key,
-              slug: exercise.slug,
-            });
-            router.push('/workout/active');
-          }}
-        />
-
-        <Button
-          label={isFavorite ? t('workout.favorited') : t('workout.favorite')}
-          variant="secondary"
-          iconStart={() => (
-            <Star
-              size={16}
-              color={isFavorite ? colors.warning : colors.textMuted}
-              fill={isFavorite ? colors.warning : 'transparent'}
-              strokeWidth={1.75}
-            />
-          )}
-          onPress={() => {
-            void toggleFavorite.mutateAsync({
-              exerciseId: exercise.id,
-              favorite: !isFavorite,
-            });
-          }}
-        />
 
         {relatedList.length ? (
           <View className="gap-2">

@@ -80,6 +80,8 @@ export const lightColors: ThemeColors = {
   macroCarbs: brand.primary,
   macroFat: '#E6B422',
   macroFiber: '#0D9488',
+  macroSugars: '#DB2777',
+  macroSalt: '#6366F1',
   macroActivity: brand.primaryPressed,
 };
 
@@ -122,5 +124,7 @@ export const darkColors: ThemeColors = {
   macroCarbs: brand.primary,
   macroFat: '#E6B422',
   macroFiber: '#2DD4BF',
+  macroSugars: '#F472B6',
+  macroSalt: '#818CF8',
   macroActivity: brand.primaryBright,
 };
