@@ -14,8 +14,9 @@ export const SITE_DESCRIPTION =
 export const SUPPORT_EMAIL = 'ha.dh290702@gmail.com';
 export const SUPPORT_PHONE = '0466522707';
 
-/** Set when the Play listing is public (or a stable internal opt-in URL you want on the site). */
-export const GOOGLE_PLAY_URL = '';
+/** Android listing. Update if the Play Console URL changes. */
+export const GOOGLE_PLAY_URL =
+  'https://play.google.com/store/apps/details?id=com.trackwise.app';
 /** Set when iOS ships. */
 export const APP_STORE_URL = '';
 

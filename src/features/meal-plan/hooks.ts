@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useAuth } from '@/features/auth/auth-provider';
 import { weekDateKeys } from '@/features/diary/aggregations';
+import { invalidateDailyActivityQueries } from '@/features/engagement/api';
 
 import {
   createPlannedMeal,
@@ -46,7 +47,6 @@ export function usePlannedMealMutations() {
       await queryClient.invalidateQueries({ queryKey: ['food-entries', userId, dateKey] });
     }
     await queryClient.invalidateQueries({ queryKey: ['food-entries', 'range', userId] });
-    await queryClient.invalidateQueries({ queryKey: ['food-entries', 'logged-days', userId] });
   };
 
   const create = useMutation({

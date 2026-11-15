@@ -36,7 +36,7 @@ export const en: Messages = {
     eyebrow: 'What is Trackwise',
     title: 'One app for food, training, and the story between them.',
     description:
-      'Trackwise helps you build awareness around everyday nutrition and activity. Search or scan foods, log workouts, set goals, and watch progress accumulate — with clear estimates, not medical claims.',
+      'Trackwise helps you build awareness around everyday nutrition and activity. Search or scan foods, log workouts, set goals, pin Daily and Workout widgets on Android, and watch progress accumulate — with clear estimates, not medical claims.',
     nutritionTitle: 'Nutrition tracking',
     nutritionBody: 'Log meals, see calories and macros, and keep a clear diary of what you eat.',
     workoutTitle: 'Workout logging',
@@ -101,10 +101,10 @@ export const en: Messages = {
     eyebrow: 'Download',
     title: 'Get Trackwise on your phone.',
     description:
-      'Trackwise is free on Android. The Google Play listing is coming soon on this page. iOS will follow later — not available yet.',
+      'Trackwise is free on Android. Get it on Google Play. After install, add Trackwise Daily or Trackwise Workout from the home-screen widget picker. iOS will follow later.',
     comingSoon: 'Coming soon',
     qrPlaceholder: 'QR placeholder',
-    qrHint: 'Scan-to-download will appear here once the Android store page is published.',
+    qrHint: 'Use the Google Play badge to install. A scan-to-download QR can be added here later.',
   },
   footer: {
     blurb:

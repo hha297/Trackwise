@@ -22,7 +22,7 @@ export function PasswordRequirements({ password, interactive }: PasswordRequirem
     <View
       accessibilityRole="summary"
       accessibilityLabel={t('auth.password')}
-      style={{ gap: 6, minHeight: 120 }}
+      style={{ gap: 6, minHeight: 108 }}
     >
       {results.map((rule) => {
         const status = !interactive ? 'neutral' : rule.met ? 'pass' : 'fail';

@@ -27,6 +27,8 @@ Auth uses Supabase Auth only for password hashing. The mobile client never store
 
 Phase 1 adds `planned_workouts` (template on a local calendar day, or a rest/recovery day) and `hydration_entries` / `hydration_targets` (millilitres, grouped by the diary date). Personal records and progression are calculated from completed `workout_sets`; they are not a separate table. Apply `20261112223000_phase1_planner_hydration.sql` before using the week plan or water log. The migration is not applied to hosted production from the app repo automatically.
 
+Streaks use `user_daily_activity` (migration `20261115120000_user_daily_activity.sql`): one row per user and local calendar day, earned when food, water, or a completed workout is saved. Deleting those logs does not remove the row. Account deletion cascades the table; `wipe_own_user_data()` deletes the caller's rows.
+
 When a user-owned table is added:
 
 1. Add a SQL migration in `migrations/`.

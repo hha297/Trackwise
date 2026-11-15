@@ -96,6 +96,29 @@ export const featureCategories: FeatureCategory[] = [
     ],
   },
   {
+    id: 'widgets',
+    title: 'Home-screen widgets',
+    summary:
+      'See today’s calories and workout on the Android home screen — then tap to open Trackwise.',
+    points: [
+      {
+        title: 'Trackwise Daily',
+        description:
+          'Calories remaining plus carbs, protein, fat, and water as eaten/target cards with progress bars. Fiber is not on the widget.',
+      },
+      {
+        title: 'Trackwise Workout',
+        description:
+          'Today’s planned session or the workout you already finished, without opening the app first.',
+      },
+      {
+        title: 'How to add them',
+        description:
+          'Install from Google Play, sign in, and open Trackwise once. Long-press the home screen → Widgets → Trackwise, then add Daily and/or Workout. Tap Daily for the diary or Workout for today’s session.',
+      },
+    ],
+  },
+  {
     id: 'goals',
     title: 'Personal goals',
     summary:

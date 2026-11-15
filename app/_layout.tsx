@@ -20,6 +20,7 @@ import {
 import { BootstrapScreen } from '@/features/bootstrap/bootstrap-screen';
 import { SplashBrandScreen } from '@/features/bootstrap/splash-brand-screen';
 import { NotificationsBootstrap } from '@/features/notifications/notifications-bootstrap';
+import { WidgetSync } from '@/features/widgets/widget-sync';
 import { reportError } from '@/lib/errors/report-error';
 import { queryClient } from '@/lib/query/query-client';
 import { useAppFonts } from '@/theme/fonts';
@@ -90,6 +91,7 @@ export default function RootLayout() {
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
               <BootstrapProvider>
+                <WidgetSync />
                 <RootNavigator />
               </BootstrapProvider>
             </AuthProvider>

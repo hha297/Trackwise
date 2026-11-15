@@ -1,19 +1,34 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import Constants from 'expo-constants';
 
+vi.mock('react-native', () => ({
+  NativeModules: {},
+}));
+
 import { getSupabaseEnv } from './env';
+
+type ConstantsMock = {
+  expoConfig: { extra: Record<string, string> };
+  manifest: { extra?: Record<string, string> } | null;
+  manifest2: { extra?: { expoClient?: { extra?: Record<string, string> } } } | null;
+};
 
 vi.mock('expo-constants', () => ({
   default: {
     expoConfig: {
       extra: {},
     },
+    manifest: null,
+    manifest2: null,
   },
 }));
 
 afterEach(() => {
   vi.unstubAllEnvs();
-  (Constants as { expoConfig: { extra: Record<string, string> } }).expoConfig.extra = {};
+  const constants = Constants as ConstantsMock;
+  constants.expoConfig.extra = {};
+  constants.manifest = null;
+  constants.manifest2 = null;
 });
 
 describe('getSupabaseEnv', () => {
@@ -56,6 +71,31 @@ describe('getSupabaseEnv', () => {
     expect(getSupabaseEnv()).toEqual({
       url: 'https://from-extra.supabase.co',
       publishableKey: 'sb_publishable_extra',
+    });
+  });
+
+  it('skips empty expoConfig extra and uses the embedded expoClient extra', () => {
+    vi.stubEnv('EXPO_PUBLIC_SUPABASE_URL', '');
+    vi.stubEnv('EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY', '');
+    vi.stubEnv('EXPO_PUBLIC_SUPABASE_KEY', '');
+    (Constants as ConstantsMock).expoConfig.extra = {
+      supabaseUrl: '',
+      supabasePublishableKey: '',
+    };
+    (Constants as ConstantsMock).manifest2 = {
+      extra: {
+        expoClient: {
+          extra: {
+            supabaseUrl: 'https://from-manifest.supabase.co',
+            supabasePublishableKey: 'sb_publishable_manifest',
+          },
+        },
+      },
+    };
+
+    expect(getSupabaseEnv()).toEqual({
+      url: 'https://from-manifest.supabase.co',
+      publishableKey: 'sb_publishable_manifest',
     });
   });
 });

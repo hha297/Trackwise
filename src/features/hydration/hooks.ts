@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useAuth } from '@/features/auth/auth-provider';
 import { weekDateKeys } from '@/features/diary/aggregations';
+import { invalidateDailyActivityQueries } from '@/features/engagement/api';
 
 import { addHydration, deleteHydration, fetchHydration, setHydrationTarget, updateHydration } from './api';
 
@@ -25,26 +26,29 @@ export function useHydrationMutations(dateKey: string) {
   const queryClient = useQueryClient();
   const userId = session?.user.id;
 
-  const invalidate = async () => {
+  const invalidateLogs = async () => {
     await queryClient.invalidateQueries({ queryKey: ['hydration', userId] });
+    await invalidateDailyActivityQueries(queryClient, userId);
   };
 
   const add = useMutation({
     mutationFn: (amountMl: number) => addHydration(userId!, dateKey, amountMl),
-    onSuccess: invalidate,
+    onSuccess: invalidateLogs,
   });
   const update = useMutation({
     mutationFn: (input: { id: string; amountMl: number }) =>
       updateHydration(userId!, input.id, input.amountMl),
-    onSuccess: invalidate,
+    onSuccess: invalidateLogs,
   });
   const remove = useMutation({
     mutationFn: (id: string) => deleteHydration(userId!, id),
-    onSuccess: invalidate,
+    onSuccess: invalidateLogs,
   });
   const target = useMutation({
     mutationFn: (targetMl: number) => setHydrationTarget(userId!, targetMl),
-    onSuccess: invalidate,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['hydration', userId] });
+    },
   });
 
   return { add, update, remove, target };

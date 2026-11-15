@@ -36,7 +36,7 @@ export const vi: Messages = {
     eyebrow: 'Trackwise là gì',
     title: 'Một ứng dụng cho ăn uống, tập luyện và hành trình giữa chúng.',
     description:
-      'Trackwise giúp bạn theo dõi dinh dưỡng và hoạt động hàng ngày. Tìm hoặc quét thực phẩm, ghi buổi tập, đặt mục tiêu và xem tiến độ — là ước tính, không phải đo lường y tế.',
+      'Trackwise giúp bạn theo dõi dinh dưỡng và hoạt động hàng ngày. Tìm hoặc quét thực phẩm, ghi buổi tập, đặt mục tiêu, ghim widget Daily và Workout trên Android, và xem tiến độ — là ước tính, không phải đo lường y tế.',
     nutritionTitle: 'Theo dõi dinh dưỡng',
     nutritionBody: 'Ghi bữa ăn, xem calo và macro, giữ nhật ký ăn uống rõ ràng.',
     workoutTitle: 'Ghi buổi tập',
@@ -99,10 +99,10 @@ export const vi: Messages = {
     eyebrow: 'Tải xuống',
     title: 'Cài Trackwise trên điện thoại.',
     description:
-      'Trackwise miễn phí trên Android. Link Google Play sẽ hiện trên trang này sớm. iOS sẽ có sau — hiện chưa có.',
+      'Trackwise miễn phí trên Android. Tải trên Google Play. Sau khi cài, thêm widget Trackwise Daily hoặc Trackwise Workout từ bộ chọn widget màn hình chính. iOS sẽ có sau.',
     comingSoon: 'Sắp ra mắt',
     qrPlaceholder: 'Chỗ QR',
-    qrHint: 'Quét để tải sẽ hiện ở đây khi trang Google Play được đăng.',
+    qrHint: 'Dùng nút Google Play để cài. Mã QR quét-để-tải có thể thêm sau.',
   },
   footer: {
     blurb:

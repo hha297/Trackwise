@@ -75,6 +75,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 function clearUserLocalState() {
   queryClient.clear();
   useActiveWorkoutStore.getState().reset();
+  void import('@/features/widgets/sync').then((mod) => mod.clearHomeScreenWidgets());
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {

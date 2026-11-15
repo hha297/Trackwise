@@ -12,7 +12,7 @@ import { createPageMetadata } from '@/lib/seo';
 export const metadata = createPageMetadata({
   title: 'Features',
   description:
-    'Explore Trackwise features: food diary, barcode scanning, workouts, goals, progress, and account controls.',
+    'Explore Trackwise features: food diary, barcode scanning, workouts, home-screen widgets, goals, progress, and account controls.',
   path: '/features',
 });
 
@@ -34,8 +34,8 @@ export default function FeaturesPage() {
             Everything Trackwise can do today.
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-body">
-            A deeper look at nutrition, scanning, workouts, goals, progress, and account tools —
-            based on the shipping mobile app, not a wishlist.
+            A deeper look at nutrition, scanning, workouts, home-screen widgets, goals, progress,
+            and account tools — based on the shipping mobile app, not a wishlist.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             {featureCategories.map((category) => (
@@ -84,8 +84,9 @@ export default function FeaturesPage() {
               >
                 {mockById[category.id] ?? (
                   <div className="max-w-sm text-center text-sm text-mute">
-                    Account controls live in the Account tab: profile, export/import, deletion,
-                    units, language, and appearance.
+                    {category.id === 'widgets'
+                      ? 'On Android: long-press the home screen → Widgets → Trackwise. Add Daily or Workout, then tap to open the app.'
+                      : 'Account controls live in the Account tab: profile, export/import, deletion, units, language, and appearance.'}
                   </div>
                 )}
               </div>
@@ -96,8 +97,8 @@ export default function FeaturesPage() {
         <div className="mt-20 rounded-[24px] bg-ink px-8 py-10 text-card sm:px-12">
           <h2 className="font-display text-3xl font-bold tracking-tight">Ready to try Trackwise?</h2>
           <p className="mt-3 max-w-xl text-white/70">
-            Store listings are coming soon. Explore FAQ and support while you wait, or send
-            feedback to the team.
+            Trackwise is free on Android via Google Play. After you install it, add the Daily or
+            Workout widget from the home screen. iOS comes later.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button href="/#download">Download</Button>

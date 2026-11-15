@@ -83,6 +83,25 @@ export const supportTopics: SupportTopic[] = [
     ],
   },
   {
+    id: 'widgets',
+    title: 'Home-screen widgets',
+    summary: 'Add Daily or Workout widgets on Android.',
+    items: [
+      {
+        heading: 'What you get',
+        body: 'Trackwise Daily shows calories remaining and carbs, protein, fat, and water. Trackwise Workout shows today’s plan or completed session. Numbers are estimates from the last time you opened the app.',
+      },
+      {
+        heading: 'How to add a widget',
+        body: 'Install Trackwise from Google Play, sign in, and open the app once. Long-press an empty area on the Android home screen, choose Widgets, find Trackwise, and add Daily or Workout. Resize if your launcher allows it.',
+      },
+      {
+        heading: 'Tap to open',
+        body: 'Tap Daily to open the diary. Tap Workout to open today’s plan or session. If the widget still shows dashes, open Trackwise while signed in so it can refresh the snapshot.',
+      },
+    ],
+  },
+  {
     id: 'technical',
     title: 'Technical troubleshooting',
     summary: 'Common device and connectivity issues.',
