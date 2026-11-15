@@ -1,4 +1,3 @@
-import Constants from 'expo-constants';
 import { Link, router, type Href } from 'expo-router';
 import {
   BookOpen,
@@ -47,6 +46,7 @@ import {
   useAppLanguage,
   type AppLanguage,
 } from '@/i18n';
+import { getAppVersion } from '@/lib/app-version';
 import { reportError } from '@/lib/errors/report-error';
 import { iconSizes, spacing } from '@/theme';
 import { useTheme, useThemeColors } from '@/theme/theme-provider';
@@ -89,8 +89,7 @@ export default function AccountScreen() {
   const [error, setError] = useState<string | null>(null);
   const [signingOut, setSigningOut] = useState(false);
 
-  const version =
-    Constants.expoConfig?.version ?? Constants.nativeAppVersion ?? '1.0.0';
+  const version = getAppVersion();
 
   async function handleSignOut() {
     setError(null);

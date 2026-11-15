@@ -1,11 +1,12 @@
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Check, Trash2 } from 'lucide-react-native';
+import { Check, Trash2, X } from 'lucide-react-native';
 import { useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { DeleteConfirmDialog } from '@/components/ui/delete-confirm-dialog';
@@ -163,15 +164,16 @@ export default function WorkoutDetailScreen() {
   return (
     <Screen scroll keyboard edges={['top', 'bottom', 'left', 'right']}>
       <View style={{ gap: 12 }}>
-        <View className="flex-row items-center justify-between gap-3">
+        <View className="flex-row items-start gap-2">
+          <ChromeIconButton
+            header
+            label={t('workout.close')}
+            onPress={() => router.back()}
+            icon={(color) => <X size={22} color={color} />}
+          />
           <Text variant="headingLarge" className="min-w-0 flex-1" numberOfLines={2}>
             {resolveWorkoutName(workout.name, t('workout.defaultName'))}
           </Text>
-          <Pressable onPress={() => router.back()} hitSlop={8}>
-            <Text variant="bodyStrong" tone="secondary">
-              {t('workout.close')}
-            </Text>
-          </Pressable>
         </View>
 
         <Text variant="caption" tone="secondary">

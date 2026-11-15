@@ -1,17 +1,18 @@
 import { Image } from 'expo-image';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { Beef, Droplets, Flame, Plus, ScanLine, Trash2, Wheat } from 'lucide-react-native';
-import type { ReactNode } from 'react';
+import { Plus, ScanLine, Trash2, X } from 'lucide-react-native';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Screen } from '@/components/ui/screen';
 import { ErrorState, LoadingState } from '@/components/ui/states';
 import { Text } from '@/components/ui/text';
+import { NutritionMacrosRow } from '@/features/food/nutrition-macros-row';
 import {
   FoodListRow,
   formatFoodNutritionDetail,
@@ -323,15 +324,16 @@ function RecipeEditorForm({
   return (
     <Screen scroll keyboard edges={['top', 'bottom', 'left', 'right']}>
       <View style={{ gap: spacing[4] }}>
-        <View className="flex-row items-center justify-between gap-3">
+        <View className="flex-row items-start gap-2">
+          <ChromeIconButton
+            header
+            label={t('common.close')}
+            onPress={() => router.back()}
+            icon={(color) => <X size={22} color={color} />}
+          />
           <Text variant="headingLarge" className="min-w-0 flex-1">
             {recipeId ? t('recipes.editTitle') : t('recipes.createTitle')}
           </Text>
-          <Pressable accessibilityRole="button" onPress={() => router.back()}>
-            <Text variant="bodyStrong" tone="brand">
-              {t('common.close')}
-            </Text>
-          </Pressable>
         </View>
 
         <Card style={{ gap: spacing[3] }}>
@@ -434,64 +436,26 @@ function RecipeEditorForm({
             <Text variant="caption" tone="secondary">
               {t('recipes.totalKcal')}
             </Text>
-            <View className="flex-row flex-wrap gap-2">
-              <MacroStat
-                icon={(color) => <Flame size={16} color={color} />}
-                color={colors.macroCalories}
-                label={t('food.add.calories')}
-                value={`${Math.round(macros.total.calories)} kcal`}
-              />
-              <MacroStat
-                icon={(color) => <Beef size={16} color={color} />}
-                color={colors.macroProtein}
-                label={t('food.add.protein')}
-                value={`${macros.total.proteinG} g`}
-              />
-              <MacroStat
-                icon={(color) => <Wheat size={16} color={color} />}
-                color={colors.macroCarbs}
-                label={t('food.add.carbs')}
-                value={`${macros.total.carbsG} g`}
-              />
-              <MacroStat
-                icon={(color) => <Droplets size={16} color={color} />}
-                color={colors.macroFat}
-                label={t('food.add.fat')}
-                value={`${macros.total.fatG} g`}
-              />
-            </View>
+            <NutritionMacrosRow
+              showCalories
+              calories={macros.total.calories}
+              proteinG={macros.total.proteinG}
+              carbsG={macros.total.carbsG}
+              fatG={macros.total.fatG}
+            />
           </View>
 
           <View style={{ gap: spacing[2] }}>
             <Text variant="caption" tone="secondary">
               {t('recipes.perServingKcal')}
             </Text>
-            <View className="flex-row flex-wrap gap-2">
-              <MacroStat
-                icon={(color) => <Flame size={16} color={color} />}
-                color={colors.macroCalories}
-                label={t('food.add.calories')}
-                value={`${Math.round(macros.perServing.calories)} kcal`}
-              />
-              <MacroStat
-                icon={(color) => <Beef size={16} color={color} />}
-                color={colors.macroProtein}
-                label={t('food.add.protein')}
-                value={`${macros.perServing.proteinG} g`}
-              />
-              <MacroStat
-                icon={(color) => <Wheat size={16} color={color} />}
-                color={colors.macroCarbs}
-                label={t('food.add.carbs')}
-                value={`${macros.perServing.carbsG} g`}
-              />
-              <MacroStat
-                icon={(color) => <Droplets size={16} color={color} />}
-                color={colors.macroFat}
-                label={t('food.add.fat')}
-                value={`${macros.perServing.fatG} g`}
-              />
-            </View>
+            <NutritionMacrosRow
+              showCalories
+              calories={macros.perServing.calories}
+              proteinG={macros.perServing.proteinG}
+              carbsG={macros.perServing.carbsG}
+              fatG={macros.perServing.fatG}
+            />
           </View>
 
           {!macros.total.complete ? (
@@ -653,43 +617,6 @@ function UnitSegmented({
   );
 }
 
-function MacroStat({
-  icon,
-  color,
-  label,
-  value,
-}: {
-  icon: (color: string) => ReactNode;
-  color: string;
-  label: string;
-  value: string;
-}) {
-  const colors = useThemeColors();
-  return (
-    <View
-      style={[
-        styles.macroStat,
-        {
-          backgroundColor: colors.surfaceMuted,
-          borderColor: colors.border,
-        },
-      ]}
-    >
-      <View className="flex-row items-center gap-1.5">
-        <View style={[styles.macroIcon, { backgroundColor: `${color}22` }]}>
-          {icon(color)}
-        </View>
-        <Text variant="caption" tone="secondary" numberOfLines={1}>
-          {label}
-        </Text>
-      </View>
-      <Text variant="bodyStrong" numberOfLines={1}>
-        {value}
-      </Text>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   avatar: {
     width: AVATAR,
@@ -725,22 +652,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: radii.sm,
     paddingHorizontal: spacing[1],
-  },
-  macroStat: {
-    minWidth: '47%',
-    flexGrow: 1,
-    flexBasis: '47%',
-    gap: spacing[2],
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[3],
-    borderRadius: radii.md,
-    borderWidth: StyleSheet.hairlineWidth,
-  },
-  macroIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: radii.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

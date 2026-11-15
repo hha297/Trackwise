@@ -1,10 +1,12 @@
 import { router } from 'expo-router';
+import { X } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Input } from '@/components/ui/input';
 import { Screen } from '@/components/ui/screen';
 import { Text } from '@/components/ui/text';
@@ -68,13 +70,16 @@ export default function GoalsScreen() {
   return (
     <Screen scroll keyboard edges={['top', 'bottom', 'left', 'right']}>
       <View className="gap-4">
-        <View className="flex-row items-center justify-between">
-          <Text variant="headingLarge">{t('goalsEdit.title')}</Text>
-          <Pressable onPress={() => router.back()}>
-            <Text variant="bodyStrong" tone="primary">
-              {t('goalsEdit.close')}
-            </Text>
-          </Pressable>
+        <View className="flex-row items-start gap-2">
+          <ChromeIconButton
+            header
+            label={t('goalsEdit.close')}
+            onPress={() => router.back()}
+            icon={(color) => <X size={22} color={color} />}
+          />
+          <Text variant="headingLarge" className="min-w-0 flex-1">
+            {t('goalsEdit.title')}
+          </Text>
         </View>
         <View className="flex-row flex-wrap gap-2">
           {GOAL_TYPES.map((type) => (

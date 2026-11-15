@@ -6,6 +6,7 @@ import {
   Plus,
   Search,
   Trash2,
+  X,
 } from 'lucide-react-native';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
@@ -21,6 +22,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Input } from '@/components/ui/input';
 import { Screen } from '@/components/ui/screen';
 import { LoadingState } from '@/components/ui/states';
@@ -422,15 +424,16 @@ export default function CreateTemplateScreen() {
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >
-          <View className="flex-row items-center justify-between">
-            <Text variant="headingLarge">
+          <View className="flex-row items-start gap-2">
+            <ChromeIconButton
+              header
+              label={t('workout.close')}
+              onPress={() => router.back()}
+              icon={(color) => <X size={22} color={color} />}
+            />
+            <Text variant="headingLarge" className="min-w-0 flex-1">
               {isEditing ? t('workout.editTemplate') : t('workout.createTemplate')}
             </Text>
-            <Pressable onPress={() => router.back()}>
-              <Text variant="bodyStrong" tone="secondary">
-                {t('workout.close')}
-              </Text>
-            </Pressable>
           </View>
 
           <SectionLabel>{t('workout.templateInformation')}</SectionLabel>

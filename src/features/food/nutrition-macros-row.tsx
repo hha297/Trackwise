@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
-import { radii, spacing, withAlpha } from '@/theme';
+import { radii, spacing } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 
 type NutritionMacrosRowProps = {
@@ -61,19 +61,19 @@ export function NutritionMacrosRow({
   const colors = useThemeColors();
   const iconSize = compact ? 14 : 16;
   const chipBg = onMutedSurface ? colors.surface : colors.surfaceMuted;
-  const rowGap = compact ? spacing[2] : spacing[3];
+  const rowGap = compact ? spacing[2] : spacing[4];
 
   const items: MacroItem[] = [
     ...(showCalories
       ? [
-          {
-            key: 'calories',
-            label: t('diary.nutrition.calories'),
-            value: formatKcal(calories),
-            color: colors.macroCalories,
-            icon: <Flame size={iconSize} color={colors.macroCalories} strokeWidth={2.2} />,
-          },
-        ]
+        {
+          key: 'calories',
+          label: t('diary.nutrition.calories'),
+          value: formatKcal(calories),
+          color: colors.macroCalories,
+          icon: <Flame size={iconSize} color={colors.macroCalories} strokeWidth={2.2} />,
+        },
+      ]
       : []),
     {
       key: 'protein',
@@ -118,15 +118,7 @@ export function NutritionMacrosRow({
               ]}
             >
               <View style={styles.chipHeader}>
-                <View
-                  style={[
-                    styles.iconWrap,
-                    compact && styles.iconWrapCompact,
-                    { backgroundColor: withAlpha(item.color, 0.14) },
-                  ]}
-                >
-                  {item.icon}
-                </View>
+                {item.icon}
                 <Text
                   variant="caption"
                   tone="secondary"
@@ -166,18 +158,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
     minWidth: 0,
-  },
-  iconWrap: {
-    width: 28,
-    height: 28,
-    borderRadius: radii.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
-  },
-  iconWrapCompact: {
-    width: 24,
-    height: 24,
   },
   label: {
     flexShrink: 1,

@@ -1,8 +1,10 @@
 import { router } from 'expo-router';
+import { ChevronLeft } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 
 import { Card } from '@/components/ui/card';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Screen } from '@/components/ui/screen';
 import { ErrorState, LoadingState } from '@/components/ui/states';
@@ -22,22 +24,16 @@ export default function WorkoutHistoryScreen() {
   return (
     <Screen scroll edges={['top', 'bottom', 'left', 'right']}>
       <View style={{ gap: spacing[4] }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            gap: spacing[3],
-          }}
-        >
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: spacing[2] }}>
+          <ChromeIconButton
+            header
+            label={t('workout.back')}
+            onPress={() => router.back()}
+            icon={(color) => <ChevronLeft size={22} color={color} />}
+          />
           <Text variant="headingLarge" style={{ flex: 1, minWidth: 0 }}>
             {t('workout.historyEntry')}
           </Text>
-          <Pressable accessibilityRole="button" onPress={() => router.back()} hitSlop={8}>
-            <Text variant="bodyStrong" tone="secondary">
-              {t('workout.back')}
-            </Text>
-          </Pressable>
         </View>
 
         {workouts.isLoading ? <LoadingState /> : null}

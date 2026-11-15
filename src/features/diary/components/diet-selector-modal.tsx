@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Text } from '@/components/ui/text';
 import { MacroHorizontalSlider } from '@/features/diary/components/macro-horizontal-slider';
 import {
@@ -141,20 +142,16 @@ export function DietSelectorModal({
           edges={['top', 'bottom']}
           style={[styles.panel, { backgroundColor: colors.surface, borderColor: colors.border }]}
         >
-          <View className="flex-row items-center justify-between gap-3 px-4 pb-2 pt-3">
-            <Text variant="headingMedium" className="flex-1" numberOfLines={1}>
+          <View className="flex-row items-start gap-2 px-4 pb-2 pt-3">
+            <ChromeIconButton
+              header
+              label={t('diary.diet.close')}
+              onPress={onClose}
+              icon={(color) => <X size={22} color={color} />}
+            />
+            <Text variant="headingMedium" className="min-w-0 flex-1" numberOfLines={1}>
               {t('diary.diet.title')}
             </Text>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('diary.diet.close')}
-              onPress={onClose}
-              hitSlop={8}
-              className="h-11 w-11 items-center justify-center"
-              style={{ backgroundColor: colors.surfaceMuted, borderRadius: radii.md }}
-            >
-              <X size={18} color={colors.textPrimary} />
-            </Pressable>
           </View>
 
           <ScrollView

@@ -1,9 +1,11 @@
+import { X } from 'lucide-react-native';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, View } from 'react-native';
+import { Modal, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
 import { useThemeColors } from '@/theme/theme-provider';
@@ -140,15 +142,16 @@ export function ConfirmSelectionModal({
     >
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top', 'bottom']}>
         <View className="flex-1 gap-4 px-4 py-4">
-          <View className="flex-row items-center justify-between">
-            <Text variant="headingMedium">
+          <View className="flex-row items-start gap-2">
+            <ChromeIconButton
+              header
+              label={t('common.close')}
+              onPress={onClose}
+              icon={(color) => <X size={22} color={color} />}
+            />
+            <Text variant="headingMedium" className="min-w-0 flex-1">
               {intent === 'plan' ? t('food.confirm.titlePlan') : t('food.confirm.titleLog')}
             </Text>
-            <Pressable onPress={onClose} accessibilityRole="button">
-              <Text variant="bodyStrong" tone="secondary">
-                {t('common.close')}
-              </Text>
-            </Pressable>
           </View>
 
           {item ? (

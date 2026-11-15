@@ -52,10 +52,10 @@ export function WorkoutSection({ workouts, locale, onAdd }: WorkoutSectionProps)
               width: 48,
               height: 48,
               borderRadius: radii.sm,
-              backgroundColor: colors.primary,
+              backgroundColor: colors.surfaceMuted,
             }}
           >
-            <Dumbbell size={22} color={colors.textOnPrimary} strokeWidth={2.2} />
+            <Dumbbell size={22} color={colors.primary} strokeWidth={2.2} />
           </View>
           <View className="min-w-0 flex-1 gap-0.5">
             <Text variant="headingSmall">{t('diary.workout.title')}</Text>
@@ -144,10 +144,10 @@ export function WorkoutSection({ workouts, locale, onAdd }: WorkoutSectionProps)
                       width: 40,
                       height: 40,
                       borderRadius: radii.sm,
-                      backgroundColor: colors.primary,
+                      backgroundColor: colors.surfaceMuted,
                     }}
                   >
-                    <Dumbbell size={18} color={colors.textOnPrimary} />
+                    <Dumbbell size={18} color={colors.primary} />
                   </View>
                 )}
 

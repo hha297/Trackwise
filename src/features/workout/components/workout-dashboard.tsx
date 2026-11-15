@@ -1,6 +1,5 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useMemo, useState, type ReactNode } from 'react';
 import { router } from 'expo-router';
 import {
   BookOpen,
@@ -13,6 +12,7 @@ import {
   Play,
   Timer,
 } from 'lucide-react-native';
+import { useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 
@@ -34,8 +34,8 @@ import { draftSetIsLogged } from '@/features/workout/logged-set';
 import { formatWorkoutDay, resolveWorkoutName } from '@/features/workout/session-display';
 import type { WorkoutListItem } from '@/features/workout/types';
 import { useActiveWorkoutStore } from '@/stores/active-workout-store';
-import { fonts } from '@/theme/fonts';
 import { iconSizes, layout, radii, spacing, withAlpha } from '@/theme';
+import { fonts } from '@/theme/fonts';
 import { useThemeColors } from '@/theme/theme-provider';
 import { toDiaryDateKey } from '@/utils/date';
 
@@ -158,9 +158,9 @@ export function WorkoutDashboard() {
               })}
               {totalSets > 0
                 ? ` · ${t('workout.continueSets', {
-                    completed: completedSets,
-                    total: totalSets,
-                  })}`
+                  completed: completedSets,
+                  total: totalSets,
+                })}`
                 : ''}
             </Text>
           </View>
@@ -226,19 +226,19 @@ export function WorkoutDashboard() {
           ) : (
             <View style={styles.metricStrip}>
               <MetricCell
-                icon={<Dumbbell size={15} color={colors.primary} strokeWidth={2.2} />}
+                icon={<Dumbbell size={15} color={colors.textSecondary} strokeWidth={2.2} />}
                 label={t('workout.weeklySessions')}
                 value={String(weekStats.sessions)}
               />
               <View style={[styles.metricDivider, { backgroundColor: colors.border }]} />
               <MetricCell
-                icon={<Timer size={15} color={colors.primary} strokeWidth={2.2} />}
+                icon={<Timer size={15} color={colors.textSecondary} strokeWidth={2.2} />}
                 label={t('workout.weeklyDuration')}
                 value={formatElapsed(weekStats.durationSec)}
               />
               <View style={[styles.metricDivider, { backgroundColor: colors.border }]} />
               <MetricCell
-                icon={<Flame size={15} color={colors.primary} strokeWidth={2.2} />}
+                icon={<Flame size={15} color={colors.textSecondary} strokeWidth={2.2} />}
                 label={t('workout.weeklyCalories')}
                 value={`~${weekStats.calories}`}
               />
@@ -281,7 +281,7 @@ export function WorkoutDashboard() {
           <ExploreCard
             title={t('workout.exerciseLibrary')}
             body={t('workout.exerciseLibraryBody')}
-            icon={<BookOpen size={20} color={colors.primary} strokeWidth={2.2} />}
+            icon={<BookOpen size={18} color={colors.textSecondary} strokeWidth={2.2} />}
             onPress={() =>
               router.push({ pathname: '/workout/exercises', params: { mode: 'browse' } })
             }
@@ -289,13 +289,13 @@ export function WorkoutDashboard() {
           <ExploreCard
             title={t('workout.historyEntry')}
             body={t('workout.historyEntryBody')}
-            icon={<History size={20} color={colors.primary} strokeWidth={2.2} />}
+            icon={<History size={18} color={colors.textSecondary} strokeWidth={2.2} />}
             onPress={() => router.push('/workout/history')}
           />
           <ExploreCard
             title={t('phase1.planTitle')}
             body={t('phase1.planHint')}
-            icon={<CalendarDays size={20} color={colors.primary} strokeWidth={2.2} />}
+            icon={<CalendarDays size={18} color={colors.textSecondary} strokeWidth={2.2} />}
             onPress={() => router.push('/workout/plan')}
           />
         </View>
@@ -357,9 +357,7 @@ function RecentWorkoutsSection({
 
       {!loading && !error && recent.length === 0 ? (
         <Card style={styles.emptyRecent}>
-          <View style={[styles.recentLeadIcon, { backgroundColor: withAlpha(colors.primary, 0.14) }]}>
-            <History size={20} color={colors.primary} strokeWidth={2.2} />
-          </View>
+          <History size={18} color={colors.textSecondary} strokeWidth={2.2} />
           <View style={styles.emptyRecentCopy}>
             <Text variant="bodyStrong">{t('workout.emptyHistory')}</Text>
             <Text variant="bodySmall" tone="muted">
@@ -429,13 +427,8 @@ function RecentWorkoutsSection({
                       </View>
                     ))
                   ) : (
-                    <View
-                      style={[
-                        styles.recentLeadIcon,
-                        { backgroundColor: withAlpha(colors.primary, 0.14) },
-                      ]}
-                    >
-                      <Dumbbell size={18} color={colors.primary} strokeWidth={2.2} />
+                    <View style={styles.recentLeadIcon}>
+                      <Dumbbell size={18} color={colors.textSecondary} strokeWidth={2.2} />
                     </View>
                   )}
                 </View>
@@ -511,11 +504,7 @@ function ExploreCard({
       {({ pressed }) => (
         <Card style={[styles.exploreCard, { opacity: pressed ? 0.92 : 1 }]}>
           <View style={styles.exploreRow}>
-            <View
-              style={[styles.exploreIcon, { backgroundColor: withAlpha(colors.primary, 0.14) }]}
-            >
-              {icon}
-            </View>
+            {icon}
             <View style={styles.exploreCopy}>
               <Text variant="bodyStrong" numberOfLines={1}>
                 {title}
@@ -553,28 +542,27 @@ function CategoryTile({
           params: { top: category },
         })
       }
-      style={({ pressed }) => [
-        styles.categoryTile,
-        { width, height, opacity: pressed ? 0.94 : 1 },
-      ]}
+      style={({ pressed }) => [{ width, height, opacity: pressed ? 0.94 : 1 }]}
     >
-      <Image
-        source={WORKOUT_CATEGORY_IMAGES[category]}
-        style={{ width, height }}
-        contentFit="cover"
-        transition={120}
-        accessibilityIgnoresInvertColors
-      />
-      <LinearGradient
-        pointerEvents="none"
-        colors={['transparent', withAlpha('#000000', 0.55)]}
-        locations={[0.45, 1]}
-        style={StyleSheet.absoluteFill}
-      />
-      <View pointerEvents="none" style={styles.categoryFooter}>
-        <Text variant="bodyStrong" numberOfLines={1} style={styles.onImageTitle}>
-          {t(`workout.category.${category}`)}
-        </Text>
+      <View style={[styles.categoryTile, { width, height }]}>
+        <Image
+          source={WORKOUT_CATEGORY_IMAGES[category]}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          transition={120}
+          accessibilityIgnoresInvertColors
+        />
+        <LinearGradient
+          pointerEvents="none"
+          colors={['transparent', withAlpha('#000000', 0.55)]}
+          locations={[0.45, 1]}
+          style={StyleSheet.absoluteFill}
+        />
+        <View pointerEvents="none" style={styles.categoryFooter}>
+          <Text variant="bodyStrong" numberOfLines={1} style={styles.onImageTitle}>
+            {t(`workout.category.${category}`)}
+          </Text>
+        </View>
       </View>
     </Pressable>
   );
@@ -672,10 +660,9 @@ const styles = StyleSheet.create({
     gap: CATEGORY_GAP,
   },
   categoryTile: {
-    borderRadius: radii.md,
+    borderRadius: radii.xl,
     overflow: 'hidden',
-    backgroundColor: '#202020',
-    position: 'relative',
+    backgroundColor: 'transparent',
   },
   categoryFooter: {
     position: 'absolute',
@@ -700,14 +687,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing[3],
-  },
-  exploreIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: radii.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
   },
   exploreCopy: {
     flexGrow: 1,

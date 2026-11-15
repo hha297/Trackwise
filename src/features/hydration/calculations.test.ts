@@ -43,12 +43,13 @@ describe('hydration', () => {
     expect(progressRatio(1250, 2500)).toBe(0.5);
   });
 
-  it('keeps the Y scale at least 2L even when intake is lower', () => {
+  it('scales the Y axis to the daily goal and grows only past it', () => {
     expect(niceCeilMl(0)).toBe(500);
     expect(niceCeilMl(1800)).toBe(2000);
+    expect(weekChartScaleMax([0, 0, 0], 2500)).toBe(2500);
+    expect(weekChartScaleMax([250, 900, 400], 1500)).toBe(1500);
+    expect(weekChartScaleMax([250, 3200, 900], 2500)).toBe(4000);
     expect(weekChartScaleMax([0, 0, 0])).toBe(2000);
-    expect(weekChartScaleMax([250, 900, 400])).toBe(2000);
-    expect(weekChartScaleMax([250, 3200, 900])).toBe(4000);
-    expect(weekChartYTicks(2000)).toEqual([0, 1000, 2000]);
+    expect(weekChartYTicks(2500)).toEqual([0, 1250, 2500]);
   });
 });

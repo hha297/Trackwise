@@ -1,10 +1,11 @@
 import { router } from 'expo-router';
-import { Trash2 } from 'lucide-react-native';
+import { Trash2, X } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { DeleteConfirmDialog } from '@/components/ui/delete-confirm-dialog';
 import { Screen } from '@/components/ui/screen';
 import { Text } from '@/components/ui/text';
@@ -24,13 +25,16 @@ export default function DeleteAccountScreen() {
   return (
     <Screen scroll edges={['top', 'bottom', 'left', 'right']}>
       <View style={{ gap: spacing[4] }}>
-        <View className="flex-row items-center justify-between">
-          <Text variant="headingLarge">{t('account.deleteAccount')}</Text>
-          <Pressable onPress={() => router.back()}>
-            <Text variant="bodyStrong" tone="brand">
-              {t('account.cancel')}
-            </Text>
-          </Pressable>
+        <View className="flex-row items-start gap-2">
+          <ChromeIconButton
+            header
+            label={t('account.cancel')}
+            onPress={() => router.back()}
+            icon={(color) => <X size={22} color={color} />}
+          />
+          <Text variant="headingLarge" className="min-w-0 flex-1">
+            {t('account.deleteAccount')}
+          </Text>
         </View>
 
         <View

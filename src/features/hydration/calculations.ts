@@ -54,17 +54,18 @@ export function progressRatio(amountMl: number, targetMl: number): number {
 /** Fixed chart plot height (px) — bars scale inside this, never grow the layout. */
 export const HYDRATION_CHART_HEIGHT = 140;
 
-/** Empty-week Y scale (2 L) so axes stay visible with no intake yet. */
+/** Fallback Y scale when a day has no daily goal yet. */
 export const EMPTY_WEEK_CHART_SCALE_ML = 2000;
 
-/** Y-axis scale from the week's peak day; never below 2 L. */
-export function weekChartScaleMax(
-  amountsMl: number[],
-  minScaleMl = EMPTY_WEEK_CHART_SCALE_ML,
-): number {
+/**
+ * Y-axis top is the daily goal so bars zoom to that target.
+ * A day above the goal raises the scale so the bar still fits.
+ */
+export function weekChartScaleMax(amountsMl: number[], goalMl?: number): number {
   const peak = Math.max(0, ...amountsMl);
-  if (peak <= 0) return minScaleMl;
-  return Math.max(minScaleMl, niceCeilMl(peak));
+  const goal = goalMl != null && goalMl > 0 ? goalMl : EMPTY_WEEK_CHART_SCALE_ML;
+  if (peak <= goal) return goal;
+  return niceCeilMl(peak);
 }
 
 /** Round up to a clean ml tick so the tallest bar fits under a fixed chart height. */

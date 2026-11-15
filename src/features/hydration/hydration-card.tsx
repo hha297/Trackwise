@@ -27,6 +27,7 @@ import { useThemeColors } from '@/theme/theme-provider';
 import { parseDiaryDateKey } from '@/utils/date';
 
 const WATER_IMAGE = require('../../../assets/images/branding/images/water.jpg');
+const DRINK_PREVIEW_COUNT = 3;
 
 function formatAmount(ml: number, imperial: boolean): string {
   if (imperial) return `${mlToFlOz(ml)} fl oz`;
@@ -60,6 +61,7 @@ export function HydrationCard({ dateKey }: { dateKey: string }) {
   const [custom, setCustom] = useState('');
   const [target, setTarget] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [logExpanded, setLogExpanded] = useState(false);
   const weekday = useMemo(
     () => new Intl.DateTimeFormat(locale, { weekday: 'short' }),
     [locale],
@@ -100,7 +102,11 @@ export function HydrationCard({ dateKey }: { dateKey: string }) {
   function beginEdit(entry: HydrationEntry) {
     setEditingId(entry.id);
     setCustom(imperial ? String(mlToFlOz(entry.amountMl)) : String(entry.amountMl));
+    setLogExpanded(true);
   }
+
+  const visibleDrinks = logExpanded ? dayEntries : dayEntries.slice(0, DRINK_PREVIEW_COUNT);
+  const hiddenDrinkCount = dayEntries.length - visibleDrinks.length;
 
   return (
     <Card className="gap-3">
@@ -181,12 +187,39 @@ export function HydrationCard({ dateKey }: { dateKey: string }) {
             loading={mutations.add.isPending || mutations.update.isPending}
           />
 
+          <Text variant="label" tone="secondary">
+            {t('phase1.weekTotal')}
+          </Text>
+          <HydrationWeekChart
+            days={chartDays}
+            goalMl={targetMl}
+            formatY={(ml) => formatAxis(ml, imperial)}
+          />
+          <Input
+            label={t('phase1.targetLabel')}
+            value={target}
+            onChangeText={setTarget}
+            keyboardType="number-pad"
+            placeholder={formatAmount(targetMl, imperial)}
+          />
+          <Button
+            label={t('phase1.saveTarget')}
+            variant="secondary"
+            loading={mutations.target.isPending}
+            onPress={() => {
+              const amount = parseAmount(target);
+              if (amount == null) return;
+              mutations.target.mutate(amount);
+              setTarget('');
+            }}
+          />
+
           <View className="gap-2">
             <Text variant="label" tone="secondary">
               {t('phase1.intakeLog')}
             </Text>
             {dayEntries.length ? (
-              dayEntries.map((entry) => (
+              visibleDrinks.map((entry) => (
                 <View
                   key={entry.id}
                   style={{
@@ -255,33 +288,29 @@ export function HydrationCard({ dateKey }: { dateKey: string }) {
                 </Text>
               </View>
             )}
+            {hiddenDrinkCount > 0 ? (
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => setLogExpanded(true)}
+                hitSlop={8}
+              >
+                <Text variant="caption" tone="brand">
+                  {t('phase1.showAllDrinks', { count: dayEntries.length })}
+                </Text>
+              </Pressable>
+            ) : null}
+            {logExpanded && dayEntries.length > DRINK_PREVIEW_COUNT ? (
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => setLogExpanded(false)}
+                hitSlop={8}
+              >
+                <Text variant="caption" tone="brand">
+                  {t('phase1.showFewerDrinks')}
+                </Text>
+              </Pressable>
+            ) : null}
           </View>
-
-          <Text variant="label" tone="secondary">
-            {t('phase1.weekTotal')}
-          </Text>
-          <HydrationWeekChart
-            days={chartDays}
-            formatY={(ml) => formatAxis(ml, imperial)}
-          />
-          <Input
-            label={t('phase1.targetLabel')}
-            value={target}
-            onChangeText={setTarget}
-            keyboardType="number-pad"
-            placeholder={formatAmount(targetMl, imperial)}
-          />
-          <Button
-            label={t('phase1.saveTarget')}
-            variant="secondary"
-            loading={mutations.target.isPending}
-            onPress={() => {
-              const amount = parseAmount(target);
-              if (amount == null) return;
-              mutations.target.mutate(amount);
-              setTarget('');
-            }}
-          />
         </>
       )}
     </Card>

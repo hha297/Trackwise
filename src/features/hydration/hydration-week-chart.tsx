@@ -18,17 +18,19 @@ type WeekDay = {
 
 type HydrationWeekChartProps = {
   days: WeekDay[];
+  /** Daily target in ml. The Y axis tops out here unless a day exceeds it. */
+  goalMl: number;
   formatY: (ml: number) => string;
 };
 
 /**
  * Week water chart always renders 7 X days + Y (ml).
- * Empty weeks keep a 2 L scale so axes stay readable without bars.
+ * The axis max follows the daily goal and grows only when intake exceeds it.
  */
-export function HydrationWeekChart({ days, formatY }: HydrationWeekChartProps) {
+export function HydrationWeekChart({ days, goalMl, formatY }: HydrationWeekChartProps) {
   const colors = useThemeColors();
   const amounts = days.map((day) => day.amountMl);
-  const scaleMax = weekChartScaleMax(amounts);
+  const scaleMax = weekChartScaleMax(amounts, goalMl);
   const ticks = weekChartYTicks(scaleMax);
   const yAxisWidth = 44;
   const labelRow = 20;

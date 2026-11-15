@@ -5,6 +5,7 @@ import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
 import { ErrorState, LoadingState } from '@/components/ui/states';
@@ -123,27 +124,22 @@ export function MonthlyView({
   return (
     <View className="gap-4">
       <View className="flex-row items-center justify-between">
-        <Pressable
-          accessibilityRole="button"
+        <ChromeIconButton
+          label={t('common.goBack')}
           onPress={() => onSelectDate(`${shiftMonthKey(monthKey, -1)}-01`)}
-          className="h-11 w-11 items-center justify-center"
-        >
-          <ChevronLeft size={22} color={colors.textSecondary} />
-        </Pressable>
+          icon={(color) => <ChevronLeft size={22} color={color} />}
+        />
         <Text variant="headingSmall">{monthTitle}</Text>
-        <Pressable
-          accessibilityRole="button"
+        <ChromeIconButton
+          label={t('mealPlan.nextDay')}
           disabled={!canGoNext}
           onPress={() => {
             if (!canGoNext) return;
             const next = `${shiftMonthKey(monthKey, 1)}-01`;
             onSelectDate(next > todayKey ? todayKey : next);
           }}
-          className="h-11 w-11 items-center justify-center"
-          style={{ opacity: canGoNext ? 1 : 0.35 }}
-        >
-          <ChevronRight size={22} color={colors.textSecondary} />
-        </Pressable>
+          icon={(color) => <ChevronRight size={22} color={color} />}
+        />
       </View>
 
       {loading ? <LoadingState /> : null}

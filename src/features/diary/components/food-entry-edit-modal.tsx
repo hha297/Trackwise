@@ -1,11 +1,12 @@
-import { Beef, Droplets, Flame, Wheat } from 'lucide-react-native';
+import { Beef, Droplets, Flame, Wheat, X } from 'lucide-react-native';
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
-import { Modal, Pressable, View } from 'react-native';
+import { Modal, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
 import { parsePositiveAmount, rescaleLoggedNutrition } from '@/features/food/scan-calculations';
@@ -121,13 +122,16 @@ export function FoodEntryEditModal({
     <Modal visible={Boolean(entry)} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top', 'bottom']}>
         <View className="flex-1 gap-4 px-4 py-4">
-          <View className="flex-row items-center justify-between">
-            <Text variant="headingMedium">{t('diary.meals.editTitle')}</Text>
-            <Pressable onPress={onClose}>
-              <Text variant="bodyStrong" tone="secondary">
-                {t('diary.meals.deleteCancel')}
-              </Text>
-            </Pressable>
+          <View className="flex-row items-start gap-2">
+            <ChromeIconButton
+              header
+              label={t('diary.meals.deleteCancel')}
+              onPress={onClose}
+              icon={(color) => <X size={22} color={color} />}
+            />
+            <Text variant="headingMedium" className="min-w-0 flex-1">
+              {t('diary.meals.editTitle')}
+            </Text>
           </View>
 
           {entry ? (

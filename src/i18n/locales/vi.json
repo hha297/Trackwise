@@ -472,6 +472,8 @@
       "breakdownExpandHint": "Chạm một danh mục để xem bạn đã ghi gì trong {{count}} ngày gần đây.",
       "breakdownEmptyCategory": "Chưa ghi gì trong danh mục này cho kỳ đã chọn.",
       "breakdownItemCount": "{{count}} mục",
+      "breakdownShowMore": "Xem thêm",
+      "breakdownShowLess": "Thu gọn",
       "activeDaysCount": "{{count}} ngày hoạt động",
       "milestonesTitle": "Mốc",
       "milestonesHint": "Dựa trên chuỗi đều đặn tốt nhất — mỗi ngày có dinh dưỡng, nước hoặc buổi tập hoàn thành đều được tính.",
@@ -850,7 +852,8 @@
     "mealPlanPreview": {
       "emptyLabel": "Chưa có kế hoạch",
       "errorBody": "Không tải được kế hoạch ngày này. Bạn vẫn có thể mở Kế hoạch bữa ăn.",
-      "plannedSummary": "{{protein}} g đạm · {{count}} bữa đã lên kế hoạch",
+      "plannedSummary": "{{meals}} · còn {{count}} bữa chưa ghi",
+      "plannedSummaryDone": "{{meals}} · đã ghi",
       "planCta": "Lên kế hoạch",
       "openCta": "Mở kế hoạch"
     }
@@ -1902,6 +1905,8 @@
     "add": "Thêm",
     "deleteIntake": "Xóa",
     "intakeLog": "Đã uống hôm nay",
+    "showAllDrinks": "Hiện tất cả {{count}}",
+    "showFewerDrinks": "Thu gọn",
     "emptyDay": "Ngày này chưa có ghi nhận.",
     "weekTotal": "Tuần này",
     "targetLabel": "Mục tiêu ngày",

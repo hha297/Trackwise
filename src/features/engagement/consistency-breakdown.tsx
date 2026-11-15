@@ -1,14 +1,6 @@
 import { Image } from 'expo-image';
-import {
-  CalendarDays,
-  ChevronDown,
-  ChevronUp,
-  Droplets,
-  Dumbbell,
-  Flame,
-  Utensils,
-} from 'lucide-react-native';
-import { useMemo, useState, type ReactNode } from 'react';
+import { ChevronDown, ChevronUp, Droplets, Dumbbell, Utensils } from 'lucide-react-native';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -22,7 +14,7 @@ import {
   type ActivityHistoryItem,
   type ActivityHistoryKind,
 } from '@/features/progress/activity-history';
-import { iconSizes, radii, spacing, withAlpha } from '@/theme';
+import { iconSizes, radii, spacing } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 import { parseDiaryDateKey } from '@/utils/date';
 
@@ -39,6 +31,7 @@ type ConsistencyBreakdownProps = {
 };
 
 const THUMB = 44;
+const DETAIL_PAGE_SIZE = 5;
 
 function formatMl(amountMl: number, locale: string): string {
   if (amountMl >= 1000) {
@@ -116,42 +109,36 @@ export function ConsistencyBreakdown({
       <View style={{ gap: spacing[2] }}>
         <CategoryBlock
           kind="nutrition"
-          icon={<Utensils size={18} color={withAlpha(colors.primary, 0.75)} />}
+          icon={<Utensils size={18} color={colors.textSecondary} />}
           label={t('engagement.streaks.nutrition')}
           value={t('engagement.consistency.activeDaysCount', { count: nutritionDays })}
-          color={colors.primary}
           open={openKind === 'nutrition'}
           onToggle={() => toggle('nutrition')}
           days={activityDaysForKind(activityDays, 'nutrition')}
           dateFmt={dateFmt}
           locale={locale}
-          progress={nutritionDays / Math.max(windowDays, 1)}
         />
         <CategoryBlock
           kind="hydration"
-          icon={<Droplets size={18} color={withAlpha(colors.info, 0.75)} />}
+          icon={<Droplets size={18} color={colors.textSecondary} />}
           label={t('engagement.streaks.hydration')}
           value={t('engagement.consistency.activeDaysCount', { count: hydrationDays })}
-          color={colors.info}
           open={openKind === 'hydration'}
           onToggle={() => toggle('hydration')}
           days={activityDaysForKind(activityDays, 'hydration')}
           dateFmt={dateFmt}
           locale={locale}
-          progress={hydrationDays / Math.max(windowDays, 1)}
         />
         <CategoryBlock
           kind="workout"
-          icon={<Dumbbell size={18} color={withAlpha(colors.warning, 0.75)} />}
+          icon={<Dumbbell size={18} color={colors.textSecondary} />}
           label={t('engagement.streaks.workout')}
           value={t('engagement.consistency.activeDaysCount', { count: workoutDays })}
-          color={colors.warning}
           open={openKind === 'workout'}
           onToggle={() => toggle('workout')}
           days={activityDaysForKind(activityDays, 'workout')}
           dateFmt={dateFmt}
           locale={locale}
-          progress={workoutDays / Math.max(windowDays, 1)}
         />
       </View>
     </View>
@@ -163,41 +150,45 @@ function CategoryBlock({
   icon,
   label,
   value,
-  color,
   open,
   onToggle,
   days,
   dateFmt,
   locale,
-  progress,
 }: {
   kind: ActivityHistoryKind;
   icon: ReactNode;
   label: string;
   value: string;
-  color: string;
   open: boolean;
   onToggle: () => void;
   days: ActivityHistoryDay[];
   dateFmt: Intl.DateTimeFormat;
   locale: string;
-  progress: number;
 }) {
   const { t } = useTranslation();
   const colors = useThemeColors();
-  const fill = Math.max(0, Math.min(1, progress));
+  const [visibleCount, setVisibleCount] = useState(DETAIL_PAGE_SIZE);
+  const totalItems = days.reduce((count, day) => count + day.items.length, 0);
+
+  useEffect(() => {
+    if (!open) setVisibleCount(DETAIL_PAGE_SIZE);
+  }, [open]);
+
+  const visibleDays = useMemo(() => {
+    let remaining = visibleCount;
+    const next: ActivityHistoryDay[] = [];
+    for (const day of days) {
+      if (remaining <= 0) break;
+      const items = day.items.slice(0, remaining);
+      remaining -= items.length;
+      if (items.length > 0) next.push({ ...day, items });
+    }
+    return next;
+  }, [days, visibleCount]);
 
   return (
-    <View
-      style={[
-        styles.block,
-        {
-          backgroundColor: colors.surfaceMuted,
-          borderColor: open ? withAlpha(color, 0.22) : colors.border,
-        },
-      ]}
-    >
-      <View style={[styles.accentBar, { backgroundColor: withAlpha(color, 0.55) }]} />
+    <View style={[styles.block, { borderColor: colors.border }]}>
       <Pressable
         accessibilityRole="button"
         accessibilityState={{ expanded: open }}
@@ -206,27 +197,14 @@ function CategoryBlock({
         style={styles.header}
       >
         <View style={styles.rowLeft}>
-          <View style={[styles.iconWrap, { backgroundColor: withAlpha(color, 0.1) }]}>
-            {icon}
-          </View>
-          <View style={{ flex: 1, minWidth: 0, gap: spacing[1] }}>
+          {icon}
+          <View style={{ flex: 1, minWidth: 0 }}>
             <Text variant="bodyStrong" numberOfLines={1}>
               {label}
             </Text>
             <Text variant="caption" tone="secondary" numberOfLines={1}>
               {value}
             </Text>
-            <View style={[styles.progressTrack, { backgroundColor: withAlpha(color, 0.08) }]}>
-              <View
-                style={[
-                  styles.progressFill,
-                  {
-                    width: `${Math.round(fill * 100)}%`,
-                    backgroundColor: withAlpha(color, 0.45),
-                  },
-                ]}
-              />
-            </View>
           </View>
         </View>
         {open ? (
@@ -243,64 +221,66 @@ function CategoryBlock({
               {t('engagement.consistency.breakdownEmptyCategory')}
             </Text>
           ) : (
-            days.map((day) => (
+            visibleDays.map((day) => (
               <View key={`${kind}-${day.dayKey}`} style={styles.dayBlock}>
                 <View style={styles.dayHeader}>
-                  <View
-                    style={[styles.dayIconWrap, { backgroundColor: withAlpha(color, 0.1) }]}
-                  >
-                    <CalendarDays size={14} color={withAlpha(color, 0.75)} />
-                  </View>
-                  <Text variant="label" tone="secondary" numberOfLines={1}>
+                  <Text variant="label" tone="secondary" numberOfLines={1} style={{ flex: 1 }}>
                     {dateFmt.format(parseDiaryDateKey(day.dayKey))}
                   </Text>
-                  <View
-                    style={[
-                      styles.dayCountChip,
-                      { backgroundColor: withAlpha(color, 0.08) },
-                    ]}
-                  >
-                    <Text variant="fine" tone="secondary" numberOfLines={1}>
-                      {formatDayChip(
-                        kind,
-                        day.items,
-                        locale,
-                        (value) => t('progress.activityHistory.kcal', { value }),
-                        (value) => t('diary.workout.minutes', { value }),
-                        (count) =>
-                          t('engagement.consistency.breakdownItemCount', { count }),
-                      )}
-                    </Text>
-                  </View>
+                  <Text variant="caption" tone="muted" numberOfLines={1}>
+                    {formatDayChip(
+                      kind,
+                      day.items,
+                      locale,
+                      (chipValue) => t('progress.activityHistory.kcal', { value: chipValue }),
+                      (chipValue) => t('diary.workout.minutes', { value: chipValue }),
+                      (count) => t('engagement.consistency.breakdownItemCount', { count }),
+                    )}
+                  </Text>
                 </View>
                 <View style={styles.items}>
                   {day.items.map((item) => (
-                    <DetailCard
-                      key={item.id}
-                      item={item}
-                      locale={locale}
-                      accent={color}
-                    />
+                    <DetailCard key={item.id} item={item} locale={locale} />
                   ))}
                 </View>
               </View>
             ))
           )}
+          {totalItems > DETAIL_PAGE_SIZE ? (
+            <View style={styles.pager}>
+              {visibleCount < totalItems ? (
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={() =>
+                    setVisibleCount((count) => Math.min(totalItems, count + DETAIL_PAGE_SIZE))
+                  }
+                  hitSlop={8}
+                >
+                  <Text variant="caption" tone="brand">
+                    {t('engagement.consistency.breakdownShowMore')}
+                  </Text>
+                </Pressable>
+              ) : null}
+              {visibleCount > DETAIL_PAGE_SIZE ? (
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={() => setVisibleCount(DETAIL_PAGE_SIZE)}
+                  hitSlop={8}
+                >
+                  <Text variant="caption" tone="brand">
+                    {t('engagement.consistency.breakdownShowLess')}
+                  </Text>
+                </Pressable>
+              ) : null}
+            </View>
+          ) : null}
         </View>
       ) : null}
     </View>
   );
 }
 
-function DetailCard({
-  item,
-  locale,
-  accent,
-}: {
-  item: ActivityHistoryItem;
-  locale: string;
-  accent: string;
-}) {
+function DetailCard({ item, locale }: { item: ActivityHistoryItem; locale: string }) {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const [imageFailed, setImageFailed] = useState(false);
@@ -309,73 +289,28 @@ function DetailCard({
   const title =
     item.kind === 'hydration' ? t('progress.activityHistory.hydrationTitle') : item.title;
 
-  const chips: { key: string; label: string; tone: string; bg: string }[] = [];
-  if (item.kind === 'nutrition' && item.mealType) {
-    chips.push({
-      key: 'meal',
-      label: t(`meals.${item.mealType}`),
-      tone: colors.textSecondary,
-      bg: withAlpha(colors.primary, 0.08),
-    });
-  }
-  if (item.amountG != null) {
-    chips.push({
-      key: 'g',
-      label: formatG(item.amountG, locale),
-      tone: colors.textSecondary,
-      bg: withAlpha(colors.info, 0.08),
-    });
-  }
-  if (item.amountMl != null) {
-    chips.push({
-      key: 'ml',
-      label: formatMl(item.amountMl, locale),
-      tone: colors.textSecondary,
-      bg: withAlpha(colors.info, 0.08),
-    });
-  }
+  const facts: string[] = [];
+  if (item.kind === 'nutrition' && item.mealType) facts.push(t(`meals.${item.mealType}`));
+  if (item.amountG != null) facts.push(formatG(item.amountG, locale));
+  if (item.amountMl != null) facts.push(formatMl(item.amountMl, locale));
   if (item.detail && item.kind === 'nutrition' && item.amountG == null && item.amountMl == null) {
-    chips.push({
-      key: 'serving',
-      label: item.detail,
-      tone: colors.textMuted,
-      bg: colors.surfaceMuted,
-    });
+    facts.push(item.detail);
   }
   if (item.calories != null) {
-    chips.push({
-      key: 'kcal',
-      label: t('progress.activityHistory.kcal', { value: item.calories }),
-      tone: colors.textSecondary,
-      bg: withAlpha(colors.warning, 0.1),
-    });
+    facts.push(t('progress.activityHistory.kcal', { value: item.calories }));
   }
   if (item.kind === 'workout' && item.durationSec != null && item.durationSec > 0) {
-    chips.push({
-      key: 'min',
-      label: t('diary.workout.minutes', {
-        value: Math.max(1, Math.round(item.durationSec / 60)),
-      }),
-      tone: colors.textSecondary,
-      bg: withAlpha(colors.warning, 0.08),
-    });
+    facts.push(
+      t('diary.workout.minutes', { value: Math.max(1, Math.round(item.durationSec / 60)) }),
+    );
   }
 
   const FallbackIcon =
     item.kind === 'nutrition' ? Utensils : item.kind === 'hydration' ? Droplets : Dumbbell;
-  const softAccent = withAlpha(accent, 0.7);
 
   return (
-    <View
-      style={[
-        styles.itemCard,
-        {
-          backgroundColor: colors.surface,
-          borderColor: colors.border,
-        },
-      ]}
-    >
-      <View style={[styles.thumb, { backgroundColor: withAlpha(accent, 0.08) }]}>
+    <View style={[styles.itemCard, { borderColor: colors.border }]}>
+      <View style={[styles.thumb, { backgroundColor: colors.surfaceMuted }]}>
         {showImage ? (
           <Image
             source={{ uri: item.imageUrl! }}
@@ -385,35 +320,16 @@ function DetailCard({
             accessibilityIgnoresInvertColors
           />
         ) : (
-          <FallbackIcon size={20} color={softAccent} />
+          <FallbackIcon size={18} color={colors.textMuted} />
         )}
       </View>
-
       <View style={styles.itemCopy}>
         <Text variant="bodyStrong" numberOfLines={2}>
           {title}
         </Text>
-        {chips.length > 0 ? (
-          <View style={styles.chipRow}>
-            {chips.map((chip) => (
-              <View
-                key={chip.key}
-                style={[styles.chip, { backgroundColor: chip.bg }]}
-              >
-                {chip.key === 'kcal' ? (
-                  <Flame size={10} color={withAlpha(colors.warning, 0.75)} />
-                ) : null}
-                <Text variant="fine" style={{ color: chip.tone }} numberOfLines={1}>
-                  {chip.label}
-                </Text>
-              </View>
-            ))}
-          </View>
-        ) : (
-          <Text variant="caption" tone="muted" numberOfLines={1}>
-            {t(`progress.activityHistory.kind.${item.kind}`)}
-          </Text>
-        )}
+        <Text variant="caption" tone="muted" numberOfLines={2}>
+          {facts.length > 0 ? facts.join(' · ') : t(`progress.activityHistory.kind.${item.kind}`)}
+        </Text>
       </View>
     </View>
   );
@@ -421,26 +337,14 @@ function DetailCard({
 
 const styles = StyleSheet.create({
   block: {
-    borderRadius: radii.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  accentBar: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    bottom: 0,
-    width: 3,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    paddingTop: spacing[3],
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: spacing[3],
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[3],
-    paddingLeft: spacing[3] + 4,
   },
   rowLeft: {
     flexDirection: 'row',
@@ -449,28 +353,14 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
   },
-  iconWrap: {
-    width: 40,
-    height: 40,
-    borderRadius: radii.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  progressTrack: {
-    height: 4,
-    borderRadius: 2,
-    overflow: 'hidden',
-    marginTop: 2,
-  },
-  progressFill: {
-    height: '100%',
-    borderRadius: 2,
-  },
   detail: {
-    paddingHorizontal: spacing[3],
-    paddingBottom: spacing[3],
-    paddingLeft: spacing[3] + 4,
     gap: spacing[3],
+    paddingTop: spacing[3],
+  },
+  pager: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing[4],
   },
   dayBlock: {
     gap: spacing[2],
@@ -479,19 +369,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing[2],
-  },
-  dayIconWrap: {
-    width: 24,
-    height: 24,
-    borderRadius: radii.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dayCountChip: {
-    marginLeft: 'auto',
-    paddingHorizontal: spacing[2],
-    paddingVertical: 2,
-    borderRadius: radii.pill,
   },
   items: {
     gap: spacing[2],
@@ -521,18 +398,5 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     gap: spacing[1],
-  },
-  chipRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-  },
-  chip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-    paddingHorizontal: spacing[2],
-    paddingVertical: 3,
-    borderRadius: radii.pill,
   },
 });

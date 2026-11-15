@@ -1,9 +1,11 @@
 import { router, useLocalSearchParams } from 'expo-router';
+import { X } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
 import { Image, Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Screen } from '@/components/ui/screen';
 import { ErrorState, LoadingState } from '@/components/ui/states';
 import { Text } from '@/components/ui/text';
@@ -105,7 +107,13 @@ export default function WorkoutTemplateDetailScreen() {
   return (
     <Screen scroll edges={['top', 'bottom', 'left', 'right']}>
       <View className="gap-4">
-        <View className="flex-row items-start justify-between gap-3">
+        <View className="flex-row items-start gap-3">
+          <ChromeIconButton
+            header
+            label={t('workout.close')}
+            onPress={() => router.back()}
+            icon={(color) => <X size={22} color={color} />}
+          />
           <View className="min-w-0 flex-1 gap-1">
             <Text variant="headingLarge" numberOfLines={2}>
               {localizedTemplateName(t, template.name, { isSystem: template.is_system })}
@@ -114,27 +122,20 @@ export default function WorkoutTemplateDetailScreen() {
               {overviewParts.join(' · ')}
             </Text>
           </View>
-          <View className="flex-row items-center gap-3">
-            {!template.is_system ? (
-              <Pressable
-                onPress={() =>
-                  router.push({
-                    pathname: '/workout/templates/create',
-                    params: { id: template.id },
-                  })
-                }
-              >
-                <Text variant="bodyStrong" tone="brand">
-                  {t('workout.editTemplate')}
-                </Text>
-              </Pressable>
-            ) : null}
-            <Pressable onPress={() => router.back()}>
-              <Text variant="bodyStrong" tone="secondary">
-                {t('workout.close')}
+          {!template.is_system ? (
+            <Pressable
+              onPress={() =>
+                router.push({
+                  pathname: '/workout/templates/create',
+                  params: { id: template.id },
+                })
+              }
+            >
+              <Text variant="bodyStrong" tone="brand">
+                {t('workout.editTemplate')}
               </Text>
             </Pressable>
-          </View>
+          ) : null}
         </View>
 
         <View

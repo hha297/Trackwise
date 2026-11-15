@@ -39,8 +39,9 @@ Warm bone/cream developer-notebook surfaces with dark ink type and a single scar
 | `headingMedium`     | 22    | Bricolage 600     | ≈ −0.4   |
 | `headingSmall`      | 18    | Bricolage 600     | ≈ −0.2   |
 | `body` / strong     | 16    | Bricolage 400 / 600 | 0      |
-| `caption` / `label` / `bodySmall` | 16 | Bricolage 500–600 | 0 |
-| `fine`              | 14    | Bricolage 500     | 0        |
+| `label`             | 16    | Bricolage 600     | 0        |
+| `bodySmall` / `caption` | 14 | Bricolage 400 / 500 | 0    |
+| `fine`              | 12    | Bricolage 500     | 0        |
 | `button`            | 16    | Bricolage 600     | 0        |
 | `metric` (mono)     | 18    | JetBrains 600–700 | 0        |
 
@@ -88,9 +89,11 @@ Use display type for screen titles, calorie totals, and key nutrition stats. Use
 
 Success `#2b9a66` · Warning `#c47f1a` · Error `#d64545` · Info `#3b82f6`
 
+Semantic colors are states (on target, attention, destructive, information). They are not category or macro colors.
+
 ### Macros
 
-Calories primary · Protein info · Carbs warning · Fat error · Activity pressed green
+Calories use primary. Protein `#3E6F8A`, carbs `#A56B2A`, and fat `#8A5A6A` are chart series only. Fiber, sugars, and salt use their own muted series and appear only when a value exists. Activity uses pressed green.
 
 ---
 

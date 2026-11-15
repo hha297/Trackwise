@@ -1,11 +1,13 @@
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
+import { X } from 'lucide-react-native';
 import { useState } from 'react';
 import { Alert, Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Input } from '@/components/ui/input';
 import { Screen } from '@/components/ui/screen';
 import { Text } from '@/components/ui/text';
@@ -118,13 +120,16 @@ export default function CreateCustomExerciseScreen() {
   return (
     <Screen scroll keyboard edges={['top', 'bottom', 'left', 'right']}>
       <View className="gap-4">
-        <View className="flex-row items-center justify-between">
-          <Text variant="headingLarge">{t('workout.createCustom')}</Text>
-          <Pressable onPress={() => router.back()}>
-            <Text variant="bodyStrong" tone="secondary">
-              {t('workout.close')}
-            </Text>
-          </Pressable>
+        <View className="flex-row items-start gap-2">
+          <ChromeIconButton
+            header
+            label={t('workout.close')}
+            onPress={() => router.back()}
+            icon={(color) => <X size={22} color={color} />}
+          />
+          <Text variant="headingLarge" className="min-w-0 flex-1">
+            {t('workout.createCustom')}
+          </Text>
         </View>
 
         <Pressable

@@ -20,6 +20,17 @@ describe('brand colors', () => {
     expect(lightColors.background).toBe(brand.canvas);
     expect(lightColors.overlay).toBe(darkColors.overlay);
   });
+
+  it('keeps macro series distinct from status colors', () => {
+    for (const palette of [lightColors, darkColors]) {
+      expect(palette.macroCalories).toBe(brand.primary);
+      expect(palette.macroProtein).not.toBe(palette.error);
+      expect(palette.macroCarbs).not.toBe(palette.primary);
+      expect(palette.macroCarbs).not.toBe(palette.warning);
+      expect(palette.macroFat).not.toBe(palette.error);
+      expect(palette.macroProtein).not.toBe(palette.info);
+    }
+  });
 });
 
 describe('color utils', () => {

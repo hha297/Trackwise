@@ -106,13 +106,13 @@ export function RemindersSettings() {
   return (
     <View style={styles.root}>
       <View style={styles.header}>
+        <HeaderDoneButton />
         <View style={styles.headerText}>
           <Text variant="headingLarge">{t('notifications.title')}</Text>
           <Text variant="bodySmall" tone="secondary">
             {t('notifications.subtitle')}
           </Text>
         </View>
-        <HeaderDoneButton />
       </View>
 
       <SettingsSection title={t('notifications.permission.section')}>
@@ -415,7 +415,6 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent: 'space-between',
     gap: spacing[3],
   },
   headerText: {

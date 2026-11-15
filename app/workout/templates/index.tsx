@@ -1,9 +1,11 @@
 import { router } from 'expo-router';
+import { ChevronLeft } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Screen } from '@/components/ui/screen';
 import { ErrorState, LoadingState } from '@/components/ui/states';
@@ -34,18 +36,19 @@ export default function WorkoutTemplatesScreen() {
   return (
     <Screen scroll edges={['top', 'bottom', 'left', 'right']}>
       <View className="gap-4">
-        <View className="flex-row items-center justify-between gap-3">
+        <View className="flex-row items-start gap-3">
+          <ChromeIconButton
+            header
+            label={t('workout.back')}
+            onPress={() => router.back()}
+            icon={(color) => <ChevronLeft size={22} color={color} />}
+          />
           <View className="min-w-0 flex-1 gap-1">
             <Text variant="headingLarge">{t('workout.templates')}</Text>
             <Text variant="bodySmall" tone="secondary">
               {t('workout.templatesEntryBody')}
             </Text>
           </View>
-          <Pressable accessibilityRole="button" onPress={() => router.back()}>
-            <Text variant="bodyStrong" tone="secondary">
-              {t('workout.back')}
-            </Text>
-          </Pressable>
         </View>
 
         <View className="flex-row flex-wrap" style={{ gap: 8 }}>
@@ -54,9 +57,7 @@ export default function WorkoutTemplatesScreen() {
               key={item}
               selected={difficulty === item}
               onPress={() => setDifficulty(item)}
-              label={
-                item === 'all' ? t('workout.filterAll') : t(`workout.difficulty.${item}`)
-              }
+              label={item === 'all' ? t('workout.filterAll') : t(`workout.difficulty.${item}`)}
             />
           ))}
         </View>

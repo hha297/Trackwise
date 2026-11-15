@@ -1,6 +1,6 @@
 import i18n from '@/i18n';
-import Constants from 'expo-constants';
 
+import { getAppVersion } from '@/lib/app-version';
 import { getSupabase } from '@/lib/supabase/client';
 
 import type { Profile } from '@/features/goals/types';
@@ -57,7 +57,7 @@ export async function updateProfile(userId: string, patch: ProfileUpdate): Promi
 export type UserDataExport = TrackwiseBackup;
 
 function appVersion(): string {
-  return Constants.expoConfig?.version ?? Constants.nativeAppVersion ?? '1.0.0';
+  return getAppVersion();
 }
 
 /**

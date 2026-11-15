@@ -41,9 +41,10 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
-import { radii, withAlpha } from '@/theme';
+import { radii } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 import { formatDiaryHeading, parseDiaryDateKey, toDiaryDateKey } from '@/utils/date';
 
@@ -262,15 +263,12 @@ export function ScanResultModal({
                 </Text>
               ) : null}
             </View>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('scan.close')}
-              hitSlop={8}
+            <ChromeIconButton
+              header
+              label={t('scan.close')}
               onPress={onClose}
-              style={styles.closeButton}
-            >
-              <X size={22} color={colors.textPrimary} />
-            </Pressable>
+              icon={(color) => <X size={22} color={color} />}
+            />
           </View>
 
           <ScrollView
@@ -534,10 +532,10 @@ function NutritionEditor({
           key={key}
           style={[
             styles.nutritionField,
-            { backgroundColor: colors.surfaceMuted },
+            { backgroundColor: colors.surfaceMuted, borderLeftColor: color, borderLeftWidth: 3 },
           ]}
         >
-          <View style={[styles.nutritionIcon, { backgroundColor: withAlpha(color, 0.09) }]}>
+          <View style={styles.nutritionIcon}>
             {icon}
           </View>
           <View className="flex-1">
@@ -604,16 +602,16 @@ function NutritionDisplay({ t, food }: { t: T; food: TrackwiseFood }) {
             key={key}
             style={[
               styles.nutritionDisplayRow,
-              { backgroundColor: colors.surfaceMuted },
+              { backgroundColor: colors.surfaceMuted, borderLeftColor: color, borderLeftWidth: 3 },
             ]}
           >
-            <View style={[styles.nutritionIcon, { backgroundColor: withAlpha(color, 0.12) }]}>
+            <View style={styles.nutritionIcon}>
               {icon}
             </View>
             <Text variant="bodyStrong" style={styles.nutritionLabel}>
               {t(`scan.${key}`)}
             </Text>
-            <Text variant="bodyStrong" style={{ color }}>
+            <Text variant="bodyStrong">
               {value === null ? '—' : `${formatNumber(value)} ${unit}`}
             </Text>
           </View>
@@ -790,7 +788,7 @@ function ExtraNutritionChips({
           style={[styles.extraChip, { backgroundColor: colors.surfaceMuted }]}
         >
           <View
-            style={[styles.extraIcon, { backgroundColor: withAlpha(item.color, 0.14) }]}
+            style={styles.extraIcon}
           >
             {item.icon}
           </View>
@@ -798,7 +796,7 @@ function ExtraNutritionChips({
             <Text variant="caption" tone="secondary" numberOfLines={1}>
               {item.label}
             </Text>
-            <Text variant="bodySmall" numberOfLines={1} style={{ color: item.color }}>
+            <Text variant="bodySmall" numberOfLines={1}>
               {formatNumber(item.value)} g
             </Text>
           </View>
@@ -830,14 +828,15 @@ function TotalCell({
       ]}
     >
       <View className="flex-row items-center gap-2">
-        <View style={[styles.totalIcon, { backgroundColor: withAlpha(color, 0.14) }]}>
+        <View style={[styles.seriesMark, { backgroundColor: color }]} />
+        <View style={styles.totalIcon}>
           {icon}
         </View>
         <Text variant="caption" tone="secondary">
           {label}
         </Text>
       </View>
-      <Text variant="bodyStrong" style={{ color }}>
+      <Text variant="bodyStrong">
         {value === null ? '—' : `${formatNumber(value)} ${unit}`}
       </Text>
     </View>
@@ -881,12 +880,11 @@ export function FoodLogContextPicker({
     <Card className="gap-3">
       <Text variant="headingSmall">{t('scan.logTo')}</Text>
       <View style={styles.dateRow}>
-        <Pressable
+        <ChromeIconButton
+          label={t('mealPlan.prevDay')}
           onPress={() => changeDate(addDays(selectedDate, -1))}
-          style={[styles.dateButton, { borderColor: colors.border }]}
-        >
-          <ChevronLeft size={20} color={colors.textPrimary} />
-        </Pressable>
+          icon={(color) => <ChevronLeft size={22} color={color} />}
+        />
         <Pressable
           accessibilityRole="button"
           onPress={() => {
@@ -903,12 +901,11 @@ export function FoodLogContextPicker({
             {formatDiaryHeading(dateKey, locale)}
           </Text>
         </Pressable>
-        <Pressable
+        <ChromeIconButton
+          label={t('mealPlan.nextDay')}
           onPress={() => changeDate(addDays(selectedDate, 1))}
-          style={[styles.dateButton, { borderColor: colors.border }]}
-        >
-          <ChevronRight size={20} color={colors.textPrimary} />
-        </Pressable>
+          icon={(color) => <ChevronRight size={22} color={color} />}
+        />
       </View>
       {calendarOpen ? (
         <Animated.View
@@ -919,25 +916,21 @@ export function FoodLogContextPicker({
           ]}
         >
           <View style={styles.calendarHeader}>
-            <Pressable
-              accessibilityRole="button"
+            <ChromeIconButton
+              label={t('mealPlan.prevDay')}
               onPress={() => setVisibleMonth((month) => addMonths(month, -1))}
-              style={styles.calendarNav}
-            >
-              <ChevronLeft size={20} color={colors.textPrimary} />
-            </Pressable>
+              icon={(color) => <ChevronLeft size={22} color={color} />}
+            />
             <Text variant="bodyStrong">
               {new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(
                 visibleMonth,
               )}
             </Text>
-            <Pressable
-              accessibilityRole="button"
+            <ChromeIconButton
+              label={t('mealPlan.nextDay')}
               onPress={() => setVisibleMonth((month) => addMonths(month, 1))}
-              style={styles.calendarNav}
-            >
-              <ChevronRight size={20} color={colors.textPrimary} />
-            </Pressable>
+              icon={(color) => <ChevronRight size={22} color={color} />}
+            />
           </View>
           <View style={styles.calendarGrid}>
             {weekdayLabels.map((label, index) => (
@@ -1156,17 +1149,10 @@ const styles = StyleSheet.create({
   header: {
     minHeight: 64,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: 12,
     paddingHorizontal: 16,
     borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  closeButton: {
-    width: 44,
-    height: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: radii.pill,
   },
   content: { padding: 16, paddingBottom: 32 },
   formStack: { gap: 16 },
@@ -1207,6 +1193,11 @@ const styles = StyleSheet.create({
   segmentActive: { borderWidth: 0 },
   totalGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   totalCell: { width: '48%', gap: 6, borderWidth: 0, borderRadius: radii.md, padding: 10 },
+  seriesMark: {
+    width: 3,
+    alignSelf: 'stretch',
+    borderRadius: radii.pill,
+  },
   totalIcon: {
     width: 28,
     height: 28,
@@ -1260,7 +1251,6 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
   },
   dateRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  dateButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   datePickerButton: {
     minHeight: 44,
     flexDirection: 'row',
@@ -1273,7 +1263,6 @@ const styles = StyleSheet.create({
   },
   calendar: { gap: 10, borderWidth: 0, borderRadius: radii.md, padding: 10 },
   calendarHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  calendarNav: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
   calendarGrid: { flexDirection: 'row', flexWrap: 'wrap' },
   calendarCell: { width: '14.285%', textAlign: 'center' },
   calendarDay: {

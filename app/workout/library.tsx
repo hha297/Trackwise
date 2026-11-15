@@ -1,9 +1,11 @@
 import { router, useLocalSearchParams } from 'expo-router';
+import { ChevronLeft } from 'lucide-react-native';
 import { useCallback, useDeferredValue, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Image, Pressable, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Input } from '@/components/ui/input';
 import { Screen } from '@/components/ui/screen';
@@ -79,18 +81,19 @@ function SubcategoryPicker({ top }: { top: LibraryTopCategory }) {
   return (
     <Screen scroll edges={['top', 'bottom', 'left', 'right']}>
       <View className="gap-4">
-        <View className="flex-row items-start justify-between gap-3">
+        <View className="flex-row items-start gap-3">
+          <ChromeIconButton
+            header
+            label={t('workout.back')}
+            onPress={() => router.back()}
+            icon={(color) => <ChevronLeft size={22} color={color} />}
+          />
           <View className="min-w-0 flex-1 gap-1">
             <Text variant="headingLarge">{t(`workout.category.${top}`)}</Text>
             <Text variant="bodySmall" tone="secondary">
               {t(`workout.categorySubtitle.${top}`)}
             </Text>
           </View>
-          <Pressable onPress={() => router.back()} hitSlop={8}>
-            <Text variant="bodyStrong" tone="secondary">
-              {t('workout.back')}
-            </Text>
-          </Pressable>
         </View>
 
         <Text variant="label" tone="secondary">
@@ -303,7 +306,13 @@ function ExerciseLibrary({ top, sub }: { top: LibraryTopCategory; sub: string })
   return (
     <Screen edges={['top', 'bottom', 'left', 'right']}>
       <View className="min-h-0 flex-1 gap-3">
-        <View className="flex-row items-start justify-between gap-3">
+        <View className="flex-row items-start gap-3">
+          <ChromeIconButton
+            header
+            label={t('workout.back')}
+            onPress={() => router.back()}
+            icon={(color) => <ChevronLeft size={22} color={color} />}
+          />
           <View className="min-w-0 flex-1 gap-1">
             <Text variant="headingLarge">{title}</Text>
             <Text variant="bodySmall" tone="secondary">
@@ -313,11 +322,6 @@ function ExerciseLibrary({ top, sub }: { top: LibraryTopCategory; sub: string })
                 : ''}
             </Text>
           </View>
-          <Pressable onPress={() => router.back()} hitSlop={8}>
-            <Text variant="bodyStrong" tone="secondary">
-              {t('workout.back')}
-            </Text>
-          </Pressable>
         </View>
 
         <Input

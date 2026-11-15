@@ -171,7 +171,7 @@ export function ConsistencyMilestones({ bestDays }: ConsistencyMilestonesProps) 
                       styles.progressFill,
                       {
                         width: `${Math.round(progress * 100)}%`,
-                        backgroundColor: colors.warning,
+                        backgroundColor: colors.primary,
                       },
                     ]}
                   />
@@ -221,7 +221,7 @@ export function ConsistencyMilestones({ bestDays }: ConsistencyMilestonesProps) 
                     styles.progressFill,
                     {
                       width: `${Math.round(personalProgress * 100)}%`,
-                      backgroundColor: colors.warning,
+                      backgroundColor: colors.primary,
                     },
                   ]}
                 />

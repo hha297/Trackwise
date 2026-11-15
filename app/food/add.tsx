@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ChromeIconButton } from '@/components/ui/chrome-icon-button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Screen } from '@/components/ui/screen';
@@ -53,7 +54,7 @@ import { FoodLogContextPicker } from '@/features/food/scan-result-modal';
 import { usePlannedMealMutations } from '@/features/meal-plan/hooks';
 import { useRecipes } from '@/features/recipes/hooks';
 import { uploadFoodImageToCloudinary } from '@/lib/cloudinary/upload';
-import { iconSizes, radii, spacing, withAlpha } from '@/theme';
+import { iconSizes, radii, spacing } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 import { toDiaryDateKey } from '@/utils/date';
 
@@ -382,20 +383,13 @@ export default function AddFoodScreen() {
   return (
     <Screen scroll keyboard edges={['top', 'bottom', 'left', 'right']}>
       <View className="gap-5">
-        <View className="flex-row items-center gap-3">
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('common.goBack')}
-            hitSlop={8}
+        <View className="flex-row items-start gap-3">
+          <ChromeIconButton
+            header
+            label={t('common.goBack')}
             onPress={() => router.back()}
-            style={({ pressed }) => [
-              styles.backButton,
-              { backgroundColor: colors.surface, borderColor: colors.border },
-              pressed && styles.pressed,
-            ]}
-          >
-            <ChevronLeft color={colors.textPrimary} size={22} />
-          </Pressable>
+            icon={(color) => <ChevronLeft color={color} size={22} />}
+          />
           <View className="flex-1">
             <Text variant="headingLarge">{headerTitle}</Text>
             <Text variant="caption" tone="secondary">
@@ -861,9 +855,14 @@ function MacroField({
 }) {
   const colors = useThemeColors();
   return (
-    <View style={[styles.macroField, { borderBottomColor: colors.border }]}>
+    <View
+      style={[
+        styles.macroField,
+        { borderBottomColor: colors.border, borderLeftColor: color, borderLeftWidth: 3 },
+      ]}
+    >
       <View className="flex-row items-center gap-3">
-        <View style={[styles.macroIcon, { backgroundColor: withAlpha(color, 0.09) }]}>{icon}</View>
+        <View style={styles.macroIcon}>{icon}</View>
         <Text variant="bodyStrong">{label}</Text>
       </View>
       <View style={styles.macroValue}>
@@ -987,11 +986,16 @@ function SummaryMacro({
     <View
       style={[
         styles.summaryMacro,
-        { backgroundColor: colors.surfaceMuted, borderColor: colors.border },
+        {
+          backgroundColor: colors.surfaceMuted,
+          borderColor: colors.border,
+          borderLeftColor: color,
+          borderLeftWidth: 3,
+        },
       ]}
     >
       <View className="flex-row items-center gap-1.5">
-        <View style={[styles.summaryIcon, { backgroundColor: withAlpha(color, 0.14) }]}>
+        <View style={styles.summaryIcon}>
           {icon}
         </View>
         <Text variant="caption" tone="secondary" numberOfLines={1}>
@@ -1074,15 +1078,6 @@ function RecentFoodsList({
 }
 
 const styles = StyleSheet.create({
-  backButton: {
-    width: 44,
-    height: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: radii.pill,
-    borderWidth: StyleSheet.hairlineWidth,
-  },
-  pressed: { opacity: 0.72, transform: [{ scale: 0.98 }] },
   modeSwitch: { flexDirection: 'row', gap: 4, borderRadius: radii.pill, padding: 4 },
   modeButton: {
     minHeight: 40,
