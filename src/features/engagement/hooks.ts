@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect, useMemo } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useAuth } from '@/features/auth/auth-provider';
 import { useWorkoutsInRange } from '@/features/diary/hooks';
@@ -13,7 +13,16 @@ import {
   type ConsistencySnapshot,
   type CategoryDayFlags,
 } from './activity-days';
-import { fetchFoodLoggedDayKeys } from './api';
+import {
+  fetchDailyActivityHistory,
+  invalidateDailyActivityQueries,
+  recordOwnDailyActivityDays,
+} from './api';
+import {
+  dailyActivityQueryKey,
+  keysNeedingPersist,
+  mergeEarnedDayKeys,
+} from './daily-activity';
 import { shiftDiaryDateKey, streakHistoryRange } from './dates';
 import {
   buildWorkoutDayKinds,
@@ -38,6 +47,7 @@ export type EngagementStreaks = {
 
 export function useEngagementStreaks(todayKey: string = toDiaryDateKey()) {
   const { session } = useAuth();
+  const queryClient = useQueryClient();
   const userId = session?.user.id;
   const range = useMemo(() => streakHistoryRange(todayKey), [todayKey]);
   // Pad workout/plan fetch by ±1 day so local-midnight edge timestamps are not missed,
@@ -45,27 +55,35 @@ export function useEngagementStreaks(todayKey: string = toDiaryDateKey()) {
   const paddedStart = shiftDiaryDateKey(range.startKey, -1);
   const paddedEnd = shiftDiaryDateKey(range.endKey, 1);
 
-  const foodDays = useQuery({
-    queryKey: ['food-entries', 'logged-days', userId, range.startKey, range.endKey],
+  const activity = useQuery({
+    queryKey: dailyActivityQueryKey(userId, range.startKey, range.endKey),
     enabled: Boolean(userId),
-    queryFn: () => fetchFoodLoggedDayKeys(userId!, range.startKey, range.endKey),
+    queryFn: () => fetchDailyActivityHistory(userId!, range.startKey, range.endKey),
   });
   const hydration = useHydrationInRange(range.startKey, range.endKey);
   const workouts = useWorkoutsInRange(paddedStart, paddedEnd);
   const plans = usePlansInRange(range.startKey, range.endKey);
 
-  const data = useMemo((): EngagementStreaks | undefined => {
-    if (!foodDays.data || !hydration.data || !workouts.data || !plans.data) return undefined;
-
-    const nutritionKeys = [...foodDays.data];
-    const hydrationKeys = hydration.data.entries.map((entry) => entry.loggedOn);
-    const nutrition = computeLoggingStreak(nutritionKeys, todayKey);
-    const hydrationStreak = computeLoggingStreak(hydrationKeys, todayKey);
-
-    const completedKeys = workouts.data
+  const liveHydrationKeys = useMemo(
+    () => (hydration.data?.entries ?? []).map((entry) => entry.loggedOn),
+    [hydration.data],
+  );
+  const liveWorkoutKeys = useMemo(() => {
+    if (!workouts.data) return [];
+    return workouts.data
       .filter((row) => (row.status ?? 'completed') === 'completed')
       .map((row) => toDiaryDateKey(new Date(row.started_at)))
       .filter((key) => key >= range.startKey && key <= range.endKey);
+  }, [workouts.data, range.startKey, range.endKey]);
+
+  const data = useMemo((): EngagementStreaks | undefined => {
+    if (!activity.data || !hydration.data || !workouts.data || !plans.data) return undefined;
+
+    const nutritionKeys = activity.data.nutritionKeys;
+    const hydrationKeys = mergeEarnedDayKeys(activity.data.hydrationKeys, liveHydrationKeys);
+    const completedKeys = mergeEarnedDayKeys(activity.data.workoutKeys, liveWorkoutKeys);
+    const nutrition = computeLoggingStreak(nutritionKeys, todayKey);
+    const hydrationStreak = computeLoggingStreak(hydrationKeys, todayKey);
 
     const restKeys = plans.data
       .filter((plan) => plan.kind === 'rest' || plan.kind === 'recovery')
@@ -104,16 +122,53 @@ export function useEngagementStreaks(todayKey: string = toDiaryDateKey()) {
       flagsByDay,
       range,
     };
-  }, [foodDays.data, hydration.data, workouts.data, plans.data, todayKey, range]);
+  }, [
+    activity.data,
+    hydration.data,
+    workouts.data,
+    plans.data,
+    liveHydrationKeys,
+    liveWorkoutKeys,
+    todayKey,
+    range,
+  ]);
+
+  useEffect(() => {
+    if (!userId || !activity.data) return;
+    const missingHydration = keysNeedingPersist(liveHydrationKeys, activity.data.hydrationKeys);
+    const missingWorkout = keysNeedingPersist(liveWorkoutKeys, activity.data.workoutKeys);
+    if (missingHydration.length === 0 && missingWorkout.length === 0) return;
+
+    let cancelled = false;
+    void (async () => {
+      try {
+        if (missingHydration.length > 0) {
+          await recordOwnDailyActivityDays('hydration', missingHydration);
+        }
+        if (missingWorkout.length > 0) {
+          await recordOwnDailyActivityDays('workout', missingWorkout);
+        }
+        if (!cancelled) {
+          await invalidateDailyActivityQueries(queryClient, userId);
+        }
+      } catch {
+        // Live logs still cover the day until persist succeeds.
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, activity.data, liveHydrationKeys, liveWorkoutKeys, queryClient]);
 
   const isLoading =
-    foodDays.isLoading || hydration.isLoading || workouts.isLoading || plans.isLoading;
-  const isError = foodDays.isError || hydration.isError || workouts.isError || plans.isError;
-  const error = foodDays.error ?? hydration.error ?? workouts.error ?? plans.error;
+    activity.isLoading || hydration.isLoading || workouts.isLoading || plans.isLoading;
+  const isError = activity.isError || hydration.isError || workouts.isError || plans.isError;
+  const error = activity.error ?? hydration.error ?? workouts.error ?? plans.error;
 
   const refetch = async () => {
     await Promise.all([
-      foodDays.refetch(),
+      activity.refetch(),
       hydration.refetch(),
       workouts.refetch(),
       plans.refetch(),

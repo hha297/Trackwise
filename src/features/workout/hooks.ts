@@ -7,6 +7,7 @@ import {
 import { parseISO } from 'date-fns';
 
 import { useAuth } from '@/features/auth/auth-provider';
+import { invalidateDailyActivityQueries } from '@/features/engagement/api';
 import { linkPlanToWorkout } from '@/features/planner/api';
 import { toDiaryDateKey } from '@/utils/date';
 import {

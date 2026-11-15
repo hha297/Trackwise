@@ -1,3 +1,4 @@
+import { recordOwnDailyActivityDays } from '@/features/engagement/api';
 import { getSupabase } from '@/lib/supabase/client';
 
 import {

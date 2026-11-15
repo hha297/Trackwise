@@ -1,7 +1,9 @@
 import i18n from '@/i18n';
+import { recordOwnDailyActivityDays } from '@/features/engagement/api';
 import { expandLibraryPaths } from '@/features/workout/catalog/library-path-aliases';
 import { dedupeMuscleList } from '@/features/workout/exercise-display';
 import { getSupabase } from '@/lib/supabase/client';
+import { toDiaryDateKey } from '@/utils/date';
 
 import type {
   Exercise,

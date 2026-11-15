@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@/features/auth/auth-provider';
 import { scaleNutrition, sumMacros, type MacroTotals } from '@/features/diary/balance';
+import { invalidateDailyActivityQueries, recordOwnDailyActivityDays } from '@/features/engagement/api';
 import { getSupabase } from '@/lib/supabase/client';
 import { useDebouncedValue } from '@/lib/use-debounced-value';
 
@@ -263,11 +264,9 @@ export function useLogFoodEntry() {
       await queryClient.invalidateQueries({
         queryKey: ['food-entries', 'range', session?.user.id],
       });
-      await queryClient.invalidateQueries({
-        queryKey: ['food-entries', 'logged-days', session?.user.id],
-      });
       await queryClient.invalidateQueries({ queryKey: ['foods', 'recent', session?.user.id] });
       await queryClient.invalidateQueries({ queryKey: ['planned-meals', session?.user.id] });
+      await invalidateDailyActivityQueries(queryClient, session?.user.id);
     },
   });
 }
@@ -320,11 +319,9 @@ export function useUpdateFoodEntryAmount() {
       await queryClient.invalidateQueries({
         queryKey: ['food-entries', 'range', session?.user.id],
       });
-      await queryClient.invalidateQueries({
-        queryKey: ['food-entries', 'logged-days', session?.user.id],
-      });
       await queryClient.invalidateQueries({ queryKey: ['foods', 'recent', session?.user.id] });
       await queryClient.invalidateQueries({ queryKey: ['planned-meals', session?.user.id] });
+      await invalidateDailyActivityQueries(queryClient, session?.user.id);
     },
   });
 }
@@ -337,6 +334,11 @@ export function useDeleteFoodEntry() {
     mutationFn: async (input: { id: string; dateKey: string }) => {
       const supabase = getSupabase();
       if (!supabase) throw new Error('Supabase is not configured.');
+      try {
+        await recordOwnDailyActivityDays('nutrition', [input.dateKey]);
+      } catch {
+        // Trigger/backfill should already have the day; do not block delete.
+      }
       const { error } = await supabase.from('food_entries').delete().eq('id', input.id);
       if (error) throw error;
     },
@@ -347,10 +349,8 @@ export function useDeleteFoodEntry() {
       await queryClient.invalidateQueries({
         queryKey: ['food-entries', 'range', session?.user.id],
       });
-      await queryClient.invalidateQueries({
-        queryKey: ['food-entries', 'logged-days', session?.user.id],
-      });
       await queryClient.invalidateQueries({ queryKey: ['planned-meals', session?.user.id] });
+      await invalidateDailyActivityQueries(queryClient, session?.user.id);
     },
   });
 }

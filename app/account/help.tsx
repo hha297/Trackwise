@@ -20,6 +20,7 @@ const HELP_TOPIC_KEYS = [
   'scan',
   'estimates',
   'workouts',
+  'widgets',
   'goals',
   'account',
 ] as const;

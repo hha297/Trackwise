@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Nutrition & fitness tracking — on your phone</strong><br/>
-  <sub>Food diary · Barcode scan · Workouts · Goals · Progress</sub><br/>
+  <sub>Food diary · Barcode scan · Workouts · Widgets · Goals · Progress</sub><br/>
   <sub>Free on Android · Estimates, not medical measurements</sub>
 </p>
 
@@ -44,7 +44,7 @@ Trackwise is a **mobile-first** nutrition and fitness app. Log meals, scan barco
 
 > **Who it’s for:** people who want everyday food and training awareness with clear estimates — not a medical device, and not AI meal recognition.
 
-**Availability today:** free core tracking on **Android**. iOS is planned for later. Store listings appear on [trackwise.one](https://trackwise.one) when published.
+**Availability today:** free core tracking on **Android** via [Google Play](https://play.google.com/store/apps/details?id=com.trackwise.app). Home-screen Daily and Workout widgets are included. iOS is planned for later.
 
 ---
 
@@ -58,6 +58,7 @@ Trackwise is a **mobile-first** nutrition and fitness app. Log meals, scan barco
 |     ![](https://img.shields.io/badge/-Goals-13873c?style=flat-square)                       | **Goals**         | Guided setup: lose / maintain / gain. Editable daily calorie and macro targets.                                                                 |
 |     ![](https://img.shields.io/badge/-Progress-635BFF?style=flat-square)                    | **Progress**      | 7 / 30 / 90-day trends for nutrition, training, and body measurements (BMI / composition when inputs allow — marked as estimates).             |
 |     ![](https://img.shields.io/badge/-Account-5e6a72?style=flat-square)                     | **Account**       | Profile, units, appearance, language. JSON export / import. Delete data or full account via secure Edge Function.                               |
+|     ![](https://img.shields.io/badge/-Widgets-00D95F?style=flat-square&labelColor=202020)   | **Home widgets**  | Trackwise Daily (calories + carbs/protein/fat/water cards) and Trackwise Workout. Android home screen now; iOS later. Not Expo Go.              |
 
 ### Account & access
 
@@ -107,9 +108,11 @@ app/                          # Expo Router screens & layouts
 assets/                       # Branding, fonts, workout exercise art
 supabase/                     # Migrations, templates, functions, seed
 
+widgets/                      # Home-screen widget UI (iOS SwiftUI / Android Compose)
+
 src/
 ├── components/ui/            # Shared UI primitives
-├── features/                 # Domain: auth, diary, scan, workouts, goals, …
+├── features/                 # Domain: auth, diary, scan, workouts, goals, widgets
 ├── i18n/                     # Locale resources (en, fi, sv, vi)
 ├── lib/                      # Supabase client, query client, analytics adapters
 ├── stores/                   # Zustand — active workout draft only
@@ -171,6 +174,72 @@ Apply schema to a linked project:
 npx supabase db push
 npx supabase functions deploy delete-account
 ```
+
+Home screen widgets are **not** available in Expo Go. Use a development or store build after installing dependencies:
+
+```bash
+npm install
+npx expo prebuild --clean
+```
+
+`prebuild` generates `android/` and `ios/` (gitignored CNG). Rebuild after changing `expo-widgets` plugin options in `app.json`.
+
+### EAS builds (widgets included)
+
+```bash
+# Android
+eas build --platform android --profile development
+eas build --platform android --profile production
+
+# iOS
+eas build --platform ios --profile development
+eas build --platform ios --profile production
+```
+
+Local native run after prebuild: `npm run android` / `npm run ios`.
+
+### Home screen widgets
+
+Pin Trackwise on the home screen so today’s calories and workout stay visible without opening the app. Widgets ship in the **Play Store / development / production build**, not Expo Go. Sign in and open Trackwise once so numbers can sync.
+
+**How to add them (Android)**
+
+1. Install Trackwise from [Google Play](https://play.google.com/store/apps/details?id=com.trackwise.app) (or a matching APK).
+2. Open the app while signed in so today’s diary and workout can write a snapshot.
+3. Long-press an empty area on the home screen → **Widgets** → **Trackwise**.
+4. Add **Trackwise Daily** and/or **Trackwise Workout**, then resize if the launcher allows it.
+5. Tap Daily to open the diary (`trackwise:///`). Tap Workout to open today’s plan or session.
+
+| | Trackwise Daily | Trackwise Workout |
+| --- | --- | --- |
+| Shows | Calories left, then carbs / protein / fat / water as `eaten/target` cards with bars | Today’s planned or completed session |
+| Size | One 4×4 Glance layout (no iOS-style small/medium/large) | 4×2, resizes horizontally |
+| Fourth Daily card | Water (fiber is not in the snapshot) | — |
+| Offline | Last snapshot until you open the app again | Same |
+
+In-app **Account → Help** and the public site ([trackwise.one/support](https://trackwise.one/support), [features](https://trackwise.one/features)) describe the same steps for users.
+
+**Developers**
+
+Shared snapshots live in `src/features/widgets/`. Platform UI is in `widgets/TrackwiseDaily.*` and `widgets/TrackwiseWorkout.*`. The app writes JSON-serializable props; native widget runtimes cannot use React Query, Zustand, or a live Supabase session.
+
+- Android snapshots call the native `ExpoWidgets` module and **do not** `import()` `widgets/*.tsx` at runtime (that Metro extra bundle timed out and left the home widget on the skeleton). Layouts are compiled into the APK (`generateExpoWidgetsLayoutRegistry`).
+- After changing `widgets/*.android.tsx`, rebuild that registry, install the APK, and **remove then re-add** the home widget. Debug reinstall often keeps `expo.modules.widgets` SharedPreferences (previous layout).
+- Glance ignores `fillMaxWidth(fraction)` (always 100%), so the Daily 2×2 uses fixed `width()`. `Box` / overlaying a number inside a calorie ring crashes with `Loading widget`. Android tap-to-open is a Glance root `actionStartActivity` on snapshot `openUrl`; `widgetURL` is iOS-only in SDK 58 (`plugins/apply-android-widget-open-app.js` re-applies the patch after `npm install`).
+- Android widgets use system type (`fontSize` / `fontWeight` only). iOS layouts request Bricolage Grotesque and JetBrains Mono; the widget extension still needs those TTFs in `UIAppFonts` or it falls back to San Francisco.
+- Logout / account switch / deletion replace snapshots with a signed-out state so the previous user’s numbers are not left on the home screen.
+
+**iOS (later / device testing)**
+
+- Widgets require **iOS 17+** (`containerBackground`). Small = calorie ring; medium/large = ring + 2×2 cards.
+- Apple Developer: App Group `group.com.trackwise.app` on `com.trackwise.app` and extension `com.trackwise.app.widgets`.
+- EAS provisions the extension when those identifiers exist on the team.
+
+**Android packaging**
+
+- Application ID stays `com.trackwise.app`. No extra Play Console widget listing is required.
+
+Widgets keep the last valid snapshot when offline. They do not poll Supabase in the background.
 
 ---
 

@@ -61,7 +61,52 @@
         }
       ],
       "expo-web-browser",
-      "expo-font",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/BricolageGrotesque_500Medium.ttf",
+            "./assets/fonts/BricolageGrotesque_600SemiBold.ttf",
+            "./assets/fonts/BricolageGrotesque_700Bold.ttf",
+            "./assets/fonts/JetBrainsMono_600SemiBold.ttf",
+            "./assets/fonts/JetBrainsMono_700Bold.ttf"
+          ],
+          "android": {
+            "fonts": [
+              {
+                "fontFamily": "BricolageGrotesque",
+                "fontDefinitions": [
+                  {
+                    "path": "./assets/fonts/BricolageGrotesque_500Medium.ttf",
+                    "weight": 500
+                  },
+                  {
+                    "path": "./assets/fonts/BricolageGrotesque_600SemiBold.ttf",
+                    "weight": 600
+                  },
+                  {
+                    "path": "./assets/fonts/BricolageGrotesque_700Bold.ttf",
+                    "weight": 700
+                  }
+                ]
+              },
+              {
+                "fontFamily": "JetBrainsMono",
+                "fontDefinitions": [
+                  {
+                    "path": "./assets/fonts/JetBrainsMono_600SemiBold.ttf",
+                    "weight": 600
+                  },
+                  {
+                    "path": "./assets/fonts/JetBrainsMono_700Bold.ttf",
+                    "weight": 700
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
       "expo-localization",
       "expo-sharing",
       [
@@ -71,7 +116,53 @@
           "defaultChannel": "trackwise-reminders",
           "enableRemoteNotifications": false
         }
-      ]
+      ],
+      [
+        "expo-widgets",
+        {
+          "bundleIdentifier": "com.trackwise.app.widgets",
+          "groupIdentifier": "group.com.trackwise.app",
+          "enableAndroid": true,
+          "enablePushNotifications": false,
+          "widgets": [
+            {
+              "name": "TrackwiseDaily",
+              "displayName": "Trackwise Daily",
+              "description": "Calories, protein, water, and streak at a glance.",
+              "ios": {
+                "supportedFamilies": ["systemSmall", "systemMedium", "systemLarge"],
+                "initialLayout": "./widgets/TrackwiseDaily.ios.tsx"
+              },
+              "android": {
+                "minWidth": 180,
+                "minHeight": 110,
+                "targetCellWidth": 4,
+                "targetCellHeight": 4,
+                "resizeMode": "both",
+                "initialLayout": "./widgets/TrackwiseDaily.android.tsx"
+              }
+            },
+            {
+              "name": "TrackwiseWorkout",
+              "displayName": "Trackwise Workout",
+              "description": "Today’s planned or completed workout.",
+              "ios": {
+                "supportedFamilies": ["systemSmall", "systemMedium"],
+                "initialLayout": "./widgets/TrackwiseWorkout.ios.tsx"
+              },
+              "android": {
+                "minWidth": 180,
+                "minHeight": 110,
+                "targetCellWidth": 4,
+                "targetCellHeight": 2,
+                "resizeMode": "horizontal",
+                "initialLayout": "./widgets/TrackwiseWorkout.android.tsx"
+              }
+            }
+          ]
+        }
+      ],
+      "./plugins/apply-android-widget-open-app.js"
     ],
     "experiments": {
       "typedRoutes": true,

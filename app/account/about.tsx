@@ -41,6 +41,7 @@ async function openOptionalUrl(url: string | null, unavailableLabel: string) {
 const WHAT_KEYS = [
   'aboutWhatLogging',
   'aboutWhatWorkouts',
+  'aboutWhatWidgets',
   'aboutWhatGoals',
   'aboutWhatProgress',
 ] as const;

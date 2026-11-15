@@ -140,7 +140,7 @@ Edit **`src/config/site.ts`** — no Vercel env required for contact/store/SEO:
 | -------- | ------- |
 | `SITE_URL` / `SITE_DOMAIN` | Canonical origin |
 | `SUPPORT_EMAIL` / `SUPPORT_PHONE` | Public support contact |
-| `GOOGLE_PLAY_URL` | Android store (empty → Coming soon) |
+| `GOOGLE_PLAY_URL` | Android store listing (`https://play.google.com/store/apps/details?id=com.trackwise.app`) |
 | `APP_STORE_URL` | iOS store when live |
 
 **Feedback email (server env in `.env.local`, see `.env.example`)**

@@ -36,7 +36,7 @@ export const sv: Messages = {
     eyebrow: 'Vad är Trackwise',
     title: 'En app för mat, träning och historien däremellan.',
     description:
-      'Trackwise hjälper dig följa vardagens nutrition och aktivitet. Sök eller skanna mat, logga pass, sätt mål och se utvecklingen — som uppskattningar, inte medicinska mätningar.',
+      'Trackwise hjälper dig följa vardagens nutrition och aktivitet. Sök eller skanna mat, logga pass, sätt mål, fäst Daily- och Workout-widgetar på Android och se utvecklingen — som uppskattningar, inte medicinska mätningar.',
     nutritionTitle: 'Nutritionsspårning',
     nutritionBody: 'Logga måltider, se kalorier och makron och håll en tydlig matdagbok.',
     workoutTitle: 'Träningslogg',
@@ -101,10 +101,10 @@ export const sv: Messages = {
     eyebrow: 'Ladda ner',
     title: 'Hämta Trackwise till telefonen.',
     description:
-      'Trackwise är gratis på Android. Google Play-listan kommer snart hit. iOS kommer senare — inte tillgängligt ännu.',
+      'Trackwise är gratis på Android. Hämta det på Google Play. Efter installationen lägger du till Trackwise Daily eller Trackwise Workout från hemskärmens widgetväljare. iOS kommer senare.',
     comingSoon: 'Kommer snart',
     qrPlaceholder: 'QR-platshållare',
-    qrHint: 'Skanna-för-att-ladda-ner visas här när Android-butikssidan publiceras.',
+    qrHint: 'Använd Google Play-knappen för att installera. En skanna-för-att-ladda-ner-QR kan läggas till senare.',
   },
   footer: {
     blurb:

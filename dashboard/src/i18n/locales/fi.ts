@@ -36,7 +36,7 @@ export const fi: Messages = {
     eyebrow: 'Mikä on Trackwise',
     title: 'Yksi sovellus ruokaan, treeniin ja matkaan niiden välillä.',
     description:
-      'Trackwise auttaa seuraamaan arjen ravintoa ja aktiivisuutta. Hae tai skannaa ruokia, kirjaa treenejä, aseta tavoitteita ja seuraa kehitystä — arvioina, ei lääketieteellisinä mittauksina.',
+      'Trackwise auttaa seuraamaan arjen ravintoa ja aktiivisuutta. Hae tai skannaa ruokia, kirjaa treenejä, aseta tavoitteita, kiinnitä Daily- ja Workout-widgetit Androidille ja seuraa kehitystä — arvioina, ei lääketieteellisinä mittauksina.',
     nutritionTitle: 'Ravinnon seuranta',
     nutritionBody: 'Kirjaa ateriat, näe kalorit ja makrot sekä pidä selkeä ruokapäiväkirja.',
     workoutTitle: 'Treenien kirjaus',
@@ -100,10 +100,10 @@ export const fi: Messages = {
     eyebrow: 'Lataa',
     title: 'Hanki Trackwise puhelimeesi.',
     description:
-      'Trackwise on ilmainen Androidilla. Google Play -listaus tulee tälle sivulle pian. iOS tulee myöhemmin — ei vielä saatavilla.',
+      'Trackwise on ilmainen Androidilla. Lataa Google Playsta. Asennuksen jälkeen lisää Trackwise Daily- tai Trackwise Workout -widget aloitusnäytön widget-valitsimesta. iOS tulee myöhemmin.',
     comingSoon: 'Tulossa pian',
     qrPlaceholder: 'QR-paikkamerkki',
-    qrHint: 'Skannaa ladataksesi -toiminto tulee tänne, kun Android-kauppasivu julkaistaan.',
+    qrHint: 'Asenna Google Play -painikkeesta. Skannaa-ladataksesi-QR voidaan lisätä myöhemmin.',
   },
   footer: {
     blurb:

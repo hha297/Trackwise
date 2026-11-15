@@ -21,7 +21,13 @@ export const homeFaq: FaqItem[] = [
     id: 'android',
     question: 'Is Trackwise available on Android?',
     answer:
-      'Yes. Trackwise ships for Android first. The Google Play listing will appear on this site as soon as it is published.',
+      'Yes. Trackwise is on Google Play: play.google.com/store/apps/details?id=com.trackwise.app. Android is the supported platform for now.',
+  },
+  {
+    id: 'widgets',
+    question: 'Does Trackwise have home-screen widgets?',
+    answer:
+      'Yes, on Android. After you install Trackwise and sign in, long-press the home screen → Widgets → Trackwise. Add Trackwise Daily (calories, carbs, protein, fat, water) or Trackwise Workout (today’s plan or session). Open the app once so today’s numbers can sync, then tap a widget to jump back into Trackwise. Widgets are not in Expo Go, and iOS widgets ship later with the iOS app.',
   },
   {
     id: 'ios',

@@ -5,6 +5,7 @@
   "dependencies": {
     "@expo-google-fonts/bricolage-grotesque": "^0.4.1",
     "@expo-google-fonts/jetbrains-mono": "^0.4.1",
+    "@expo/ui": "~58.0.28",
     "@expo/vector-icons": "^15.0.2",
     "@hookform/resolvers": "^5.9.1",
     "@react-native-async-storage/async-storage": "2.2.0",
@@ -33,6 +34,7 @@
     "expo-status-bar": "~58.0.4",
     "expo-system-ui": "~58.0.7",
     "expo-web-browser": "~58.0.7",
+    "expo-widgets": "~58.0.28",
     "i18next": "^26.4.2",
     "lucide-react-native": "^1.48.0",
     "nativewind": "4.2.7",
@@ -68,6 +70,7 @@
     "@rolldown/binding-win32-x64-msvc": "1.2.11"
   },
   "scripts": {
+    "postinstall": "node plugins/apply-android-widget-open-app.js",
     "start": "expo start --tunnel",
     "start:lan": "expo start --lan",
     "start:clear": "expo start --tunnel --clear",
