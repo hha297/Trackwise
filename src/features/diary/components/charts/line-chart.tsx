@@ -1,5 +1,6 @@
-import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Polyline } from 'react-native-svg';
+import { useState } from 'react';
+import { StyleSheet, View, type LayoutChangeEvent } from 'react-native';
+import Svg, { Circle, Line, Polyline } from 'react-native-svg';
 
 import { Text } from '@/components/ui/text';
 import { spacing, typography } from '@/theme';
@@ -31,19 +32,55 @@ function visibleLabelIndexes(count: number, maxLabels = 6): Set<number> {
   return indexes;
 }
 
+/** Consecutive non-null runs — line breaks across days with no food logs. */
+function lineSegments(
+  values: (number | null)[],
+  xFor: (index: number) => number,
+  yFor: (value: number) => number,
+): string[] {
+  const segments: string[] = [];
+  let current: string[] = [];
+
+  values.forEach((value, index) => {
+    if (value == null) {
+      if (current.length >= 2) segments.push(current.join(' '));
+      current = [];
+      return;
+    }
+    current.push(`${xFor(index)},${yFor(value)}`);
+  });
+  if (current.length >= 2) segments.push(current.join(' '));
+  return segments;
+}
+
+/**
+ * Macro trend line chart: continuous lines between logged days, dots on every
+ * value (including isolated single-day points so sparse ranges stay visible).
+ */
 export function LineChart({ labels, series, height = 148, emptyLabel }: LineChartProps) {
   const colors = useThemeColors();
+  const [width, setWidth] = useState(320);
   const pointCount = Math.max(labels.length, 1);
-  const width = Math.max(280, Math.min(pointCount * 36, 720));
-  const padX = 12;
-  const padY = 16;
-  const chartW = width - padX * 2;
-  const chartH = height - padY * 2;
+  const dense = pointCount > 12;
+  const crowded = pointCount > 8;
+  const padX = dense ? 8 : 12;
+  const padY = 14;
+  const chartW = Math.max(1, width - padX * 2);
+  const chartH = Math.max(1, height - padY * 2);
   const allValues = series.flatMap((s) => s.values.filter((v): v is number => v != null));
   const max = Math.max(1, ...allValues);
   const hasData = allValues.length > 0;
-  // Match bar charts: label every point through 8; only thin out denser series.
-  const showLabels = visibleLabelIndexes(labels.length, labels.length > 8 ? 6 : labels.length);
+  const showLabels = visibleLabelIndexes(labels.length, crowded ? 6 : labels.length);
+  const sortedLabelIndexes = [...showLabels].sort((a, b) => a - b);
+  const firstLabel = sortedLabelIndexes[0];
+  const lastLabel = sortedLabelIndexes[sortedLabelIndexes.length - 1];
+  const strokeWidth = dense ? 2 : 2.5;
+  const dotRadius = dense ? 2.5 : crowded ? 3 : 3.5;
+
+  function onLayout(event: LayoutChangeEvent) {
+    const next = Math.round(event.nativeEvent.layout.width);
+    if (next > 0 && next !== width) setWidth(next);
+  }
 
   if (!hasData) {
     return (
@@ -59,26 +96,38 @@ export function LineChart({ labels, series, height = 148, emptyLabel }: LineChar
     padX + (labels.length <= 1 ? chartW / 2 : (index / (labels.length - 1)) * chartW);
   const yFor = (value: number) => padY + chartH - (value / max) * chartH;
 
+  const guides = [0.25, 0.5, 0.75, 1].map((ratio) => padY + chartH - ratio * chartH);
+
   return (
-    <View style={styles.root}>
-      <Svg width="100%" height={height} viewBox={`0 0 ${width} ${height}`}>
-        {series.map((line) => {
-          const points = line.values
-            .map((value, index) => (value == null ? null : `${xFor(index)},${yFor(value)}`))
-            .filter(Boolean)
-            .join(' ');
-          return (
+    <View style={styles.root} onLayout={onLayout}>
+      <Svg width={width} height={height}>
+        {guides.map((y) => (
+          <Line
+            key={`guide-${y}`}
+            x1={padX}
+            y1={y}
+            x2={padX + chartW}
+            y2={y}
+            stroke={colors.border}
+            strokeWidth={StyleSheet.hairlineWidth}
+            strokeDasharray="4 4"
+          />
+        ))}
+
+        {series.map((line) =>
+          lineSegments(line.values, xFor, yFor).map((points, segmentIndex) => (
             <Polyline
-              key={line.key}
+              key={`${line.key}-seg-${segmentIndex}`}
               points={points}
               fill="none"
               stroke={line.color}
-              strokeWidth={2.5}
+              strokeWidth={strokeWidth}
               strokeLinejoin="round"
               strokeLinecap="round"
             />
-          );
-        })}
+          )),
+        )}
+
         {series.map((line) =>
           line.values.map((value, index) =>
             value == null ? null : (
@@ -86,33 +135,40 @@ export function LineChart({ labels, series, height = 148, emptyLabel }: LineChar
                 key={`${line.key}-${index}`}
                 cx={xFor(index)}
                 cy={yFor(value)}
-                r={3}
+                r={dotRadius}
                 fill={line.color}
+                stroke={colors.surface}
+                strokeWidth={dense ? 1 : 1.5}
               />
             ),
           ),
         )}
       </Svg>
 
-      <View style={styles.labelRow}>
-        {[...showLabels]
-          .sort((a, b) => a - b)
-          .map((index, order, visible) => {
-            const label = labels[index] ?? '';
-            const align =
-              order === 0 ? 'left' : order === visible.length - 1 ? 'right' : 'center';
-            return (
+      <View style={styles.axisRow}>
+        {labels.map((label, index) => {
+          if (!showLabels.has(index)) {
+            return <View key={`axis-${index}`} style={styles.axisSlot} />;
+          }
+          return (
+            <View key={`axis-${index}`} style={styles.axisSlot}>
               <Text
-                key={`${label}-${index}`}
                 variant="caption"
                 tone="secondary"
                 numberOfLines={1}
-                style={[styles.axisLabel, { textAlign: align, flex: 1 }]}
+                style={[
+                  styles.axisLabel,
+                  {
+                    textAlign:
+                      index === firstLabel ? 'left' : index === lastLabel ? 'right' : 'center',
+                  },
+                ]}
               >
                 {label}
               </Text>
-            );
-          })}
+            </View>
+          );
+        })}
       </View>
 
       <View style={styles.legend}>
@@ -125,9 +181,6 @@ export function LineChart({ labels, series, height = 148, emptyLabel }: LineChar
           </View>
         ))}
       </View>
-
-      {/* keep colors referenced for empty theme paths */}
-      <View style={{ display: 'none', backgroundColor: colors.surface }} />
     </View>
   );
 }
@@ -136,23 +189,30 @@ const styles = StyleSheet.create({
   root: {
     gap: spacing[2],
     overflow: 'hidden',
+    width: '100%',
   },
   empty: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: spacing[8],
   },
-  labelRow: {
+  axisRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: spacing[1],
-    gap: spacing[2],
+    width: '100%',
+    overflow: 'hidden',
+    minHeight: 16,
+  },
+  axisSlot: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+    minWidth: 0,
+    justifyContent: 'center',
   },
   axisLabel: {
     fontSize: typography.fine.size,
     lineHeight: typography.fine.lineHeight,
-    minWidth: 0,
+    width: '100%',
   },
   legend: {
     flexDirection: 'row',

@@ -18,6 +18,7 @@ import {
   type AppDestination,
 } from '@/features/bootstrap/bootstrap-provider';
 import { BootstrapScreen } from '@/features/bootstrap/bootstrap-screen';
+import { SplashBrandScreen } from '@/features/bootstrap/splash-brand-screen';
 import { NotificationsBootstrap } from '@/features/notifications/notifications-bootstrap';
 import { reportError } from '@/lib/errors/report-error';
 import { queryClient } from '@/lib/query/query-client';
@@ -109,16 +110,17 @@ function RootNavigator() {
     });
   }, [colors.background, scheme]);
 
-  // Keep the native splash up through session restore / prefetch so we don't flash a
-  // second oversized branded loading screen. Reveal once we have a destination or error.
+  // Hand off native splash → JS SplashBrandScreen as soon as fonts/bootstrap mount,
+  // so name + tagline can show while session restore / prefetch continues.
+  const showBrandedSplash = !error && (isBootstrapping || !destination);
   const revealApp = Boolean(error) || Boolean(destination && !isBootstrapping);
 
   useEffect(() => {
-    if (!revealApp) return;
+    if (!showBrandedSplash && !revealApp) return;
     SplashScreen.hideAsync().catch((err: unknown) => {
       reportError(err, { area: 'splash' });
     });
-  }, [revealApp]);
+  }, [showBrandedSplash, revealApp]);
 
   const bootstrapStatus = scheme === 'dark' ? 'light' : 'dark';
 
@@ -137,13 +139,11 @@ function RootNavigator() {
     );
   }
 
-  if (isBootstrapping || !destination) {
-    // Native splash remains visible (preventAutoHideAsync). Fallback UI only if
-    // splash was already dismissed (e.g. hot reload).
+  if (showBrandedSplash) {
     return (
       <>
-        <StatusBar style={bootstrapStatus} />
-        <BootstrapScreen />
+        <StatusBar style="dark" />
+        <SplashBrandScreen />
       </>
     );
   }

@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
-import { Link, router } from 'expo-router';
+import { Link, router, type Href } from 'expo-router';
 import {
+  BookOpen,
   CircleHelp,
   Download,
   Eraser,
@@ -12,6 +13,7 @@ import {
   LogOut,
   Bell,
   Moon,
+  CalendarDays,
   Ruler,
   Scale,
   Shield,
@@ -48,6 +50,7 @@ import {
 import { reportError } from '@/lib/errors/report-error';
 import { iconSizes, spacing } from '@/theme';
 import { useTheme, useThemeColors } from '@/theme/theme-provider';
+import { toDiaryDateKey } from '@/utils/date';
 
 function goalLabelKey(type: string): string {
   switch (type) {
@@ -256,6 +259,23 @@ export default function AccountScreen() {
             title={t('account.measurements')}
             subtitle={t('account.measurementsSubtitle')}
             onPress={() => router.push('/measurements')}
+          />
+          <SettingsRow
+            icon={CalendarDays}
+            title={t('account.mealPlan')}
+            subtitle={t('account.mealPlanSubtitle')}
+            onPress={() =>
+              router.push({
+                pathname: '/food/meal-plan',
+                params: { date: toDiaryDateKey() },
+              })
+            }
+          />
+          <SettingsRow
+            icon={BookOpen}
+            title={t('account.recipes')}
+            subtitle={t('account.recipesSubtitle')}
+            onPress={() => router.push('/food/recipes' as Href)}
           />
         </SettingsSection>
 

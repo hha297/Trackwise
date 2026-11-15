@@ -33,6 +33,7 @@ type OffProduct = {
   nutrition_data_per?: string;
   product_quantity_unit?: string;
   quantity?: string;
+  [key: string]: unknown;
 };
 
 type OffResponse = {
@@ -59,9 +60,12 @@ export class FoodLookupError extends Error {
 export type FoodLookupResult =
   { status: 'found'; food: TrackwiseFood } | { status: 'not_found'; barcode: string };
 
+const OFF_NAME_LOCALES = ['en', 'vi', 'fi', 'sv', 'zh', 'ko', 'ja', 'fr', 'de'] as const;
+
 const OFF_FIELDS = [
   'code',
   'product_name',
+  ...OFF_NAME_LOCALES.map((lc) => `product_name_${lc}`),
   'brands',
   'image_front_small_url',
   'image_front_url',
@@ -72,6 +76,24 @@ const OFF_FIELDS = [
   'product_quantity_unit',
   'quantity',
 ].join(',');
+
+function normalizeLanguageCode(language?: string | null) {
+  const raw = (language ?? 'en').trim().toLowerCase();
+  if (!raw) return 'en';
+  if (raw.startsWith('zh')) return 'zh';
+  return raw.slice(0, 2);
+}
+
+function localizedProductName(product: OffProduct, language?: string | null) {
+  const lc = normalizeLanguageCode(language);
+  const preferred = product[`product_name_${lc}`];
+  if (typeof preferred === 'string' && preferred.trim()) return preferred.trim();
+  for (const code of OFF_NAME_LOCALES) {
+    const value = product[`product_name_${code}`];
+    if (typeof value === 'string' && value.trim()) return value.trim();
+  }
+  return product.product_name?.trim() ?? '';
+}
 
 export function isSupportedProductBarcode(type: string, data: string) {
   if (!/^\d+$/.test(data)) return false;
@@ -112,8 +134,9 @@ function nutrient(nutriments: OffProduct['nutriments'], key: string, suffix: '10
 export function normalizeOpenFoodFactsProduct(
   product: OffProduct,
   requestedBarcode = '',
+  language?: string | null,
 ): TrackwiseFood {
-  const name = product.product_name?.trim() ?? '';
+  const name = localizedProductName(product, language);
 
   const serving = parseServing(product.serving_size);
   const hasPer100 = ['energy-kcal', 'proteins', 'carbohydrates', 'fat'].some(
@@ -156,12 +179,14 @@ export function normalizeOpenFoodFactsProduct(
   };
 }
 
-export async function fetchOpenFoodFactsByBarcode(
-  barcode: string,
+const OFF_USER_AGENT = 'Trackwise/1.0 (mobile food search)';
+
+async function fetchOpenFoodFactsJsonOnce(
+  url: string,
   options: { signal?: AbortSignal; timeoutMs?: number } = {},
-): Promise<FoodLookupResult> {
+): Promise<unknown> {
   const controller = new AbortController();
-  const timeoutMs = options.timeoutMs ?? 10_000;
+  const timeoutMs = options.timeoutMs ?? 12_000;
   let timedOut = false;
   const timeout = setTimeout(() => {
     timedOut = true;
@@ -173,57 +198,118 @@ export async function fetchOpenFoodFactsByBarcode(
   try {
     let response: Response;
     try {
-      response = await fetch(
-        `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(barcode)}.json?fields=${encodeURIComponent(OFF_FIELDS)}`,
-        {
-          signal: controller.signal,
-          headers: { 'User-Agent': 'Trackwise/1.0 (mobile food scanner)' },
-        },
-      );
+      response = await fetch(url, {
+        signal: controller.signal,
+        headers: { 'User-Agent': OFF_USER_AGENT },
+      });
     } catch (error) {
-      if (timedOut) throw new FoodLookupError('timeout', 'Open Food Facts timed out.');
+      if (timedOut) throw new FoodLookupError('timeout', 'Food search timed out.', undefined);
       if (options.signal?.aborted) throw error;
-      throw new FoodLookupError('network', 'Could not connect to Open Food Facts.');
+      throw new FoodLookupError('network', 'Could not reach the food database.');
     }
 
     if (response.status === 429) {
-      throw new FoodLookupError(
-        'rate_limit',
-        'Open Food Facts is receiving too many requests.',
-        429,
-      );
+      throw new FoodLookupError('rate_limit', 'Too many food searches. Wait a moment.', 429);
     }
     if (response.status >= 500) {
-      throw new FoodLookupError(
-        'server',
-        'Open Food Facts is temporarily unavailable.',
-        response.status,
-      );
+      throw new FoodLookupError('server', 'Food database is busy. Try again.', response.status);
     }
     if (!response.ok) {
-      throw new FoodLookupError(
-        'invalid_response',
-        'Open Food Facts rejected the request.',
-        response.status,
-      );
+      throw new FoodLookupError('invalid_response', 'Food search returned an unexpected response.', response.status);
     }
 
-    let json: OffResponse;
     try {
-      json = (await response.json()) as OffResponse;
+      return await response.json();
     } catch {
-      throw new FoodLookupError(
-        'invalid_response',
-        'Open Food Facts returned an invalid response.',
-      );
+      throw new FoodLookupError('invalid_response', 'Food search returned an unexpected response.');
     }
-    if (json.status === 0 || !json.product) return { status: 'not_found', barcode };
-    if (json.status !== 1) {
-      throw new FoodLookupError('invalid_response', 'Open Food Facts returned an unknown status.');
-    }
-    return { status: 'found', food: normalizeOpenFoodFactsProduct(json.product, barcode) };
   } finally {
     clearTimeout(timeout);
     options.signal?.removeEventListener('abort', abort);
   }
+}
+
+async function fetchOpenFoodFactsJson(
+  url: string,
+  options: { signal?: AbortSignal; timeoutMs?: number } = {},
+): Promise<unknown> {
+  try {
+    return await fetchOpenFoodFactsJsonOnce(url, options);
+  } catch (error) {
+    // One quiet retry for transient OFF outages / rate spikes.
+    if (!(error instanceof FoodLookupError)) throw error;
+    if (error.kind !== 'server' && error.kind !== 'timeout' && error.kind !== 'rate_limit') {
+      throw error;
+    }
+    if (options.signal?.aborted) throw error;
+    await new Promise((resolve) => setTimeout(resolve, 450));
+    if (options.signal?.aborted) throw error;
+    return fetchOpenFoodFactsJsonOnce(url, options);
+  }
+}
+
+export async function fetchOpenFoodFactsByBarcode(
+  barcode: string,
+  options: { signal?: AbortSignal; timeoutMs?: number } = {},
+): Promise<FoodLookupResult> {
+  const json = (await fetchOpenFoodFactsJson(
+    `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(barcode)}.json?fields=${encodeURIComponent(OFF_FIELDS)}`,
+    options,
+  )) as OffResponse;
+
+  if (json.status === 0 || !json.product) return { status: 'not_found', barcode };
+  if (json.status !== 1) {
+    throw new FoodLookupError('invalid_response', 'Open Food Facts returned an unknown status.');
+  }
+  return {
+    status: 'found',
+    food: normalizeOpenFoodFactsProduct(json.product, barcode),
+  };
+}
+
+type OffSearchResponse = {
+  products?: OffProduct[];
+  count?: number;
+};
+
+/** Text Open Food Facts by product name/brand (used when the local foods catalog is sparse). */
+export async function searchOpenFoodFactsProducts(
+  term: string,
+  options: {
+    signal?: AbortSignal;
+    timeoutMs?: number;
+    pageSize?: number;
+    language?: string | null;
+  } = {},
+): Promise<TrackwiseFood[]> {
+  const trimmed = term.trim();
+  if (trimmed.length < 2) return [];
+
+  const language = normalizeLanguageCode(options.language);
+  const url = new URL('https://world.openfoodfacts.org/cgi/search.pl');
+  url.searchParams.set('search_terms', trimmed);
+  url.searchParams.set('search_simple', '1');
+  url.searchParams.set('action', 'process');
+  url.searchParams.set('json', '1');
+  url.searchParams.set('page_size', String(options.pageSize ?? 24));
+  url.searchParams.set('lc', language);
+  url.searchParams.set('cc', language);
+  url.searchParams.set('fields', OFF_FIELDS);
+
+  const json = (await fetchOpenFoodFactsJson(url.toString(), options)) as OffSearchResponse;
+  const products = Array.isArray(json.products) ? json.products : [];
+
+  return products
+    .map((product) => normalizeOpenFoodFactsProduct(product, '', language))
+    .filter((food) => food.name.trim().length > 0);
+}
+
+/** Stable client id for OFF search hits that are not yet in `public.foods`. */
+export function openFoodFactsSearchId(food: Pick<TrackwiseFood, 'barcode' | 'name'>) {
+  const key = food.barcode?.trim() || food.name.trim().toLowerCase();
+  return `off:${key}`;
+}
+
+export function isOpenFoodFactsSearchId(id: string) {
+  return id.startsWith('off:');
 }

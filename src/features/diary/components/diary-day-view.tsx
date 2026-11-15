@@ -9,12 +9,13 @@ import {
 } from '@/features/diary/components/nutrition-dashboard';
 import { WeekFoodList } from '@/features/diary/components/week-food-list';
 import { WorkoutSection } from '@/features/diary/components/workout-section';
-import { StreakOverview } from '@/features/engagement/streak-overview';
 import { HydrationCard } from '@/features/hydration/hydration-card';
 import { MEAL_ORDER, weekDateKeys } from '@/features/diary/aggregations';
 import type { MacroTotals } from '@/features/diary/balance';
 import type { FoodEntry } from '@/features/food/types';
 import type { Goal, Profile } from '@/features/goals/types';
+import { usePlannedMealsForDate } from '@/features/meal-plan/hooks';
+import { MealPlanPreviewCard } from '@/features/meal-plan/meal-plan-preview-card';
 import type { WorkoutListItem } from '@/features/workout/hooks';
 
 type DiaryDayViewProps = {
@@ -47,6 +48,7 @@ export function DiaryDayView({
   const weekKeys = useMemo(() => weekDateKeys(dateKey), [dateKey]);
   const initialOpen = weekKeys.includes(todayKey) ? todayKey : weekKeys[0]!;
   const [weekOpenKey, setWeekOpenKey] = useState<string | null>(initialOpen);
+  const planned = usePlannedMealsForDate(dateKey);
 
   return (
     <View className="gap-4">
@@ -63,7 +65,12 @@ export function DiaryDayView({
         dayBurned={burned}
       />
 
-      <StreakOverview todayKey={todayKey} />
+      <MealPlanPreviewCard
+        dateKey={dateKey}
+        meals={planned.data ?? []}
+        isLoading={planned.isLoading}
+        isError={Boolean(planned.error)}
+      />
 
       {period === 'week' ? (
         <WeekFoodList
@@ -82,7 +89,10 @@ export function DiaryDayView({
               dateKey={dateKey}
               entries={entries.filter((entry) => entry.meal_type === meal)}
               onAdd={() =>
-                router.push({ pathname: '/food/add', params: { date: dateKey, meal } })
+                router.push({
+                  pathname: '/food/add',
+                  params: { intent: 'log', date: dateKey, meal },
+                })
               }
               onDelete={onDeleteEntry}
             />

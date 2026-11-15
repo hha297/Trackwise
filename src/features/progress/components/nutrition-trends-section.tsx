@@ -36,11 +36,7 @@ export function NutritionTrendsSection({
       <View style={styles.header}>
         <Text variant="headingSmall">{t('progress.nutrition.title')}</Text>
         <Text variant="caption" tone="secondary">
-          {series.mode === 'biweekly'
-            ? t('progress.nutrition.biweeklyNote')
-            : series.mode === 'weekly'
-              ? t('progress.nutrition.weeklyNote')
-              : t('progress.nutrition.dailyNote')}
+          {t('progress.nutrition.dailyNote')}
         </Text>
       </View>
 

@@ -56,3 +56,7 @@ example
 # generated native folders
 /ios
 /android
+
+# FatSecret proxy local secret (never commit)
+infra/fatsecret-proxy/.proxy-shared-secret.local
+

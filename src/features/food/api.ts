@@ -4,10 +4,10 @@ import { getSupabase } from '@/lib/supabase/client';
 import type { FoodEntry } from './types';
 
 const ENTRY_COLUMNS =
-  'id, logged_on, meal_type, quantity, food_name, brand, serving_label, calories, protein_g, carbs_g, fat_g, amount, amount_unit, nutrition_basis, basis_amount, basis_unit, image_url, fiber_g, sugars_g, saturated_fat_g, sodium_mg, food:foods ( image_url )';
+  'id, food_id, logged_on, meal_type, quantity, food_name, brand, serving_label, calories, protein_g, carbs_g, fat_g, amount, amount_unit, nutrition_basis, basis_amount, basis_unit, image_url, fiber_g, sugars_g, saturated_fat_g, sodium_mg, planned_meal_id, recipe_id, entry_source, food:foods ( image_url )';
 
 const ENTRY_COLUMNS_BASIC =
-  'id, logged_on, meal_type, quantity, food_name, brand, serving_label, calories, protein_g, carbs_g, fat_g, amount, amount_unit, nutrition_basis, basis_amount, image_url';
+  'id, food_id, logged_on, meal_type, quantity, food_name, brand, serving_label, calories, protein_g, carbs_g, fat_g, amount, amount_unit, nutrition_basis, basis_amount, image_url, planned_meal_id, recipe_id, entry_source';
 
 type JoinedEntryRow = FoodEntry & {
   food?: { image_url?: string | null } | null;

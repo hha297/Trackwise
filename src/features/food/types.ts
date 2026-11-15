@@ -2,6 +2,13 @@ export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snacks';
 
 export type FoodAmountUnit = 'g' | 'ml' | 'serving';
 
+export type FoodEntrySource =
+  | 'planned_meal'
+  | 'recipe'
+  | 'scanned_product'
+  | 'catalog'
+  | 'manual';
+
 export type FoodEntry = {
   id: string;
   logged_on: string;
@@ -25,6 +32,13 @@ export type FoodEntry = {
   sugars_g?: number | null;
   saturated_fat_g?: number | null;
   sodium_mg?: number | null;
+  food_id?: string | null;
+  /** Origin planned meal when logged via Meal Plan → Diary. */
+  planned_meal_id?: string | null;
+  /** Optional recipe lineage for direct recipe logs. */
+  recipe_id?: string | null;
+  /** Explicit origin discriminator; null = legacy/unknown. */
+  entry_source?: FoodEntrySource | null;
 };
 
 export type Food = {
@@ -40,4 +54,7 @@ export type Food = {
   fat_g: number;
   source: string;
   image_url?: string | null;
+  nutrition_basis?: 'per100' | 'serving' | null;
+  basis_unit?: 'g' | 'ml' | 'serving' | null;
+  basis_amount?: number | null;
 };

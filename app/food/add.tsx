@@ -1,9 +1,11 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import {
   Beef,
+  BookOpen,
   ChevronLeft,
   Droplets,
   Flame,
+  Plus,
   ScanLine,
   Search,
   Sparkles,
@@ -21,42 +23,79 @@ import { Input } from '@/components/ui/input';
 import { Screen } from '@/components/ui/screen';
 import { ErrorState, LoadingState } from '@/components/ui/states';
 import { Text } from '@/components/ui/text';
+import {
+  ConfirmSelectionModal,
+  type ConfirmSelectionItem,
+} from '@/features/food/confirm-selection-modal';
 import { FoodImageField } from '@/features/food/food-image-field';
 import type { SelectedFoodImage } from '@/features/food/food-image';
 import {
   FoodListRow,
   formatFoodNutritionDetail,
+  formatFoodSourceLabel,
 } from '@/features/food/food-list-row';
 import {
+  ensureSearchFoodRecord,
   useCreateManualFood,
   useLogFoodEntry,
   useRecentFoods,
   useSearchFoods,
   type MealType,
 } from '@/features/food/hooks';
+import {
+  parseFoodPickerIntent,
+  parseFoodPickerSource,
+  parseMealType,
+  type FoodPickerIntent,
+  type FoodPickerSource,
+} from '@/features/food/picker-intent';
 import { FoodLogContextPicker } from '@/features/food/scan-result-modal';
+import { usePlannedMealMutations } from '@/features/meal-plan/hooks';
+import { useRecipes } from '@/features/recipes/hooks';
 import { uploadFoodImageToCloudinary } from '@/lib/cloudinary/upload';
 import { iconSizes, radii, spacing, withAlpha } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 import { toDiaryDateKey } from '@/utils/date';
 
-type AddMode = 'search' | 'manual';
+type PendingFood = ConfirmSelectionItem & {
+  resolveId?: string;
+  raw: {
+    id?: string;
+    name: string;
+    brand?: string | null;
+    barcode?: string | null;
+    serving_label: string;
+    serving_grams?: number | null;
+    calories: number;
+    protein_g: number;
+    carbs_g: number;
+    fat_g: number;
+    image_url?: string | null;
+    source?: string;
+  };
+};
 
 export default function AddFoodScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
-  const params = useLocalSearchParams<{ date?: string; meal?: string; mode?: string }>();
+  const params = useLocalSearchParams<{
+    date?: string;
+    meal?: string;
+    mode?: string;
+    intent?: string;
+    source?: string;
+  }>();
+
+  const intent: FoodPickerIntent = parseFoodPickerIntent(params.intent);
+  const initialSource = parseFoodPickerSource(params.source ?? params.mode);
+  /** Meal Plan Recipe entry opens recipes directly — no Foods/Create intermediate tabs. */
+  const recipesOnly = initialSource === 'recipes';
   const [dateKey, setDateKey] = useState(params.date ?? toDiaryDateKey());
-  const [mealType, setMealType] = useState<MealType>(
-    params.meal === 'breakfast' ||
-      params.meal === 'lunch' ||
-      params.meal === 'dinner' ||
-      params.meal === 'snacks'
-      ? params.meal
-      : 'lunch',
-  );
-  const [mode, setMode] = useState<AddMode>(params.mode === 'manual' ? 'manual' : 'search');
+  const [mealType, setMealType] = useState<MealType>(parseMealType(params.meal));
+  const [source, setSource] = useState<FoodPickerSource>(initialSource);
+
   const [term, setTerm] = useState('');
+  const [recipeTerm, setRecipeTerm] = useState('');
   const [name, setName] = useState('');
   const [brand, setBrand] = useState('');
   const [calories, setCalories] = useState('');
@@ -67,16 +106,20 @@ export default function AddFoodScreen() {
   const [manualUnit, setManualUnit] = useState<'g' | 'ml'>('g');
   const [foodImage, setFoodImage] = useState<SelectedFoodImage | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [addingKey, setAddingKey] = useState<string | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [pending, setPending] = useState<PendingFood | null>(null);
+  const [confirmSaving, setConfirmSaving] = useState(false);
 
   const search = useSearchFoods(term);
   const recent = useRecentFoods();
+  const recipes = useRecipes(recipeTerm);
   const logFood = useLogFoodEntry();
   const createFood = useCreateManualFood();
-  const loggingBusy = logFood.isPending;
+  const planMutations = usePlannedMealMutations();
+
   const savingManual = uploadingImage || createFood.isPending || logFood.isPending;
   const results = useMemo(() => search.data ?? [], [search.data]);
+
   const summary = useMemo(() => {
     if (![serving, calories, protein, carbs, fat].every((value) => value.trim())) return null;
     const servingGrams = Number(serving.replace(',', '.'));
@@ -92,59 +135,129 @@ export default function AddFoodScreen() {
     return {
       servingGrams,
       unit: manualUnit,
-      calories: values[0] * factor,
-      protein: values[1] * factor,
-      carbs: values[2] * factor,
-      fat: values[3] * factor,
+      calories: values[0]! * factor,
+      protein: values[1]! * factor,
+      carbs: values[2]! * factor,
+      fat: values[3]! * factor,
     };
   }, [calories, carbs, fat, manualUnit, protein, serving]);
 
-  async function logExisting(
-    food: {
-      id?: string;
-      name: string;
-      brand?: string | null;
-      serving_label: string;
-      calories: number;
-      protein_g: number;
-      carbs_g: number;
-      fat_g: number;
-      image_url?: string | null;
-    },
-    rowKey: string,
-  ) {
-    if (loggingBusy) return;
+  function finishAfterWrite() {
+    if (intent === 'plan') {
+      router.replace({
+        pathname: '/food/meal-plan',
+        params: { date: dateKey, meal: mealType },
+      });
+      return;
+    }
+    router.dismissTo({ pathname: '/', params: { date: dateKey } });
+  }
+
+  function openFoodConfirm(food: PendingFood['raw']) {
     setError(null);
-    setAddingKey(rowKey);
+    setPending({
+      name: food.name,
+      brand: food.brand,
+      perUnit: {
+        calories: food.calories,
+        proteinG: food.protein_g,
+        carbsG: food.carbs_g,
+        fatG: food.fat_g,
+      },
+      amountUnit: 'serving',
+      defaultAmount: 1,
+      servingHint: food.serving_label,
+      resolveId: food.id,
+      raw: food,
+    });
+  }
+
+  async function confirmPending(input: {
+    amount: number;
+    amountUnit: 'g' | 'ml' | 'serving';
+    calories: number;
+    proteinG: number;
+    carbsG: number;
+    fatG: number;
+    servingLabel: string;
+  }) {
+    if (!pending) return;
+    setConfirmSaving(true);
     try {
+      if (intent === 'plan') {
+        await planMutations.create.mutateAsync({
+          planDate: dateKey,
+          mealType,
+          recipeId: null,
+          title: pending.name,
+          notes: null,
+          servings: input.amount,
+          calories: input.calories,
+          proteinG: input.proteinG,
+          carbsG: input.carbsG,
+          fatG: input.fatG,
+        });
+        setPending(null);
+        finishAfterWrite();
+        return;
+      }
+
+      const food = pending.raw;
+      const resolved =
+        food.id != null
+          ? await ensureSearchFoodRecord(
+              {
+                id: food.id,
+                name: food.name,
+                brand: food.brand ?? null,
+                barcode: food.barcode ?? null,
+                serving_label: food.serving_label,
+                serving_grams: food.serving_grams ?? null,
+                calories: food.calories,
+                protein_g: food.protein_g,
+                carbs_g: food.carbs_g,
+                fat_g: food.fat_g,
+                source: food.source ?? 'manual',
+                image_url: food.image_url ?? null,
+              },
+              createFood.mutateAsync,
+            )
+          : null;
+
       await logFood.mutateAsync({
         dateKey,
         mealType,
         quantity: 1,
+        amount: input.amount,
+        amountUnit: input.amountUnit,
+        nutritionBasis: 'serving',
+        basisAmount: 1,
+        basisUnit: 'serving',
         food: {
-          id: food.id,
-          name: food.name,
-          brand: food.brand,
-          servingLabel: food.serving_label,
-          calories: food.calories,
-          proteinG: food.protein_g,
-          carbsG: food.carbs_g,
-          fatG: food.fat_g,
-          imageUrl: food.image_url ?? null,
+          id: resolved?.id ?? food.id,
+          name: resolved?.name ?? food.name,
+          brand: resolved?.brand ?? food.brand,
+          servingLabel: input.servingLabel,
+          calories: input.calories,
+          proteinG: input.proteinG,
+          carbsG: input.carbsG,
+          fatG: input.fatG,
+          imageUrl: resolved?.image_url ?? food.image_url ?? null,
         },
       });
-      router.back();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t('food.add.logFailed'));
+      setPending(null);
+      finishAfterWrite();
     } finally {
-      setAddingKey(null);
+      setConfirmSaving(false);
     }
   }
 
   function parseNutrition(value: string, label: string) {
     const parsed = Number(value.replace(',', '.'));
     if (!value.trim()) throw new Error(t('food.add.fieldRequired', { label }));
-    if (!Number.isFinite(parsed) || parsed < 0) throw new Error(t('food.add.fieldNonNegative', { label }));
+    if (!Number.isFinite(parsed) || parsed < 0) {
+      throw new Error(t('food.add.fieldNonNegative', { label }));
+    }
     return parsed;
   }
 
@@ -168,22 +281,52 @@ export default function AddFoodScreen() {
         }
       }
 
-      const food = await createFood.mutateAsync({
+      const per100 = {
+        calories: parseNutrition(calories, t('food.add.calories')),
+        proteinG: parseNutrition(protein, t('food.add.protein')),
+        carbsG: parseNutrition(carbs, t('food.add.carbs')),
+        fatG: parseNutrition(fat, t('food.add.fat')),
+      };
+      const totals = {
+        calories: per100.calories * factor,
+        proteinG: per100.proteinG * factor,
+        carbsG: per100.carbsG * factor,
+        fatG: per100.fatG * factor,
+      };
+
+      if (intent === 'plan') {
+        await planMutations.create.mutateAsync({
+          planDate: dateKey,
+          mealType,
+          recipeId: null,
+          title: name.trim(),
+          notes: brand.trim() || null,
+          servings: 1,
+          calories: totals.calories,
+          proteinG: totals.proteinG,
+          carbsG: totals.carbsG,
+          fatG: totals.fatG,
+        });
+        finishAfterWrite();
+        return;
+      }
+
+      const created = await createFood.mutateAsync({
         name: name.trim(),
         brand: brand.trim() || undefined,
+        source: 'manual',
+        imageUrl,
         servingLabel: `${servingGrams} ${manualUnit}`,
         servingGrams: manualUnit === 'g' ? servingGrams : undefined,
-        source: 'manual',
         nutritionBasis: 'per100',
         basisUnit: manualUnit,
         basisAmount: 100,
-        nutritionUserEdited: true,
-        imageUrl,
-        calories: parseNutrition(calories, t('food.add.calories')) * factor,
-        proteinG: parseNutrition(protein, t('food.add.protein')) * factor,
-        carbsG: parseNutrition(carbs, t('food.add.carbs')) * factor,
-        fatG: parseNutrition(fat, t('food.add.fat')) * factor,
+        calories: totals.calories,
+        proteinG: totals.proteinG,
+        carbsG: totals.carbsG,
+        fatG: totals.fatG,
       });
+
       await logFood.mutateAsync({
         dateKey,
         mealType,
@@ -192,24 +335,49 @@ export default function AddFoodScreen() {
         amountUnit: manualUnit,
         nutritionBasis: 'per100',
         basisAmount: 100,
-        nutritionUserEdited: true,
+        basisUnit: manualUnit,
         food: {
-          id: food.id,
-          name: food.name,
-          brand: food.brand,
-          servingLabel: food.serving_label,
-          calories: food.calories,
-          proteinG: food.protein_g,
-          carbsG: food.carbs_g,
-          fatG: food.fat_g,
+          id: created.id,
+          name: created.name,
+          brand: created.brand,
+          servingLabel: `${servingGrams} ${manualUnit}`,
+          calories: totals.calories,
+          proteinG: totals.proteinG,
+          carbsG: totals.carbsG,
+          fatG: totals.fatG,
+          imageUrl: created.image_url ?? imageUrl ?? null,
         },
       });
-      router.dismissTo({ pathname: '/', params: { date: dateKey } });
+      finishAfterWrite();
     } catch (err) {
-      setUploadingImage(false);
       setError(err instanceof Error ? err.message : t('food.add.saveFailed'));
     }
   }
+
+  const headerTitle = recipesOnly
+    ? t('recipes.chooseTitle')
+    : intent === 'plan'
+      ? t('food.add.titlePlan', { meal: t(`meals.${mealType}`) })
+      : t('food.add.titleLog', { meal: t(`meals.${mealType}`) });
+
+  function openCreateRecipe() {
+    router.push({
+      pathname: '/food/recipes/new',
+      params:
+        intent === 'plan'
+          ? { intent: 'plan', planDate: dateKey, meal: mealType }
+          : {},
+    });
+  }
+
+  const recipeRows = recipes.data ?? [];
+  const recipeSearchEmpty =
+    !recipes.isLoading &&
+    !recipes.error &&
+    recipeRows.length === 0 &&
+    recipeTerm.trim().length > 0;
+  const recipeLibraryEmpty =
+    !recipes.isLoading && !recipes.error && recipeRows.length === 0 && !recipeTerm.trim();
 
   return (
     <Screen scroll keyboard edges={['top', 'bottom', 'left', 'right']}>
@@ -229,43 +397,59 @@ export default function AddFoodScreen() {
             <ChevronLeft color={colors.textPrimary} size={22} />
           </Pressable>
           <View className="flex-1">
-            <Text variant="headingLarge">{t('food.add.title')}</Text>
+            <Text variant="headingLarge">{headerTitle}</Text>
             <Text variant="caption" tone="secondary">
-              {t(`meals.${mealType}`)} · {dateKey}
+              {dateKey}
             </Text>
           </View>
         </View>
 
-        <View style={[styles.modeSwitch, { backgroundColor: colors.surfaceMuted }]}>
-          <ModeButton
-            active={mode === 'search'}
-            icon={
-              <Search
-                size={18}
-                color={mode === 'search' ? colors.textOnPrimary : colors.textSecondary}
-              />
-            }
-            label={t('food.add.modeSearch')}
-            onPress={() => {
-              setError(null);
-              setMode('search');
-            }}
-          />
-          <ModeButton
-            active={mode === 'manual'}
-            icon={
-              <Sparkles
-                size={18}
-                color={mode === 'manual' ? colors.textOnPrimary : colors.textSecondary}
-              />
-            }
-            label={t('food.add.modeCreate')}
-            onPress={() => {
-              setError(null);
-              setMode('manual');
-            }}
-          />
-        </View>
+        {recipesOnly ? null : (
+          <View style={[styles.modeSwitch, { backgroundColor: colors.surfaceMuted }]}>
+            <ModeButton
+              active={source === 'foods'}
+              icon={
+                <Search
+                  size={18}
+                  color={source === 'foods' ? colors.textOnPrimary : colors.textSecondary}
+                />
+              }
+              label={t('food.add.modeFoods')}
+              onPress={() => {
+                setError(null);
+                setSource('foods');
+              }}
+            />
+            <ModeButton
+              active={source === 'recipes'}
+              icon={
+                <BookOpen
+                  size={18}
+                  color={source === 'recipes' ? colors.textOnPrimary : colors.textSecondary}
+                />
+              }
+              label={t('food.add.modeRecipes')}
+              onPress={() => {
+                setError(null);
+                setSource('recipes');
+              }}
+            />
+            <ModeButton
+              active={source === 'create'}
+              icon={
+                <Sparkles
+                  size={18}
+                  color={source === 'create' ? colors.textOnPrimary : colors.textSecondary}
+                />
+              }
+              label={t('food.add.modeCreate')}
+              onPress={() => {
+                setError(null);
+                setSource('create');
+              }}
+            />
+          </View>
+        )}
 
         {error ? (
           <View style={[styles.errorBanner, { backgroundColor: colors.errorMuted }]}>
@@ -275,12 +459,78 @@ export default function AddFoodScreen() {
           </View>
         ) : null}
 
-        {mode === 'manual' ? (
+        {source === 'recipes' ? (
+          <View className="gap-4">
+            <Button
+              label={t('recipes.createCta')}
+              variant="secondary"
+              iconStart={(color) => <Plus size={16} color={color} />}
+              onPress={openCreateRecipe}
+            />
+            <Input
+              label={t('recipes.searchLibrary')}
+              value={recipeTerm}
+              onChangeText={setRecipeTerm}
+              autoCapitalize="none"
+              placeholder={t('recipes.searchLibraryPlaceholder')}
+            />
+            {recipes.isLoading ? <LoadingState /> : null}
+            {recipes.error ? (
+              <ErrorState
+                title={t('recipes.loadError')}
+                body={
+                  recipes.error instanceof Error ? recipes.error.message : t('recipes.retry')
+                }
+                onRetry={() => void recipes.refetch()}
+              />
+            ) : null}
+            {recipeLibraryEmpty ? (
+              <Card className="gap-2 py-4">
+                <Text variant="bodyStrong">{t('recipes.emptyTitle')}</Text>
+                <Text variant="bodySmall" tone="secondary">
+                  {t('recipes.emptyBody')}
+                </Text>
+              </Card>
+            ) : null}
+            {recipeSearchEmpty ? (
+              <Card className="gap-2 py-4">
+                <Text variant="bodyStrong">{t('recipes.searchEmptyTitle')}</Text>
+                <Text variant="bodySmall" tone="secondary">
+                  {t('recipes.searchEmptyBody')}
+                </Text>
+              </Card>
+            ) : null}
+            <View>
+              {recipeRows.map((recipe, index) => (
+                <FoodListRow
+                  key={recipe.id}
+                  name={recipe.name}
+                  detail={t('recipes.servingsCount', { count: recipe.servings })}
+                  imageUrl={recipe.image_url}
+                  showDivider={index < recipeRows.length - 1}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/food/recipes/[id]',
+                      params: {
+                        id: recipe.id,
+                        intent,
+                        planDate: dateKey,
+                        meal: mealType,
+                      },
+                    })
+                  }
+                />
+              ))}
+            </View>
+          </View>
+        ) : source === 'create' ? (
           <View className="gap-4">
             <View>
               <Text variant="headingSmall">{t('food.add.createTitle')}</Text>
               <Text variant="bodySmall" tone="secondary">
-                {t('food.add.createSubtitle')}
+                {intent === 'plan'
+                  ? t('food.add.createSubtitlePlan')
+                  : t('food.add.createSubtitle')}
               </Text>
             </View>
 
@@ -314,7 +564,9 @@ export default function AddFoodScreen() {
 
             <Card className="gap-4">
               <View>
-                <Text variant="headingSmall">{t('food.add.nutritionPer100', { unit: manualUnit })}</Text>
+                <Text variant="headingSmall">
+                  {t('food.add.nutritionPer100', { unit: manualUnit })}
+                </Text>
                 <Text variant="bodySmall" tone="secondary">
                   {t('food.add.nutritionHint')}
                 </Text>
@@ -363,7 +615,13 @@ export default function AddFoodScreen() {
             />
 
             <Button
-              label={uploadingImage ? t('food.add.uploading') : t('food.add.saveAdd')}
+              label={
+                uploadingImage
+                  ? t('food.add.uploading')
+                  : intent === 'plan'
+                    ? t('food.confirm.addToPlan')
+                    : t('food.add.saveAdd')
+              }
               size="lg"
               disabled={!name.trim() || savingManual}
               loading={savingManual}
@@ -379,25 +637,34 @@ export default function AddFoodScreen() {
               autoCapitalize="none"
               placeholder={t('food.add.searchPlaceholder')}
             />
-            <Button
-              label={t('food.add.scanBarcode')}
-              variant="secondary"
-              iconStart={(color) => <ScanLine color={color} size={20} />}
-              onPress={() =>
-                router.push({
-                  pathname: '/(tabs)/scan',
-                  params: { date: dateKey, meal: mealType, source: 'meal', nonce: Date.now() },
-                })
-              }
-            />
+            {intent === 'log' ? (
+              <Button
+                label={t('food.add.scanBarcode')}
+                variant="secondary"
+                iconStart={(color) => <ScanLine color={color} size={20} />}
+                onPress={() =>
+                  router.push({
+                    pathname: '/(tabs)/scan',
+                    params: {
+                      date: dateKey,
+                      meal: mealType,
+                      source: 'meal',
+                      nonce: String(Date.now()),
+                    },
+                  })
+                }
+              />
+            ) : null}
 
             {term.trim().length >= 2 ? (
-              search.isLoading ? (
+              search.isSearching && !search.data ? (
                 <LoadingState label={t('food.add.searching')} />
               ) : search.error ? (
                 <ErrorState
                   title={t('food.add.searchFailed')}
-                  body={search.error instanceof Error ? search.error.message : t('common.tryAgain')}
+                  body={
+                    search.error instanceof Error ? search.error.message : t('common.tryAgain')
+                  }
                   onRetry={() => void search.refetch()}
                 />
               ) : results.length === 0 ? (
@@ -414,31 +681,28 @@ export default function AddFoodScreen() {
                     variant="text"
                     onPress={() => {
                       setName(term.trim());
-                      setMode('manual');
+                      setSource('create');
                     }}
                   />
                 </Card>
               ) : (
                 <View>
-                  {results.map((food, index) => {
-                    const key = food.id;
-                    return (
-                      <FoodListRow
-                        key={key}
-                        name={food.name}
-                        brand={food.brand}
-                        imageUrl={food.image_url}
-                        detail={formatFoodNutritionDetail({ unavailableLabel: t('food.add.nutritionUnavailable'),
-                          calories: food.calories,
-                          servingLabel: food.serving_label,
-                        })}
-                        showDivider={index < results.length - 1}
-                        disabled={loggingBusy && addingKey !== key}
-                        loading={addingKey === key}
-                        onPress={() => void logExisting(food, key)}
-                      />
-                    );
-                  })}
+                  {results.map((food, index) => (
+                    <FoodListRow
+                      key={food.id}
+                      name={food.name}
+                      brand={food.brand}
+                      imageUrl={food.image_url}
+                      sourceLabel={formatFoodSourceLabel(food.source, t)}
+                      detail={formatFoodNutritionDetail({
+                        unavailableLabel: t('food.add.nutritionUnavailable'),
+                        calories: food.calories,
+                        servingLabel: food.serving_label,
+                      })}
+                      showDivider={index < results.length - 1}
+                      onPress={() => openFoodConfirm(food)}
+                    />
+                  ))}
                 </View>
               )
             ) : recent.isLoading ? (
@@ -446,28 +710,35 @@ export default function AddFoodScreen() {
             ) : (
               <RecentFoodsList
                 entries={recent.data ?? []}
-                addingKey={addingKey}
-                loggingBusy={loggingBusy}
                 onAdd={(entry) =>
-                  void logExisting(
-                    {
-                      name: entry.food_name,
-                      brand: entry.brand,
-                      serving_label: entry.serving_label,
-                      calories: entry.calories / Math.max(entry.quantity, 1),
-                      protein_g: entry.protein_g / Math.max(entry.quantity, 1),
-                      carbs_g: entry.carbs_g / Math.max(entry.quantity, 1),
-                      fat_g: entry.fat_g / Math.max(entry.quantity, 1),
-                      image_url: entry.image_url ?? null,
-                    },
-                    entry.id,
-                  )
+                  openFoodConfirm({
+                    name: entry.food_name,
+                    brand: entry.brand,
+                    serving_label: entry.serving_label,
+                    calories: entry.calories / Math.max(entry.quantity, 1),
+                    protein_g: entry.protein_g / Math.max(entry.quantity, 1),
+                    carbs_g: entry.carbs_g / Math.max(entry.quantity, 1),
+                    fat_g: entry.fat_g / Math.max(entry.quantity, 1),
+                    image_url: entry.image_url ?? null,
+                  })
                 }
               />
             )}
           </View>
         )}
       </View>
+
+      <ConfirmSelectionModal
+        item={pending}
+        intent={intent}
+        dateKey={dateKey}
+        mealType={mealType}
+        saving={confirmSaving}
+        onClose={() => setPending(null)}
+        onDate={setDateKey}
+        onMeal={setMealType}
+        onConfirm={confirmPending}
+      />
     </Screen>
   );
 }
@@ -493,7 +764,8 @@ function ModeButton({
     >
       {icon}
       <Text
-        variant="bodyStrong"
+        variant="caption"
+        numberOfLines={1}
         style={{ color: active ? colors.textOnPrimary : colors.textSecondary }}
       >
         {label}
@@ -676,15 +948,40 @@ function NutritionSummary({
         <Flame color={colors.primary} size={28} strokeWidth={2.2} />
       </View>
       <View className="flex-row gap-2">
-        <SummaryMacro label={t('food.add.protein')} value={`${format(protein)} g`} />
-        <SummaryMacro label={t('food.add.carbs')} value={`${format(carbs)} g`} />
-        <SummaryMacro label={t('food.add.fat')} value={`${format(fat)} g`} />
+        <SummaryMacro
+          label={t('food.add.protein')}
+          value={`${format(protein)} g`}
+          color={colors.macroProtein}
+          icon={<Beef color={colors.macroProtein} size={16} />}
+        />
+        <SummaryMacro
+          label={t('food.add.carbs')}
+          value={`${format(carbs)} g`}
+          color={colors.macroCarbs}
+          icon={<Wheat color={colors.macroCarbs} size={16} />}
+        />
+        <SummaryMacro
+          label={t('food.add.fat')}
+          value={`${format(fat)} g`}
+          color={colors.macroFat}
+          icon={<Droplets color={colors.macroFat} size={16} />}
+        />
       </View>
     </View>
   );
 }
 
-function SummaryMacro({ label, value }: { label: string; value: string }) {
+function SummaryMacro({
+  label,
+  value,
+  color,
+  icon,
+}: {
+  label: string;
+  value: string;
+  color: string;
+  icon: ReactNode;
+}) {
   const colors = useThemeColors();
   return (
     <View
@@ -694,8 +991,10 @@ function SummaryMacro({ label, value }: { label: string; value: string }) {
       ]}
     >
       <View className="flex-row items-center gap-1.5">
-        <View style={[styles.summaryDot, { backgroundColor: colors.primary }]} />
-        <Text variant="caption" tone="secondary">
+        <View style={[styles.summaryIcon, { backgroundColor: withAlpha(color, 0.14) }]}>
+          {icon}
+        </View>
+        <Text variant="caption" tone="secondary" numberOfLines={1}>
           {label}
         </Text>
       </View>
@@ -722,13 +1021,9 @@ type RecentEntry = {
 function RecentFoodsList({
   entries,
   onAdd,
-  addingKey,
-  loggingBusy,
 }: {
   entries: RecentEntry[];
   onAdd: (entry: RecentEntry) => void;
-  addingKey: string | null;
-  loggingBusy: boolean;
 }) {
   const { t } = useTranslation();
   const colors = useThemeColors();
@@ -764,13 +1059,12 @@ function RecentFoodsList({
             name={entry.food_name}
             brand={entry.brand}
             imageUrl={entry.image_url}
-            detail={formatFoodNutritionDetail({ unavailableLabel: t('food.add.nutritionUnavailable'),
+            detail={formatFoodNutritionDetail({
+              unavailableLabel: t('food.add.nutritionUnavailable'),
               calories: entry.calories,
               servingLabel: entry.serving_label,
             })}
             showDivider={index < entries.length - 1}
-            disabled={loggingBusy && addingKey !== entry.id}
-            loading={addingKey === entry.id}
             onPress={() => onAdd(entry)}
           />
         ))}
@@ -796,9 +1090,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: 6,
     borderRadius: radii.pill,
-    paddingHorizontal: 12,
+    paddingHorizontal: 8,
   },
   errorBanner: { borderRadius: radii.md, paddingHorizontal: 14, paddingVertical: 12 },
   unitSwitch: { minHeight: 48, flexDirection: 'row', gap: 4, borderRadius: radii.pill, padding: 4 },
@@ -873,10 +1167,14 @@ const styles = StyleSheet.create({
   summaryCalories: { fontSize: 32, lineHeight: 38, fontWeight: '700' },
   summaryCaloriesUnit: { paddingBottom: 5 },
   summaryMacro: { flex: 1, gap: 4, borderWidth: 0, borderRadius: radii.md, padding: 10 },
-  summaryDot: { width: 7, height: 7, borderRadius: radii.sm },
-  recentSection: {
-    gap: spacing[1],
+  summaryIcon: {
+    width: 24,
+    height: 24,
+    borderRadius: radii.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+  recentSection: { gap: spacing[1] },
   recentHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -890,10 +1188,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing[5],
     paddingVertical: spacing[8],
   },
-  foodListEmptyCopy: {
-    textAlign: 'center',
-    maxWidth: 260,
-  },
+  foodListEmptyCopy: { textAlign: 'center', maxWidth: 260 },
   emptyIcon: {
     width: 40,
     height: 40,

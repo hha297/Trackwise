@@ -10,7 +10,7 @@ import { FoodLogEntryCard } from '@/features/diary/components/food-log-entry-car
 import { MEAL_IMAGES } from '@/features/diary/meal-assets';
 import { useUpdateFoodEntryAmount } from '@/features/food/hooks';
 import type { FoodEntry, MealType } from '@/features/food/types';
-import { iconSizes, radii } from '@/theme';
+import { iconSizes, radii, spacing } from '@/theme';
 import { useThemeColors } from '@/theme/theme-provider';
 
 type MealSectionProps = {
@@ -21,7 +21,13 @@ type MealSectionProps = {
   onDelete: (id: string) => void;
 };
 
-export function MealSection({ meal, dateKey, entries, onAdd, onDelete }: MealSectionProps) {
+export function MealSection({
+  meal,
+  dateKey,
+  entries,
+  onAdd,
+  onDelete,
+}: MealSectionProps) {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const updateAmount = useUpdateFoodEntryAmount();
@@ -29,6 +35,7 @@ export function MealSection({ meal, dateKey, entries, onAdd, onDelete }: MealSec
   const [editing, setEditing] = useState<FoodEntry | null>(null);
   const mealCalories = Math.round(entries.reduce((sum, entry) => sum + entry.calories, 0));
   const mealImage = MEAL_IMAGES[meal];
+  const hasContent = entries.length > 0;
 
   return (
     <Card className="gap-3">
@@ -74,7 +81,7 @@ export function MealSection({ meal, dateKey, entries, onAdd, onDelete }: MealSec
       </View>
 
       {open ? (
-        entries.length === 0 ? (
+        !hasContent ? (
           <View
             className="items-start gap-2 px-3 py-3"
             style={{ backgroundColor: colors.surfaceMuted, borderRadius: radii.md }}
@@ -89,14 +96,16 @@ export function MealSection({ meal, dateKey, entries, onAdd, onDelete }: MealSec
             </Pressable>
           </View>
         ) : (
-          entries.map((entry) => (
-            <FoodLogEntryCard
-              key={entry.id}
-              entry={entry}
-              mealImage={mealImage}
-              onEdit={() => setEditing(entry)}
-            />
-          ))
+          <View style={{ gap: spacing[3] }}>
+            {entries.map((entry) => (
+              <FoodLogEntryCard
+                key={entry.id}
+                entry={entry}
+                mealImage={mealImage}
+                onEdit={() => setEditing(entry)}
+              />
+            ))}
+          </View>
         )
       ) : null}
 

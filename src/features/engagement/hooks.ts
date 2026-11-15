@@ -2,12 +2,17 @@ import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { useAuth } from '@/features/auth/auth-provider';
-import { weekDateKeys } from '@/features/diary/aggregations';
-import { useFoodEntriesInRange, useWorkoutsInRange } from '@/features/diary/hooks';
+import { useWorkoutsInRange } from '@/features/diary/hooks';
 import { useHydrationInRange } from '@/features/hydration/hooks';
 import { usePlansInRange } from '@/features/planner/hooks';
 import { toDiaryDateKey } from '@/utils/date';
 
+import {
+  buildCategoryFlagsByDay,
+  buildConsistencySnapshot,
+  type ConsistencySnapshot,
+  type CategoryDayFlags,
+} from './activity-days';
 import { fetchFoodLoggedDayKeys } from './api';
 import { shiftDiaryDateKey, streakHistoryRange } from './dates';
 import {
@@ -17,12 +22,18 @@ import {
   type LoggingStreakResult,
   type WorkoutStreakResult,
 } from './streaks';
-import { buildWeeklySummary, type WeeklySummary } from './weekly-summary';
 
 export type EngagementStreaks = {
   nutrition: LoggingStreakResult;
   hydration: LoggingStreakResult;
   workout: WorkoutStreakResult;
+  /** Shared Consistency preview + detail snapshot (union overall + categories). */
+  consistency: ConsistencySnapshot;
+  nutritionKeys: string[];
+  hydrationKeys: string[];
+  workoutCompletedKeys: string[];
+  flagsByDay: Map<string, CategoryDayFlags>;
+  range: { startKey: string; endKey: string };
 };
 
 export function useEngagementStreaks(todayKey: string = toDiaryDateKey()) {
@@ -46,8 +57,9 @@ export function useEngagementStreaks(todayKey: string = toDiaryDateKey()) {
   const data = useMemo((): EngagementStreaks | undefined => {
     if (!foodDays.data || !hydration.data || !workouts.data || !plans.data) return undefined;
 
-    const nutrition = computeLoggingStreak(foodDays.data, todayKey);
+    const nutritionKeys = [...foodDays.data];
     const hydrationKeys = hydration.data.entries.map((entry) => entry.loggedOn);
+    const nutrition = computeLoggingStreak(nutritionKeys, todayKey);
     const hydrationStreak = computeLoggingStreak(hydrationKeys, todayKey);
 
     const completedKeys = workouts.data
@@ -64,9 +76,35 @@ export function useEngagementStreaks(todayKey: string = toDiaryDateKey()) {
       restOrRecoveryDayKeys: restKeys,
     });
     const workout = computeWorkoutStreak(kinds, todayKey);
+    const flagsByDay = buildCategoryFlagsByDay({
+      nutritionKeys,
+      hydrationKeys,
+      workoutCompletedKeys: completedKeys,
+    });
+    const consistency = buildConsistencySnapshot({
+      todayKey,
+      nutritionKeys,
+      hydrationKeys,
+      workoutCompletedKeys: completedKeys,
+      workoutCompletedCurrent: workout.currentCompletedDays,
+      workoutLongestCompleted: workout.longestCompletedDays,
+      workoutAlive: workout.alive,
+      nutrition,
+      hydration: hydrationStreak,
+    });
 
-    return { nutrition, hydration: hydrationStreak, workout };
-  }, [foodDays.data, hydration.data, workouts.data, plans.data, todayKey, range.startKey, range.endKey]);
+    return {
+      nutrition,
+      hydration: hydrationStreak,
+      workout,
+      consistency,
+      nutritionKeys,
+      hydrationKeys,
+      workoutCompletedKeys: completedKeys,
+      flagsByDay,
+      range,
+    };
+  }, [foodDays.data, hydration.data, workouts.data, plans.data, todayKey, range]);
 
   const isLoading =
     foodDays.isLoading || hydration.isLoading || workouts.isLoading || plans.isLoading;
@@ -83,54 +121,4 @@ export function useEngagementStreaks(todayKey: string = toDiaryDateKey()) {
   };
 
   return { data, isLoading, isError, error, refetch };
-}
-
-export function useWeeklyEngagementSummary(anchorKey: string) {
-  const week = useMemo(() => weekDateKeys(anchorKey), [anchorKey]);
-  const startKey = week[0]!;
-  const endKey = week[week.length - 1]!;
-  const paddedStart = shiftDiaryDateKey(startKey, -1);
-  const paddedEnd = shiftDiaryDateKey(endKey, 1);
-
-  const food = useFoodEntriesInRange(startKey, endKey);
-  const hydration = useHydrationInRange(startKey, endKey);
-  const workouts = useWorkoutsInRange(paddedStart, paddedEnd);
-
-  const data = useMemo((): WeeklySummary | undefined => {
-    if (!food.data || !hydration.data || !workouts.data) return undefined;
-
-    const completedInWeek = workouts.data.filter((row) => {
-      if ((row.status ?? 'completed') !== 'completed') return false;
-      const key = toDiaryDateKey(new Date(row.started_at));
-      return key >= startKey && key <= endKey;
-    });
-
-    const amountByDay = new Map<string, number>();
-    for (const entry of hydration.data.entries) {
-      amountByDay.set(entry.loggedOn, (amountByDay.get(entry.loggedOn) ?? 0) + entry.amountMl);
-    }
-
-    return buildWeeklySummary({
-      anchorKey,
-      foodLoggedDayKeys: food.data.map((entry) => entry.logged_on),
-      hydrationLoggedDayKeys: hydration.data.entries.map((entry) => entry.loggedOn),
-      workoutCompletedDayKeys: completedInWeek.map((row) =>
-        toDiaryDateKey(new Date(row.started_at)),
-      ),
-      completedWorkoutSessions: completedInWeek.length,
-      foodEntriesInWeek: food.data,
-      hydrationAmountByDay: amountByDay,
-      hydrationTargetMl: hydration.data.targetMl,
-    });
-  }, [food.data, hydration.data, workouts.data, anchorKey, startKey, endKey]);
-
-  const isLoading = food.isLoading || hydration.isLoading || workouts.isLoading;
-  const isError = food.isError || hydration.isError || workouts.isError;
-  const error = food.error ?? hydration.error ?? workouts.error;
-
-  const refetch = async () => {
-    await Promise.all([food.refetch(), hydration.refetch(), workouts.refetch()]);
-  };
-
-  return { data, isLoading, isError, error, refetch, weekStartKey: startKey, weekEndKey: endKey };
 }

@@ -198,16 +198,19 @@ export function buildProgressOverview(input: {
 function formatBucketLabel(
   key: string,
   mode: TrendBucketMode,
-  locale: string,
+  period: ProgressPeriod,
   shortDayFmt: Intl.DateTimeFormat,
   shortDateFmt: Intl.DateTimeFormat,
   compactDateFmt: Intl.DateTimeFormat,
 ): string {
   const date = new Date(`${key}T12:00:00`);
   if (mode === 'daily') {
-    return shortDayFmt.format(date).replace(/\.$/, '');
+    // 7-day: weekday. Longer ranges: day-of-month only (fits dense habit-strip ticks).
+    if (period === 7) {
+      return shortDayFmt.format(date).replace(/\.$/, '');
+    }
+    return String(date.getDate());
   }
-  // Biweekly charts are still tight — prefer numeric month/day ("10/6").
   if (mode === 'biweekly') {
     return compactDateFmt.format(date);
   }
@@ -260,7 +263,7 @@ export function buildNutritionTrends(input: {
     const label = formatBucketLabel(
       bucket.key,
       mode,
-      input.locale,
+      input.period,
       shortDayFmt,
       shortDateFmt,
       compactDateFmt,
@@ -326,7 +329,7 @@ export function buildWorkoutTrends(input: {
       label: formatBucketLabel(
         bucket.key,
         mode,
-        input.locale,
+        input.period,
         shortDayFmt,
         shortDateFmt,
         compactDateFmt,

@@ -126,26 +126,36 @@ describe('buildProgressOverview', () => {
   });
 });
 
-describe('90-day chart bucketing', () => {
-  it('uses biweekly buckets so charts stay readable', () => {
-    const range = progressRange(90, '2026-11-02');
-    const buckets = trendSourceBuckets(90, range.dayKeys);
-    // ~13 ISO weeks → ~7 biweekly groups (not one bar per week).
-    expect(buckets.length).toBeGreaterThanOrEqual(6);
-    expect(buckets.length).toBeLessThanOrEqual(8);
+describe('progressRange periods', () => {
+  it('builds inclusive 7 / 30 / 90 day windows ending today', () => {
+    expect(progressRange(7, '2026-11-14').dayKeys).toHaveLength(7);
+    expect(progressRange(7, '2026-11-14').startKey).toBe('2026-11-08');
+    expect(progressRange(30, '2026-11-14').dayKeys).toHaveLength(30);
+    expect(progressRange(90, '2026-11-14').dayKeys).toHaveLength(90);
+  });
+});
+
+describe('chart bucketing', () => {
+  it('uses one daily column for 7 / 30 / 90 (habit-calendar density)', () => {
+    const d7 = progressRange(7, '2026-11-14');
+    const d30 = progressRange(30, '2026-11-14');
+    const d90 = progressRange(90, '2026-11-14');
+    expect(trendSourceBuckets(7, d7.dayKeys)).toHaveLength(7);
+    expect(trendSourceBuckets(30, d30.dayKeys)).toHaveLength(30);
+    expect(trendSourceBuckets(90, d90.dayKeys)).toHaveLength(90);
 
     const series = buildNutritionTrends({
       period: 90,
-      dayKeys: range.dayKeys,
-      todayKey: range.todayKey,
+      dayKeys: d90.dayKeys,
+      todayKey: d90.todayKey,
       entries: [
         food({ logged_on: '2026-10-01', calories: 2000 }),
         food({ logged_on: '2026-10-15', calories: 1900 }),
       ],
       locale: 'en-US',
     });
-    expect(series.mode).toBe('biweekly');
-    expect(series.buckets.length).toBe(buckets.length);
+    expect(series.mode).toBe('daily');
+    expect(series.buckets).toHaveLength(90);
   });
 });
 

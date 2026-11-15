@@ -3,8 +3,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   fetchOpenFoodFactsByBarcode,
   FoodLookupError,
+  isOpenFoodFactsSearchId,
   isSupportedProductBarcode,
   normalizeOpenFoodFactsProduct,
+  openFoodFactsSearchId,
+  searchOpenFoodFactsProducts,
 } from './open-food-facts';
 
 afterEach(() => vi.unstubAllGlobals());
@@ -98,5 +101,54 @@ describe('fetchOpenFoodFactsByBarcode', () => {
     await expect(fetchOpenFoodFactsByBarcode('123', { timeoutMs: 1 })).rejects.toMatchObject<
       Partial<FoodLookupError>
     >({ kind: 'timeout' });
+  });
+});
+
+describe('searchOpenFoodFactsProducts', () => {
+  it('returns normalized named products and skips blank names', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            products: [
+              {
+                product_name: 'Apple',
+                brands: 'Fresh',
+                code: '123',
+                nutriments: {
+                  'energy-kcal_100g': 52,
+                  proteins_100g: 0.3,
+                  carbohydrates_100g: 14,
+                  fat_100g: 0.2,
+                },
+              },
+              { code: '999', nutriments: { 'energy-kcal_100g': 10 } },
+            ],
+          }),
+          { status: 200 },
+        ),
+      ),
+    );
+
+    await expect(searchOpenFoodFactsProducts('apple')).resolves.toEqual([
+      expect.objectContaining({ name: 'Apple', barcode: '123', calories: 52 }),
+    ]);
+  });
+
+  it('returns an empty list for short terms without calling the network', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+    await expect(searchOpenFoodFactsProducts('a')).resolves.toEqual([]);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('openFoodFactsSearchId', () => {
+  it('marks external search ids', () => {
+    const id = openFoodFactsSearchId({ barcode: '00123', name: 'Apple' });
+    expect(id).toBe('off:00123');
+    expect(isOpenFoodFactsSearchId(id)).toBe(true);
+    expect(isOpenFoodFactsSearchId('uuid-like')).toBe(false);
   });
 });

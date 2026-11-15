@@ -5,14 +5,16 @@ import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui/text';
 import { ErrorState, LoadingState } from '@/components/ui/states';
 import { useFoodEntriesInRange, useWorkoutsInRange } from '@/features/diary/hooks';
+import { ConsistencySection } from '@/features/engagement/consistency-section';
 import { useActiveGoal, useProfile } from '@/features/goals/hooks';
+import { useHydrationInRange } from '@/features/hydration/hooks';
 import { useBodyMeasurements } from '@/features/measurements/hooks';
+import { buildActivityHistoryDays } from '@/features/progress/activity-history';
 import {
   buildNutritionTrends,
   buildProgressOverview,
   buildWorkoutTrends,
 } from '@/features/progress/aggregations';
-import { WeeklySummaryCard } from '@/features/engagement/weekly-summary-card';
 import { BodyProgressSection } from '@/features/progress/components/body-progress-section';
 import { NutritionTrendsSection } from '@/features/progress/components/nutrition-trends-section';
 import { OverviewSection } from '@/features/progress/components/overview-section';
@@ -24,6 +26,10 @@ import { useAppLanguage } from '@/i18n';
 import { layout, spacing } from '@/theme';
 import { toDiaryDateKey } from '@/utils/date';
 
+/**
+ * Progress hierarchy:
+ * Overview → Consistency (incl. collapsible category activity) → Nutrition → Workout → Body.
+ */
 export function ProgressDashboard() {
   const { t } = useTranslation();
   const locale = useAppLanguage();
@@ -35,10 +41,10 @@ export function ProgressDashboard() {
   const profile = useProfile();
   const foodQuery = useFoodEntriesInRange(range.startKey, range.endKey);
   const workoutQuery = useWorkoutsInRange(range.startKey, range.endKey);
+  const hydrationQuery = useHydrationInRange(range.startKey, range.endKey);
   const measurementsQuery = useBodyMeasurements();
 
   const loading = foodQuery.isLoading || workoutQuery.isLoading || goal.isLoading;
-  // Body section can degrade independently; don't block the whole Progress tab.
   const error = foodQuery.error ?? workoutQuery.error ?? goal.error;
 
   const overview = useMemo(
@@ -85,6 +91,18 @@ export function ProgressDashboard() {
     [period, range.dayKeys, range.todayKey, workoutQuery.data, locale],
   );
 
+  const activityDays = useMemo(
+    () =>
+      buildActivityHistoryDays({
+        startKey: range.startKey,
+        endKey: range.endKey,
+        foodEntries: foodQuery.data ?? [],
+        hydrationEntries: hydrationQuery.data?.entries ?? [],
+        workouts: workoutQuery.data ?? [],
+      }),
+    [range.startKey, range.endKey, foodQuery.data, hydrationQuery.data, workoutQuery.data],
+  );
+
   const periodLabels = {
     7: t('progress.period.d7'),
     30: t('progress.period.d30'),
@@ -100,7 +118,12 @@ export function ProgressDashboard() {
         </Text>
       </View>
 
-      <PeriodControl value={period} labels={periodLabels} onChange={setPeriod} />
+      <View style={styles.periodBlock}>
+        <PeriodControl value={period} labels={periodLabels} onChange={setPeriod} />
+        <Text variant="caption" tone="muted">
+          {t('progress.period.appliesTo')}
+        </Text>
+      </View>
 
       {loading ? <LoadingState /> : null}
 
@@ -111,6 +134,7 @@ export function ProgressDashboard() {
           onRetry={() => {
             void foodQuery.refetch();
             void workoutQuery.refetch();
+            void hydrationQuery.refetch();
             void measurementsQuery.refetch();
             void goal.refetch();
           }}
@@ -119,8 +143,14 @@ export function ProgressDashboard() {
 
       {!loading && !error ? (
         <View style={styles.sections}>
-          <WeeklySummaryCard todayKey={todayKey} />
-          <OverviewSection overview={overview} goal={goal.data} />
+          <OverviewSection overview={overview} goal={goal.data} period={period} />
+          <ConsistencySection
+            todayKey={todayKey}
+            period={period}
+            startKey={range.startKey}
+            endKey={range.endKey}
+            activityDays={activityDays}
+          />
           <NutritionTrendsSection
             series={nutrition}
             avgCalories={overview.avgCalories}
@@ -150,6 +180,9 @@ const styles = StyleSheet.create({
   header: {
     gap: spacing[1],
     paddingBottom: spacing[1],
+  },
+  periodBlock: {
+    gap: spacing[2],
   },
   sections: {
     gap: layout.sectionGap + spacing[1],

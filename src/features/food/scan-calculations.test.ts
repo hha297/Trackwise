@@ -19,6 +19,7 @@ describe('scaleNutritionForAmount', () => {
       sugarsG: null,
       saturatedFatG: null,
       sodiumMg: null,
+      saltG: null,
     });
   });
 
@@ -39,6 +40,7 @@ describe('scaleNutritionForAmount', () => {
       sugarsG: null,
       saturatedFatG: null,
       sodiumMg: null,
+      saltG: null,
     });
   });
 
@@ -57,6 +59,7 @@ describe('scaleNutritionForAmount', () => {
       sugarsG: null,
       saturatedFatG: null,
       sodiumMg: null,
+      saltG: null,
     });
   });
 
@@ -89,6 +92,7 @@ describe('rescaleLoggedNutrition', () => {
       sugarsG: null,
       saturatedFatG: null,
       sodiumMg: null,
+      saltG: null,
     });
   });
 });

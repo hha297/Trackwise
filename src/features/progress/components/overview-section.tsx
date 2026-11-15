@@ -7,11 +7,13 @@ import { Text } from '@/components/ui/text';
 import type { ProgressOverview } from '@/features/progress/aggregations';
 import { MetricTile, MetricTileRow } from '@/features/progress/components/metric-tile';
 import type { Goal } from '@/features/goals/types';
+import type { ProgressPeriod } from '@/features/progress/types';
 import { spacing } from '@/theme';
 
 type OverviewSectionProps = {
   overview: ProgressOverview;
   goal: Goal | null | undefined;
+  period: ProgressPeriod;
 };
 
 function formatSigned(value: number, digits = 1): string {
@@ -21,7 +23,10 @@ function formatSigned(value: number, digits = 1): string {
   return abs;
 }
 
-export function OverviewSection({ overview, goal }: OverviewSectionProps) {
+/**
+ * Compact period snapshot — avoids duplicating Nutrition / Workout / Body detail tiles.
+ */
+export function OverviewSection({ overview, goal, period }: OverviewSectionProps) {
   const { t } = useTranslation();
   const hasAny =
     overview.daysWithFood > 0 ||
@@ -41,14 +46,15 @@ export function OverviewSection({ overview, goal }: OverviewSectionProps) {
     overview.avgCalories != null && goal?.daily_calorie_target != null
       ? t('progress.overview.vsGoal', { goal: Math.round(goal.daily_calorie_target) })
       : null;
-  const proteinHint =
-    overview.avgProtein != null && goal?.protein_g != null
-      ? t('progress.overview.vsGoalG', { goal: Math.round(goal.protein_g) })
-      : null;
 
   return (
     <Card style={styles.card}>
-      <Text variant="headingSmall">{t('progress.overview.title')}</Text>
+      <View style={{ gap: 2 }}>
+        <Text variant="headingSmall">{t('progress.overview.title')}</Text>
+        <Text variant="caption" tone="muted">
+          {t('progress.overview.periodHint', { count: period })}
+        </Text>
+      </View>
 
       <View style={styles.grid}>
         <MetricTileRow>
@@ -58,21 +64,9 @@ export function OverviewSection({ overview, goal }: OverviewSectionProps) {
             hint={calorieHint}
           />
           <MetricTile
-            label={t('progress.overview.avgProtein')}
-            value={overview.avgProtein != null ? `${overview.avgProtein} g` : '—'}
-            hint={proteinHint}
-          />
-        </MetricTileRow>
-        <MetricTileRow>
-          <MetricTile
             label={t('progress.overview.sessions')}
             value={String(overview.workoutSessions)}
             hint={t('progress.overview.workoutDays', { count: overview.workoutDays })}
-          />
-          <MetricTile
-            label={t('progress.overview.estBurn')}
-            value={overview.estWorkoutKcal != null ? `${overview.estWorkoutKcal}` : '—'}
-            hint={t('progress.estimatesNote')}
           />
         </MetricTileRow>
         <MetricTileRow>
@@ -88,37 +82,23 @@ export function OverviewSection({ overview, goal }: OverviewSectionProps) {
             }
           />
           <MetricTile
-            label={t('progress.overview.bodyFatChange')}
+            label={t('progress.overview.adherenceShort')}
             value={
-              overview.bodyFatChangePct != null
-                ? `${formatSigned(overview.bodyFatChangePct)} pp`
-                : '—'
+              overview.goalAdherencePct != null ? `${overview.goalAdherencePct}%` : '—'
             }
             hint={
-              overview.bodyFatChangePct == null ? t('progress.overview.needTwoPoints') : null
+              overview.goalAdherencePct != null
+                ? t('progress.overview.adherenceHint', {
+                    onTarget: overview.daysOnTarget,
+                    days: overview.completedFoodDays,
+                  })
+                : goal?.daily_calorie_target != null
+                  ? t('progress.overview.adherenceUnavailable')
+                  : null
             }
           />
         </MetricTileRow>
       </View>
-
-      {overview.goalAdherencePct != null ? (
-        <View style={styles.adherence}>
-          <Text variant="label" tone="secondary">
-            {t('progress.overview.adherence')}
-          </Text>
-          <Text variant="headingLarge">{overview.goalAdherencePct}%</Text>
-          <Text variant="caption" tone="muted">
-            {t('progress.overview.adherenceHint', {
-              onTarget: overview.daysOnTarget,
-              days: overview.completedFoodDays,
-            })}
-          </Text>
-        </View>
-      ) : goal?.daily_calorie_target != null ? (
-        <Text variant="caption" tone="muted">
-          {t('progress.overview.adherenceUnavailable')}
-        </Text>
-      ) : null}
     </Card>
   );
 }
@@ -129,9 +109,5 @@ const styles = StyleSheet.create({
   },
   grid: {
     gap: spacing[2],
-  },
-  adherence: {
-    gap: spacing[1],
-    paddingTop: spacing[1],
   },
 });

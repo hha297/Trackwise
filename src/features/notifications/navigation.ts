@@ -19,7 +19,7 @@ export function navigateForReminder(link: ReminderDeepLink): void {
     if (link.kind === 'meal') {
       router.push({
         pathname: '/food/add',
-        params: { meal: mealParam(link.meal) },
+        params: { intent: 'log', meal: mealParam(link.meal) },
       });
     }
   } catch {
