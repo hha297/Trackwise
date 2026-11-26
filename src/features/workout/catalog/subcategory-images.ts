@@ -11,7 +11,7 @@ export const LOCAL_SUBCATEGORY_IMAGES: Record<string, ImageSourcePropType> = {
   "bodyweight/full-body": require('../../../../assets/images/workout/exercises/bodyweight/full-body/bear-crawl.webp'),
   "bodyweight/hamstrings-glutes": require('../../../../assets/images/workout/exercises/bodyweight/hamstrings-glutes/frog-pump.jpg'),
   "bodyweight/quadriceps": require('../../../../assets/images/workout/exercises/bodyweight/quadriceps/bulgarian-split-squat.jpg'),
-  "bodyweight/shoulders": require('../../../../assets/images/workout/exercises/bodyweight/shoulders/pike-push-up.jpg'),
+  "bodyweight/shoulders": require('../../../../assets/images/workout/exercises/bodyweight/shoulders/handstand-hold.jpg'),
   "cardio/cardio-machines": require('../../../../assets/images/workout/exercises/cardio/cardio-machines/arc-trainer.jpg'),
   "cardio/cycling": require('../../../../assets/images/workout/exercises/cardio/cycling/assault-bike.webp'),
   "cardio/hiit": require('../../../../assets/images/workout/exercises/cardio/hiit/battle-ropes.webp'),

@@ -8,10 +8,10 @@ import type { WorkoutTemplate } from '@/features/workout/types';
  */
 const TEMPLATE_COVERS: Record<string, ImageSourcePropType> = {
   'full-body': require('../../../assets/images/workout/exercises/strength/templates/full-body.webp'),
-  'upper-body': require('../../../assets/images/workout/exercises/strength/templates/upper-body.avif'),
+  'upper-body': require('../../../assets/images/workout/exercises/strength/templates/upper-body.jpg'),
   'lower-body': require('../../../assets/images/workout/exercises/strength/templates/lower-body.jpg'),
   'push-day': require('../../../assets/images/workout/exercises/strength/templates/push-day.jpg'),
-  'pull-day': require('../../../assets/images/workout/exercises/strength/templates/pull-day.avif'),
+  'pull-day': require('../../../assets/images/workout/exercises/strength/templates/pull-day.jpg'),
   'leg-day': require('../../../assets/images/workout/exercises/strength/templates/leg-day.webp'),
   'beginner-strength': require('../../../assets/images/workout/exercises/strength/templates/beginner-strength.jpg'),
   hiit: require('../../../assets/images/workout/exercises/cardio/templates/hiit.webp'),
@@ -31,12 +31,12 @@ const TEMPLATE_COVERS: Record<string, ImageSourcePropType> = {
   'calisthenics-starter': require('../../../assets/images/workout/exercises/bodyweight/calisthenics/pull-up.jpg'),
   'core-crusher': require('../../../assets/images/workout/exercises/bodyweight/core/hanging-leg-raise.jpg'),
   'mobility-flow': require('../../../assets/images/workout/exercises/flexibility/mobility/world-greatest-stretch.webp'),
-  'yoga-essentials': require('../../../assets/images/workout/exercises/flexibility/yoga/downward-facing-dog.avif'),
+  'yoga-essentials': require('../../../assets/images/workout/exercises/flexibility/yoga/downward-facing-dog.jpg'),
   'desk-reset': require('../../../assets/images/workout/exercises/flexibility/stretching/neck-side-stretch.webp'),
 
   // Quality-refresh additions — stills not used as muscle/subcategory hub tiles
   'push-hypertrophy': require('../../../assets/images/workout/exercises/strength/chest/dumbbell-bench-press.jpg'),
-  'pull-hypertrophy': require('../../../assets/images/workout/exercises/strength/back/seated-cable-row.avif'),
+  'pull-hypertrophy': require('../../../assets/images/workout/exercises/strength/back/seated-cable-row.jpg'),
   'posterior-chain': require('../../../assets/images/workout/exercises/strength/back/conventional-deadlift.jpg'),
   'quads-builder': require('../../../assets/images/workout/exercises/strength/glutes/bulgarian-split-squat.jpg'),
   'home-dumbbell': require('../../../assets/images/workout/exercises/strength/shoulders/seated-dumbbell-shoulder-press.jpg'),

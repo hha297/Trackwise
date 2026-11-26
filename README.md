@@ -58,7 +58,7 @@ Trackwise is a **mobile-first** nutrition and fitness app. Log meals, scan barco
 |     ![](https://img.shields.io/badge/-Goals-13873c?style=flat-square)                       | **Goals**         | Guided setup: lose / maintain / gain. Editable daily calorie and macro targets.                                                                 |
 |     ![](https://img.shields.io/badge/-Progress-635BFF?style=flat-square)                    | **Progress**      | 7 / 30 / 90-day trends for nutrition, training, and body measurements (BMI / composition when inputs allow — marked as estimates).             |
 |     ![](https://img.shields.io/badge/-Account-5e6a72?style=flat-square)                     | **Account**       | Profile, units, appearance, language. JSON export / import. Delete data or full account via secure Edge Function.                               |
-|     ![](https://img.shields.io/badge/-Widgets-00D95F?style=flat-square&labelColor=202020)   | **Home widgets**  | Trackwise Daily (calories + carbs/protein/fat/water cards) and Trackwise Workout. Android home screen now; iOS later. Not Expo Go.              |
+|     ![](https://img.shields.io/badge/-Widgets-00D95F?style=flat-square&labelColor=202020)   | **Home widgets**  | Trackwise Daily (calorie ring + carbs/protein/fat/water) and Trackwise Workout. Android home screen now; iOS later. Not Expo Go.              |
 
 ### Account & access
 

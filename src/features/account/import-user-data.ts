@@ -614,6 +614,49 @@ export async function importUserData(
     bump('exercise_favorites', 'skipped', counters.skipped);
   }
 
+  // --- daily nutrition overrides (same-day calorie adjustments; not goals) ---
+  {
+    const rows = (data.daily_nutrition_overrides ?? [])
+      .map(asRecord)
+      .filter((r): r is Record<string, unknown> => Boolean(r))
+      .map((row) => {
+        const next = stripOwnership(row, userId);
+        return {
+          user_id: userId,
+          override_date: next.override_date,
+          calories: next.calories,
+          created_at: next.created_at,
+          updated_at: next.updated_at,
+        };
+      })
+      .filter(
+        (row) =>
+          typeof row.override_date === 'string' &&
+          typeof row.calories === 'number' &&
+          Number.isInteger(row.calories),
+      );
+    const counters = { inserted: 0, skipped: 0 };
+    const client = getSupabase();
+    if (client && rows.length > 0) {
+      for (const row of rows) {
+        const { error } = await client.from('daily_nutrition_overrides').upsert(row, {
+          onConflict: 'user_id,override_date',
+        });
+        if (error) {
+          const msg = error.message?.toLowerCase() ?? '';
+          if (mode === 'merge' && (msg.includes('duplicate') || error.code === '23505')) {
+            counters.skipped += 1;
+            continue;
+          }
+          throw error;
+        }
+        counters.inserted += 1;
+      }
+    }
+    bump('daily_nutrition_overrides', 'inserted', counters.inserted);
+    bump('daily_nutrition_overrides', 'skipped', counters.skipped);
+  }
+
   // --- onboarding progress ---
   if (data.onboarding_progress) {
     const row = stripOwnership(data.onboarding_progress, userId);
