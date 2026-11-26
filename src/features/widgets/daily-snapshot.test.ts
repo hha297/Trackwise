@@ -51,12 +51,17 @@ describe('buildDailyWidgetSnapshot', () => {
       burnedCalories: 200,
     });
     expect(snap.caloriesValue).toBe('500');
+    expect(snap.caloriesRatio.replace(/,/g, '')).toBe('500 / 2000 kcal');
+    expect(snap.caloriesPercent).toBe('25%');
     expect(snap.remainingValue.replace(/,/g, '')).toBe('1700');
+    expect(snap.caloriesRemainingLine.toLowerCase()).toContain('left');
+    expect(snap.remainingLabel.toLowerCase()).not.toContain('-');
     expect(snap.caloriesProgress).toBe(0.25);
+    expect(snap.openUrl).toBe('trackwise:///');
     expect(snap.proteinDetail).toContain('g');
-    expect(snap.proteinRatio).toMatch(/20\/\d+ g/);
+    expect(snap.proteinRatio).toMatch(/20 \/ \d+ g/);
     expect(snap.proteinRemainingLine.toLowerCase()).toContain('remaining');
-    expect(snap.carbsRatio).toMatch(/60\/\d+ g/);
+    expect(snap.carbsRatio).toMatch(/60 \/ \d+ g/);
     expect(snap.waterRemainingLine.toLowerCase()).toMatch(/ml (remaining|over)/);
   });
 
@@ -83,7 +88,100 @@ describe('buildDailyWidgetSnapshot', () => {
       foodEntries: [],
     });
     expect(snap.remainingValue).toBe('—');
+    expect(snap.caloriesRatio).toBe('0');
+    expect(snap.caloriesProgress).toBe(0);
+    expect(snap.caloriesRemainingLine).toBe('');
     expect(snap.hint.length).toBeGreaterThan(0);
+  });
+
+  it('treats a zero calorie target as missing instead of dividing by zero', () => {
+    const snap = buildDailyWidgetSnapshot({
+      signedIn: true,
+      todayKey: '2026-11-15',
+      locale: 'en',
+      goal: { daily_calorie_target: 0 } as never,
+      foodEntries: [
+        {
+          id: '1',
+          logged_on: '2026-11-15',
+          meal_type: 'lunch',
+          quantity: 1,
+          food_name: 'Rice',
+          calories: 400,
+          protein_g: 8,
+          carbs_g: 80,
+          fat_g: 2,
+        } as never,
+      ],
+    });
+    expect(snap.caloriesValue).toBe('400');
+    expect(snap.caloriesProgress).toBe(0);
+    expect(snap.remainingValue).toBe('—');
+    expect(snap.hint.length).toBeGreaterThan(0);
+  });
+
+  it('keeps overflow numbers and caps the calorie ring at 100%', () => {
+    const snap = buildDailyWidgetSnapshot({
+      signedIn: true,
+      todayKey: '2026-11-15',
+      locale: 'en',
+      goal: { daily_calorie_target: 2000 } as never,
+      foodEntries: [
+        {
+          id: '1',
+          logged_on: '2026-11-15',
+          meal_type: 'dinner',
+          quantity: 1,
+          food_name: 'Feast',
+          calories: 2600,
+          protein_g: 90,
+          carbs_g: 220,
+          fat_g: 80,
+        } as never,
+      ],
+    });
+    expect(snap.caloriesValue).toBe('2,600');
+    expect(snap.caloriesRatio.replace(/,/g, '')).toBe('2600 / 2000 kcal');
+    expect(snap.caloriesProgress).toBe(1);
+    expect(snap.caloriesPercent).toBe('100%');
+    expect(snap.remainingLabel.toLowerCase()).toContain('over');
+    expect(snap.remainingValue).not.toMatch(/-/);
+    expect(snap.caloriesRemainingLine.toLowerCase()).toContain('over');
+  });
+
+  it('ignores food logged on another local diary day', () => {
+    const snap = buildDailyWidgetSnapshot({
+      signedIn: true,
+      todayKey: '2026-11-16',
+      locale: 'en',
+      goal: { daily_calorie_target: 2000 } as never,
+      foodEntries: [
+        {
+          id: 'yesterday',
+          logged_on: '2026-11-15',
+          meal_type: 'dinner',
+          quantity: 1,
+          food_name: 'Pizza',
+          calories: 900,
+          protein_g: 30,
+          carbs_g: 90,
+          fat_g: 30,
+        } as never,
+        {
+          id: 'today',
+          logged_on: '2026-11-16',
+          meal_type: 'breakfast',
+          quantity: 1,
+          food_name: 'Eggs',
+          calories: 180,
+          protein_g: 14,
+          carbs_g: 2,
+          fat_g: 12,
+        } as never,
+      ],
+    });
+    expect(snap.caloriesValue).toBe('180');
+    expect(snap.caloriesRatio.replace(/,/g, '')).toContain('180 / 2000');
   });
 
   it('counts a current streak from persisted activity days, not leftover logs', () => {
@@ -147,5 +245,31 @@ describe('buildDailyWidgetSnapshot', () => {
     });
     expect(snap.waterValue).toContain('500');
     expect(snap.waterValue).not.toContain('1400');
+  });
+
+  it('uses a same-day calorie override without rewriting the stored goal object', () => {
+    const goal = { daily_calorie_target: 2000 } as never;
+    const snap = buildDailyWidgetSnapshot({
+      signedIn: true,
+      todayKey: '2026-11-15',
+      locale: 'en',
+      goal,
+      calorieTargetOverride: 2200,
+      foodEntries: [
+        {
+          id: '1',
+          logged_on: '2026-11-15',
+          meal_type: 'lunch',
+          quantity: 1,
+          food_name: 'Rice',
+          calories: 200,
+          protein_g: 4,
+          carbs_g: 40,
+          fat_g: 1,
+        } as never,
+      ],
+    });
+    expect(snap.remainingValue.replace(/,/g, '')).toBe('2000');
+    expect((goal as { daily_calorie_target: number }).daily_calorie_target).toBe(2000);
   });
 });

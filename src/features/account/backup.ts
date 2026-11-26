@@ -21,6 +21,7 @@ export const trackwiseBackupDataSchema = z.object({
   custom_exercises: recordList.default([]),
   exercise_favorites: recordList.default([]),
   onboarding_progress: z.record(z.string(), z.unknown()).nullable().optional(),
+  daily_nutrition_overrides: recordList.default([]),
 });
 
 /** Accept legacy Calio exports so old backup files still import. */
@@ -53,6 +54,7 @@ export type BackupSummary = {
   exerciseFavorites: number;
   hasProfile: boolean;
   hasOnboardingProgress: boolean;
+  dailyNutritionOverrides: number;
 };
 
 export type BackupValidationResult =
@@ -76,6 +78,7 @@ export function summarizeBackup(data: TrackwiseBackupData): BackupSummary {
     exerciseFavorites: data.exercise_favorites.length,
     hasProfile: Boolean(data.profile),
     hasOnboardingProgress: Boolean(data.onboarding_progress),
+    dailyNutritionOverrides: data.daily_nutrition_overrides.length,
   };
 }
 

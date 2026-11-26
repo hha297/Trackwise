@@ -286,7 +286,7 @@
       "workoutsTitle": "Workouts",
       "workoutsBody": "Start a session, add exercises from the catalog, log sets, then finish. Strength volume uses weight × reps.",
       "widgetsTitle": "Home-screen widgets",
-      "widgetsBody": "On Android, long-press the home screen → Widgets → Trackwise. Add Daily (calories and macros) or Workout. Open the app once while signed in so numbers appear, then tap the widget to jump back in. Widgets are not in Expo Go.",
+      "widgetsBody": "On Android, long-press the home screen → Widgets → Trackwise. Add Daily (calorie ring, macros, and water) or Workout. Open the app once while signed in so numbers appear, then tap the widget to jump back in. Widgets are not in Expo Go.",
       "goalsTitle": "Goals & measurements",
       "goalsBody": "Set a daily calorie target under Account → Goal. Log body weight and other measurements under Progress.",
       "accountTitle": "Account & data",
@@ -2111,6 +2111,179 @@
       "volume": "volume"
     },
     "volume": "Volume"
+  },
+  "companion": {
+    "kicker": "Today",
+    "loadError": "Could not load today’s suggestion",
+    "retry": "Try again in a moment.",
+    "dismiss": "Hide this suggestion",
+    "a11y": {
+      "card": "{{title}}. Open suggested action"
+    },
+    "comeback": {
+      "title": "Welcome back",
+      "body": "No pressure. Let’s take it one step at a time.",
+      "continuePlan": "Continue with your plan",
+      "reviewGoals": "Review current goals",
+      "simpleActivity": "Start a simple activity",
+      "openDiary": "Go to the food diary"
+    },
+    "card": {
+      "scheduledWorkout": {
+        "title": "You have a workout planned today",
+        "body": "Start when you are ready. You can also reschedule from the planner.",
+        "cta": "Open workouts"
+      },
+      "overdueWorkout": {
+        "title": "A planned session is still open",
+        "body": "Move it to a better day, or mark a rest day if you need one. Your history stays as it is.",
+        "cta": "Open planner"
+      },
+      "logFood": {
+        "title": "Ready to start today’s food diary?",
+        "body": "A first meal gives you a clearer picture of the day. Nothing has to be perfect.",
+        "cta": "Log a meal"
+      },
+      "proteinRemaining": {
+        "title": "Protein is still below today’s target",
+        "body": "You have about {{grams}} g of protein left to reach today’s target.",
+        "cta": "Add food"
+      },
+      "caloriesClose": {
+        "title": "You are close to today’s calorie target",
+        "body": "{{consumed}} of {{target}} kcal logged so far. This is a progress update, not a prompt to restrict.",
+        "cta": "See weekly progress"
+      },
+      "nutritionComplete": {
+        "title": "Today’s nutrition targets look complete",
+        "body": "Nice work staying with your plan. No need to cut further.",
+        "cta": "View progress"
+      },
+      "workoutComplete": {
+        "title": "Today’s workout is logged",
+        "body": "That’s enough for today unless you feel like moving more for enjoyment.",
+        "cta": "View progress"
+      },
+      "restDay": {
+        "title": "Today is a planned rest day",
+        "body": "Recovery is part of the plan. You can still log food as usual.",
+        "cta": "Open planner"
+      },
+      "optionalActivity": {
+        "title": "A short session is optional today",
+        "body": "Nothing is scheduled. If you want to move, pick something familiar from your history.",
+        "cta": "Browse workouts"
+      },
+      "multiProgress": {
+        "title": "Food and training are both on the board",
+        "body": "Small consistent actions add up. Keep going at a pace that feels sustainable.",
+        "cta": "View progress"
+      },
+      "partialDay": {
+        "title": "You’ve made a start today",
+        "body": "Part of the day is logged. You can continue whenever it fits.",
+        "cta": "Continue"
+      },
+      "welcome": {
+        "title": "Trackwise is ready when you are",
+        "body": "Log a meal or a workout to start a picture that is actually yours.",
+        "cta": "Log a meal"
+      }
+    },
+    "tips": {
+      "proteinTrendLow": {
+        "title": "Protein has been below target recently",
+        "body": "Consider adding a protein-rich option to one of your meals. This is a suggestion, not a prescription.",
+        "cta": "Log food"
+      },
+      "missedSessions": {
+        "title": "Your schedule may need adjusting",
+        "body": "A few planned sessions were missed. Choosing a more realistic frequency can help you keep going.",
+        "cta": "Review planner"
+      },
+      "loggingGap": {
+        "title": "Start with the next meal",
+        "body": "A short gap in logging is normal. Recording the next meal rebuilds a useful overview.",
+        "cta": "Log a meal"
+      },
+      "restartSimple": {
+        "title": "Want to restart with something simple?",
+        "body": "Even a short session can be a comfortable first step.",
+        "cta": "Open workouts"
+      },
+      "habitStreak": {
+        "title": "You have been keeping up with your routine",
+        "body": "Small, consistent actions add up. There is no extra target to chase today.",
+        "cta": "See your journey"
+      }
+    },
+    "flexible": {
+      "heading": "Today only",
+      "idleHint": "Need a more realistic target for this day? Your usual goal stays saved.",
+      "activeHint": "Today {{adjusted}} kcal · usual {{original}} kcal",
+      "originalVisible": "Usual target {{original}} kcal",
+      "targetToday": "Today’s target",
+      "usual": "Usual target",
+      "busy": "Busier day",
+      "lighter": "Lighter day",
+      "saveError": "Could not save today’s adjustment.",
+      "adjustedReadOnly": "Adjusted {{adjusted}} kcal that day (usual {{original}})"
+    },
+    "journey": {
+      "title": "My journey",
+      "subtitle": "Milestones from your actual logs — not streaks to protect.",
+      "empty": "Log food and workouts to see your first milestones here.",
+      "loadError": "Could not load your journey",
+      "category": {
+        "workout": "Workout",
+        "nutrition": "Nutrition",
+        "consistency": "Consistency"
+      },
+      "firstWorkout": {
+        "title": "First workout completed",
+        "body": "You logged your first completed workout."
+      },
+      "workouts10": {
+        "title": "10 workouts completed",
+        "body": "You have completed 10 workouts since starting your journey."
+      },
+      "workouts25": {
+        "title": "25 workouts completed",
+        "body": "You have completed 25 workouts since starting your journey."
+      },
+      "workouts50": {
+        "title": "50 workouts completed",
+        "body": "You have completed 50 workouts since starting your journey."
+      },
+      "firstFood": {
+        "title": "First food diary day",
+        "body": "You recorded food for the first time."
+      },
+      "foodDays7": {
+        "title": "7 days of food logging",
+        "body": "You have logged food on 7 different days."
+      },
+      "foodDays30": {
+        "title": "30 days of food logging",
+        "body": "You have logged food on 30 different days."
+      },
+      "nutritionOnTrack7": {
+        "title": "7 days on your calorie target",
+        "body": "You reached your calorie target on 7 completed days."
+      },
+      "consistency7": {
+        "title": "First 7-day consistency stretch",
+        "body": "You kept a 7-day stretch of meaningful activity."
+      },
+      "consistency28": {
+        "title": "4 weeks of consistent participation",
+        "body": "You kept a 28-day stretch of meaningful activity."
+      },
+      "engagement90": {
+        "title": "3 months of meaningful engagement",
+        "body": "You have stayed with Trackwise across 90 days, with activity on {{count}} of those days."
+      }
+    }
   },
   "widgets": {
     "dailyTitle": "Today",

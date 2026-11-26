@@ -19,6 +19,7 @@ import {
   formatConsumedTarget,
   formatGrams,
   formatPercentDetail,
+  formatPercentLabel,
   progressAgainstTarget,
 } from './format';
 import {
@@ -36,6 +37,8 @@ export type DailySnapshotInput = {
   todayKey?: string;
   locale?: string;
   goal?: Goal | null;
+  /** Same-day calorie override. Does not mutate the stored goal. */
+  calorieTargetOverride?: number | null;
   profile?: Profile | null;
   foodEntries?: FoodEntry[];
   hydrationEntries?: HydrationEntry[];
@@ -91,8 +94,13 @@ export function buildDailyWidgetSnapshot(input: DailySnapshotInput): DailyWidget
   const todayKey = input.todayKey ?? toDiaryDateKey();
   const locale = input.locale ?? i18n.language ?? 'en';
   const imperial = input.profile?.units === 'imperial';
-  const macros = entriesToMacros(input.foodEntries ?? []);
-  const calorieTarget = input.goal?.daily_calorie_target ?? null;
+  const kcalUnit = i18n.t('diary.meals.kcalUnit');
+  const foodEntries = (input.foodEntries ?? []).filter((entry) => entry.logged_on === todayKey);
+  const macros = entriesToMacros(foodEntries);
+  const calorieTarget =
+    input.calorieTargetOverride != null && input.calorieTargetOverride > 0
+      ? input.calorieTargetOverride
+      : (input.goal?.daily_calorie_target ?? null);
   const hasCalorieTarget = calorieTarget != null && calorieTarget > 0;
   const burned = Math.max(0, Math.round(input.burnedCalories ?? 0));
   const balance = hasCalorieTarget
@@ -128,6 +136,17 @@ export function buildDailyWidgetSnapshot(input: DailySnapshotInput): DailyWidget
   const showStreak = Boolean(streak && streak.current > 0);
 
   const remainingOver = (balance?.remaining ?? 0) < 0;
+  const caloriesProgress = hasCalorieTarget
+    ? progressAgainstTarget(macros.calories, calorieTarget)
+    : 0;
+  const caloriesRatio = hasCalorieTarget
+    ? formatConsumedTarget(macros.calories, calorieTarget, kcalUnit, locale)
+    : formatCompactNumber(macros.calories, locale);
+  const caloriesRemainingLine = hasCalorieTarget
+    ? `${formatCompactNumber(Math.abs(balance?.remaining ?? 0), locale)} ${
+        remainingOver ? i18n.t('widgets.remainingOver') : i18n.t('widgets.remaining')
+      }`
+    : '';
   const proteinValue = formatGrams(macros.proteinG, locale);
   const carbsValue = formatGrams(macros.carbsG, locale);
   const fatValue = formatGrams(macros.fatG, locale);
@@ -150,13 +169,14 @@ export function buildDailyWidgetSnapshot(input: DailySnapshotInput): DailyWidget
     title: i18n.t('widgets.dailyTitle'),
     caloriesLabel: i18n.t('widgets.calories'),
     caloriesValue: formatCompactNumber(macros.calories, locale),
+    caloriesRatio,
+    caloriesPercent: hasCalorieTarget ? formatPercentLabel(caloriesProgress, locale) : '',
     remainingLabel: remainingOver ? i18n.t('widgets.remainingOver') : i18n.t('widgets.remaining'),
     remainingValue: hasCalorieTarget
       ? formatCompactNumber(Math.abs(balance?.remaining ?? 0), locale)
       : '—',
-    caloriesProgress: hasCalorieTarget
-      ? progressAgainstTarget(macros.calories, calorieTarget)
-      : 0,
+    caloriesRemainingLine,
+    caloriesProgress,
     proteinLabel: i18n.t('widgets.protein'),
     proteinValue,
     proteinProgress,

@@ -81,6 +81,7 @@ export async function exportUserData(userId: string, _email?: string | null): Pr
     exerciseFavorites,
     templates,
     onboarding,
+    nutritionOverrides,
   ] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
     supabase.from('goals').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
@@ -117,6 +118,11 @@ export async function exportUserData(userId: string, _email?: string | null): Pr
       .eq('is_system', false)
       .order('updated_at', { ascending: false }),
     supabase.from('onboarding_progress').select('*').eq('user_id', userId).maybeSingle(),
+    supabase
+      .from('daily_nutrition_overrides')
+      .select('*')
+      .eq('user_id', userId)
+      .order('override_date', { ascending: true }),
   ]);
 
   for (const result of [
@@ -133,6 +139,19 @@ export async function exportUserData(userId: string, _email?: string | null): Pr
     onboarding,
   ]) {
     if (result.error) throw result.error;
+  }
+
+  let overrideRows: Record<string, unknown>[] = [];
+  if (nutritionOverrides.error) {
+    const message = nutritionOverrides.error.message?.toLowerCase() ?? '';
+    const missingTable =
+      nutritionOverrides.error.code === '42P01' ||
+      nutritionOverrides.error.code === 'PGRST205' ||
+      message.includes('does not exist') ||
+      message.includes('schema cache');
+    if (!missingTable) throw nutritionOverrides.error;
+  } else {
+    overrideRows = (nutritionOverrides.data ?? []) as Record<string, unknown>[];
   }
 
   const workoutIds = (workouts.data ?? []).map((w) => w.id as string).filter(Boolean);
@@ -204,6 +223,7 @@ export async function exportUserData(userId: string, _email?: string | null): Pr
       custom_exercises: (customExercises.data ?? []) as Record<string, unknown>[],
       exercise_favorites: (exerciseFavorites.data ?? []) as Record<string, unknown>[],
       onboarding_progress: (onboarding.data as Record<string, unknown> | null) ?? null,
+      daily_nutrition_overrides: overrideRows,
     },
   };
 }

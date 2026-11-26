@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui/text';
 import { ErrorState, LoadingState } from '@/components/ui/states';
 import { useFoodEntriesInRange, useWorkoutsInRange } from '@/features/diary/hooks';
+import { JourneySection } from '@/features/companion/components/journey-section';
 import { ConsistencySection } from '@/features/engagement/consistency-section';
 import { useActiveGoal, useProfile } from '@/features/goals/hooks';
 import { useHydrationInRange } from '@/features/hydration/hooks';
@@ -151,6 +152,7 @@ export function ProgressDashboard() {
             endKey={range.endKey}
             activityDays={activityDays}
           />
+          <JourneySection todayKey={todayKey} locale={locale} />
           <NutritionTrendsSection
             series={nutrition}
             avgCalories={overview.avgCalories}

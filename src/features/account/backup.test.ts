@@ -55,4 +55,12 @@ describe('validateTrackwiseBackup', () => {
     const result = parseTrackwiseBackupJson('{nope');
     expect(result.ok).toBe(false);
   });
+
+  it('defaults missing daily nutrition overrides so older backups still import', () => {
+    const result = validateTrackwiseBackup(validBackup);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.summary.dailyNutritionOverrides).toBe(0);
+    }
+  });
 });

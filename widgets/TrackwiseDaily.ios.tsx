@@ -28,6 +28,10 @@ const TrackwiseDaily = (props: DailyWidgetProps, environment: WidgetEnvironment)
   const text = dark ? '#FCFCFC' : '#202020';
   const muted = dark ? 'rgba(252,252,252,0.62)' : '#646464';
   const primary = '#00D95F';
+  const carbs = '#A56B2A';
+  const protein = '#3E6F8A';
+  const fat = '#8A5A6A';
+  const water = '#3B82F6';
   const family = environment.widgetFamily ?? 'systemMedium';
   const openUrl = props.openUrl || 'trackwise:///';
   const body = 'Bricolage Grotesque';
@@ -35,20 +39,28 @@ const TrackwiseDaily = (props: DailyWidgetProps, environment: WidgetEnvironment)
   const proteinRatio = props.proteinRatio || props.proteinValue;
   const fatRatio = props.fatRatio || props.fatValue;
   const carbsRatio = props.carbsRatio || props.carbsValue;
+  const calorieHeadline = props.caloriesRatio || props.caloriesValue;
+  const remainingLine =
+    props.caloriesRemainingLine ||
+    (props.remainingValue !== '—' ? `${props.remainingValue} ${props.remainingLabel}` : props.hint);
 
-  const calorieRing = (
-    <ZStack alignment="center" modifiers={[frame({ width: 120, height: 120 })]}>
+  const calorieRing = (ring: number, valueSize: number) => (
+    <ZStack alignment="center" modifiers={[frame({ width: ring, height: ring })]}>
       <Gauge
         value={props.caloriesProgress}
         min={0}
         max={1}
-        modifiers={[gaugeStyle('circularCapacity'), tint(primary), frame({ width: 120, height: 120 })]}
+        modifiers={[
+          gaugeStyle('circularCapacity'),
+          tint(primary),
+          frame({ width: ring, height: ring }),
+        ]}
       />
       <VStack alignment="center" spacing={0}>
-        <Text modifiers={[font({ family: mono, size: 22, weight: 'bold' }), foregroundStyle(text)]}>
+        <Text modifiers={[font({ family: mono, size: valueSize, weight: 'bold' }), foregroundStyle(text)]}>
           {props.caloriesValue}
         </Text>
-        <Text modifiers={[font({ family: body, size: 11, weight: 'medium' }), foregroundStyle(muted)]}>
+        <Text modifiers={[font({ family: body, size: 10, weight: 'medium' }), foregroundStyle(muted)]}>
           {props.caloriesLabel}
         </Text>
       </VStack>
@@ -73,39 +85,59 @@ const TrackwiseDaily = (props: DailyWidgetProps, environment: WidgetEnvironment)
       <Text modifiers={[font({ family: body, size: 12, weight: 'semibold' }), foregroundStyle(color)]}>
         {label}
       </Text>
-      <Text modifiers={[font({ family: mono, size: 16, weight: 'bold' }), foregroundStyle(text)]}>
+      <Text modifiers={[font({ family: mono, size: 15, weight: 'bold' }), foregroundStyle(text)]}>
         {ratio}
       </Text>
       <ProgressView
         value={progress}
         modifiers={[progressViewStyle('linear'), tint(color), frame({ height: 4 })]}
       />
-      <Text modifiers={[font({ family: body, size: 11, weight: 'medium' }), foregroundStyle(muted)]}>
-        {remaining}
-      </Text>
+      {remaining ? (
+        <Text modifiers={[font({ family: body, size: 11, weight: 'medium' }), foregroundStyle(muted)]}>
+          {remaining}
+        </Text>
+      ) : null}
+    </VStack>
+  );
+
+  const compactMetric = (label: string, ratio: string, progress: number, color: string) => (
+    <VStack alignment="leading" spacing={2}>
+      <HStack spacing={6} alignment="center">
+        <Text modifiers={[font({ family: body, size: 11, weight: 'semibold' }), foregroundStyle(color)]}>
+          {label}
+        </Text>
+        <Spacer />
+        <Text modifiers={[font({ family: mono, size: 12, weight: 'bold' }), foregroundStyle(text)]}>
+          {ratio}
+        </Text>
+      </HStack>
+      <ProgressView
+        value={progress}
+        modifiers={[progressViewStyle('linear'), tint(color), frame({ height: 4 })]}
+      />
     </VStack>
   );
 
   const metricGrid = (
     <Grid alignment="leading" horizontalSpacing={8} verticalSpacing={8}>
       <Grid.Row>
-        {metricCard(props.carbsLabel, carbsRatio, props.carbsProgress, props.carbsRemainingLine, '#A56B2A')}
+        {metricCard(props.carbsLabel, carbsRatio, props.carbsProgress, props.carbsRemainingLine, carbs)}
         {metricCard(
           props.proteinLabel,
           proteinRatio,
           props.proteinProgress,
           props.proteinRemainingLine,
-          '#3E6F8A',
+          protein,
         )}
       </Grid.Row>
       <Grid.Row>
-        {metricCard(props.fatLabel, fatRatio, props.fatProgress, props.fatRemainingLine, '#8A5A6A')}
+        {metricCard(props.fatLabel, fatRatio, props.fatProgress, props.fatRemainingLine, fat)}
         {metricCard(
           props.waterLabel,
           props.waterValue,
           props.waterProgress,
           props.waterRemainingLine,
-          '#3B82F6',
+          water,
         )}
       </Grid.Row>
     </Grid>
@@ -116,7 +148,7 @@ const TrackwiseDaily = (props: DailyWidgetProps, environment: WidgetEnvironment)
       <ZStack
         alignment="center"
         modifiers={[
-          padding({ all: 12 }),
+          padding({ all: 10 }),
           containerBackground(surface, 'widget'),
           widgetURL(openUrl),
         ]}
@@ -145,14 +177,24 @@ const TrackwiseDaily = (props: DailyWidgetProps, environment: WidgetEnvironment)
     return (
       <VStack
         alignment="center"
-        spacing={14}
+        spacing={12}
         modifiers={[
           padding({ all: 14 }),
           containerBackground(surface, 'widget'),
           widgetURL(openUrl),
         ]}
       >
-        {calorieRing}
+        {calorieRing(128, 24)}
+        <VStack alignment="center" spacing={2}>
+          <Text modifiers={[font({ family: mono, size: 16, weight: 'bold' }), foregroundStyle(text)]}>
+            {calorieHeadline}
+          </Text>
+          {remainingLine ? (
+            <Text modifiers={[font({ family: body, size: 12, weight: 'medium' }), foregroundStyle(muted)]}>
+              {remainingLine}
+            </Text>
+          ) : null}
+        </VStack>
         {metricGrid}
       </VStack>
     );
@@ -168,9 +210,21 @@ const TrackwiseDaily = (props: DailyWidgetProps, environment: WidgetEnvironment)
         widgetURL(openUrl),
       ]}
     >
-      {calorieRing}
-      {metricGrid}
-      <Spacer />
+      {calorieRing(96, 18)}
+      <VStack alignment="leading" spacing={4}>
+        <Text modifiers={[font({ family: mono, size: 15, weight: 'bold' }), foregroundStyle(text)]}>
+          {calorieHeadline}
+        </Text>
+        {remainingLine ? (
+          <Text modifiers={[font({ family: body, size: 11, weight: 'medium' }), foregroundStyle(muted)]}>
+            {remainingLine}
+          </Text>
+        ) : null}
+        {compactMetric(props.carbsLabel, carbsRatio, props.carbsProgress, carbs)}
+        {compactMetric(props.proteinLabel, proteinRatio, props.proteinProgress, protein)}
+        {compactMetric(props.fatLabel, fatRatio, props.fatProgress, fat)}
+        {compactMetric(props.waterLabel, props.waterValue, props.waterProgress, water)}
+      </VStack>
     </HStack>
   );
 };

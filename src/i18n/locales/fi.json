@@ -286,7 +286,7 @@
       "workoutsTitle": "Treenit",
       "workoutsBody": "Aloita sessio, lisää liikkeitä katalogista, kirjaa settit ja lopeta. Voimaharjoittelun volyymi on paino × toistot.",
       "widgetsTitle": "Aloitusnäytön widgetit",
-      "widgetsBody": "Androidilla paina pitkään aloitusnäyttöä → Widgetit → Trackwise. Lisää Daily (kalorit ja makrot) tai Workout. Avaa sovellus kerran kirjautuneena, jotta luvut päivittyvät, ja napauta widgetiä palataksesi sovellukseen. Widgetit eivät toimi Expo Gossa.",
+      "widgetsBody": "Androidilla paina pitkään aloitusnäyttöä → Widgetit → Trackwise. Lisää Daily (kalorirengas, makrot ja vesi) tai Workout. Avaa sovellus kerran kirjautuneena, jotta luvut päivittyvät, ja napauta widgetiä palataksesi sovellukseen. Widgetit eivät toimi Expo Gossa.",
       "goalsTitle": "Tavoitteet ja mittaukset",
       "goalsBody": "Aseta päivittäinen kaloritavoite kohdasta Tili → Tavoite. Kirjaa paino ja muut mittaukset Edistymisessä.",
       "accountTitle": "Tili ja data",
@@ -2110,6 +2110,179 @@
       "logFailed": "Ateriaa ei voitu kirjata päiväkirjaan.",
       "alreadyLogged": "Tämä suunniteltu ateria on jo kirjattu. Muokkaa päiväkirjariviä.",
       "entryMissing": "Päiväkirjariviä ei löytynyt tälle aterialle."
+    }
+  },
+  "companion": {
+    "kicker": "Tänään",
+    "loadError": "Päivän ehdotusta ei voitu ladata",
+    "retry": "Yritä hetken kuluttua uudelleen.",
+    "dismiss": "Piilota tämä ehdotus",
+    "a11y": {
+      "card": "{{title}}. Avaa ehdotettu toiminto"
+    },
+    "comeback": {
+      "title": "Tervetuloa takaisin",
+      "body": "Ei kiirettä. Edetään yksi askel kerrallaan.",
+      "continuePlan": "Jatka nykyisellä suunnitelmalla",
+      "reviewGoals": "Tarkista tavoitteet",
+      "simpleActivity": "Aloita kevyt harjoitus",
+      "openDiary": "Siirry ruokapäiväkirjaan"
+    },
+    "card": {
+      "scheduledWorkout": {
+        "title": "Sinulla on treeni suunniteltuna tälle päivälle",
+        "body": "Aloita, kun olet valmis. Voit myös siirtää treenin suunnitelmassa.",
+        "cta": "Avaa treenit"
+      },
+      "overdueWorkout": {
+        "title": "Suunniteltu treeni on vielä auki",
+        "body": "Siirrä se sopivampaan päivään tai merkitse lepopäivä, jos tarvitset sen. Historia säilyy ennallaan.",
+        "cta": "Avaa suunnitelma"
+      },
+      "logFood": {
+        "title": "Aloitetaanko tämän päivän ruokapäiväkirja?",
+        "body": "Ensimmäinen ateria antaa selkeämmän kuvan päivästä. Kaiken ei tarvitse olla täydellistä.",
+        "cta": "Kirjaa ateria"
+      },
+      "proteinRemaining": {
+        "title": "Proteiini on vielä alle päivän tavoitteen",
+        "body": "Sinulla on noin {{grams}} g proteiinia jäljellä päivän tavoitteeseen.",
+        "cta": "Lisää ruokaa"
+      },
+      "caloriesClose": {
+        "title": "Olet lähellä päivän kaloritavoitetta",
+        "body": "{{consumed}} / {{target}} kcal kirjattu. Tämä on edistymistieto, ei kehotus rajoittaa.",
+        "cta": "Näytä viikon edistyminen"
+      },
+      "nutritionComplete": {
+        "title": "Päivän ravitsemustavoitteet näyttävät täyttyvän",
+        "body": "Hyvä, että pysyt suunnitelmassa. Enempää ei tarvitse karsia.",
+        "cta": "Näytä edistyminen"
+      },
+      "workoutComplete": {
+        "title": "Päivän treeni on kirjattu",
+        "body": "Se riittää tälle päivälle, ellet halua liikkua lisää ihan iloksi.",
+        "cta": "Näytä edistyminen"
+      },
+      "restDay": {
+        "title": "Tänään on suunniteltu lepopäivä",
+        "body": "Palautuminen kuuluu suunnitelmaan. Ruokaa voi silti kirjata tavalliseen tapaan.",
+        "cta": "Avaa suunnitelma"
+      },
+      "optionalActivity": {
+        "title": "Lyhyt treeni on tänään vapaaehtoinen",
+        "body": "Mitään ei ole aikataulussa. Jos haluat liikkua, valitse tuttu harjoitus historiasta.",
+        "cta": "Selaa treenejä"
+      },
+      "multiProgress": {
+        "title": "Ruoka ja treeni ovat molemmat kirjattu",
+        "body": "Pienet, säännölliset teot kertyvät. Jatka tahtia, joka tuntuu kestävältä.",
+        "cta": "Näytä edistyminen"
+      },
+      "partialDay": {
+        "title": "Olet jo aloittanut tämän päivän",
+        "body": "Osa päivästä on kirjattu. Voit jatkaa, kun se sopii.",
+        "cta": "Jatka"
+      },
+      "welcome": {
+        "title": "Trackwise on valmiina, kun sinä olet",
+        "body": "Kirjaa ateria tai treeni, niin kuva perustuu sinun tietoihisi.",
+        "cta": "Kirjaa ateria"
+      }
+    },
+    "tips": {
+      "proteinTrendLow": {
+        "title": "Proteiini on jäänyt viime aikoina alle tavoitteen",
+        "body": "Harkitse proteiinipitoista vaihtoehtoa johonkin ateriaan. Tämä on ehdotus, ei ohje.",
+        "cta": "Kirjaa ruokaa"
+      },
+      "missedSessions": {
+        "title": "Aikataulua voi olla syytä keventää",
+        "body": "Muutama suunniteltu treeni jäi väliin. Realistisempi tahti voi auttaa jatkamaan.",
+        "cta": "Tarkista suunnitelma"
+      },
+      "loggingGap": {
+        "title": "Aloita seuraavasta ateriasta",
+        "body": "Tauko kirjaamisessa on tavallista. Seuraava ateria täydentää kokonaiskuvaa.",
+        "cta": "Kirjaa ateria"
+      },
+      "restartSimple": {
+        "title": "Haluatko aloittaa uudelleen kevyesti?",
+        "body": "Lyhytkin treeni voi olla hyvä ensimmäinen askel.",
+        "cta": "Avaa treenit"
+      },
+      "habitStreak": {
+        "title": "Olet pysynyt rutiinissa",
+        "body": "Pienet, säännölliset teot kertyvät. Tänään ei tarvitse jahtaa lisätavoitetta.",
+        "cta": "Näytä matkasi"
+      }
+    },
+    "flexible": {
+      "heading": "Vain tänään",
+      "idleHint": "Tarvitsetko tälle päivälle realistisemman tavoitteen? Tavallinen tavoite säilyy.",
+      "activeHint": "Tänään {{adjusted}} kcal · tavallisesti {{original}} kcal",
+      "originalVisible": "Tavallinen tavoite {{original}} kcal",
+      "targetToday": "Tämän päivän tavoite",
+      "usual": "Tavallinen tavoite",
+      "busy": "Kiireisempi päivä",
+      "lighter": "Kevyempi päivä",
+      "saveError": "Päivän muutosta ei voitu tallentaa.",
+      "adjustedReadOnly": "Tuona päivänä {{adjusted}} kcal (tavallisesti {{original}})"
+    },
+    "journey": {
+      "title": "Oma matkani",
+      "subtitle": "Merkkipaaluja oikeista kirjauksista — ei suojeltavia putkia.",
+      "empty": "Kirjaa ruokaa ja treenejä, niin ensimmäiset merkkipaalut näkyvät tässä.",
+      "loadError": "Matkaa ei voitu ladata",
+      "category": {
+        "workout": "Treeni",
+        "nutrition": "Ravitsemus",
+        "consistency": "Säännöllisyys"
+      },
+      "firstWorkout": {
+        "title": "Ensimmäinen treeni valmis",
+        "body": "Kirjasit ensimmäisen valmiin treenin."
+      },
+      "workouts10": {
+        "title": "10 treeniä valmiina",
+        "body": "Olet tehnyt 10 treeniä matkasi aikana."
+      },
+      "workouts25": {
+        "title": "25 treeniä valmiina",
+        "body": "Olet tehnyt 25 treeniä matkasi aikana."
+      },
+      "workouts50": {
+        "title": "50 treeniä valmiina",
+        "body": "Olet tehnyt 50 treeniä matkasi aikana."
+      },
+      "firstFood": {
+        "title": "Ensimmäinen ruokapäiväkirjapäivä",
+        "body": "Kirjasit ruokaa ensimmäisen kerran."
+      },
+      "foodDays7": {
+        "title": "Ruokaa kirjattu 7 päivänä",
+        "body": "Olet kirjannut ruokaa 7 eri päivänä."
+      },
+      "foodDays30": {
+        "title": "Ruokaa kirjattu 30 päivänä",
+        "body": "Olet kirjannut ruokaa 30 eri päivänä."
+      },
+      "nutritionOnTrack7": {
+        "title": "Kaloritavoite täyttyi 7 päivänä",
+        "body": "Olet ollut kaloritavoitteessa 7 valmiina päivänä."
+      },
+      "consistency7": {
+        "title": "Ensimmäinen 7 päivän jakso",
+        "body": "Pidit 7 päivän jakson merkityksellistä aktiivisuutta."
+      },
+      "consistency28": {
+        "title": "4 viikkoa säännöllistä tekemistä",
+        "body": "Pidit 28 päivän jakson merkityksellistä aktiivisuutta."
+      },
+      "engagement90": {
+        "title": "3 kuukautta merkityksellistä käyttöä",
+        "body": "Olet pysynyt Trackwisessa 90 päivän ajan, ja aktiivisuutta on {{count}} päivänä."
+      }
     }
   },
   "widgets": {

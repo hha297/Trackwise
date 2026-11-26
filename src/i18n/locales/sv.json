@@ -286,7 +286,7 @@
       "workoutsTitle": "Pass",
       "workoutsBody": "Starta ett pass, lägg till övningar från katalogen, logga set och avsluta. Styrkevolym använder vikt × reps.",
       "widgetsTitle": "Hemskärmswidgetar",
-      "widgetsBody": "På Android: tryck länge på hemskärmen → Widgetar → Trackwise. Lägg till Daily (kalorier och makron) eller Workout. Öppna appen en gång inloggad så att siffrorna syns, tryck sedan på widgeten för att hoppa tillbaka. Widgetar finns inte i Expo Go.",
+      "widgetsBody": "På Android: tryck länge på hemskärmen → Widgetar → Trackwise. Lägg till Daily (kaloriring, makron och vatten) eller Workout. Öppna appen en gång inloggad så att siffrorna syns, tryck sedan på widgeten för att hoppa tillbaka. Widgetar finns inte i Expo Go.",
       "goalsTitle": "Mål och mätningar",
       "goalsBody": "Sätt ett dagligt kalorimål under Konto → Mål. Logga vikt och andra mått under Framsteg.",
       "accountTitle": "Konto och data",
@@ -2110,6 +2110,179 @@
       "logFailed": "Kunde inte logga måltiden i dagboken.",
       "alreadyLogged": "Denna planerade måltid är redan loggad. Redigera dagboksraden i stället.",
       "entryMissing": "Kunde inte hitta dagboksraden för denna måltid."
+    }
+  },
+  "companion": {
+    "kicker": "I dag",
+    "loadError": "Kunde inte läsa dagens förslag",
+    "retry": "Försök igen om en stund.",
+    "dismiss": "Dölj det här förslaget",
+    "a11y": {
+      "card": "{{title}}. Öppna föreslagen åtgärd"
+    },
+    "comeback": {
+      "title": "Välkommen tillbaka",
+      "body": "Ingen press. Vi tar det ett steg i taget.",
+      "continuePlan": "Fortsätt med din plan",
+      "reviewGoals": "Granska dina mål",
+      "simpleActivity": "Starta en enkel aktivitet",
+      "openDiary": "Gå till matdagboken"
+    },
+    "card": {
+      "scheduledWorkout": {
+        "title": "Du har ett pass planerat i dag",
+        "body": "Börja när du är redo. Du kan också flytta passet i planeringen.",
+        "cta": "Öppna träning"
+      },
+      "overdueWorkout": {
+        "title": "Ett planerat pass är fortfarande öppet",
+        "body": "Flytta det till en bättre dag, eller markera en vilodag om du behöver det. Historiken är oförändrad.",
+        "cta": "Öppna planeringen"
+      },
+      "logFood": {
+        "title": "Redo att börja dagens matdagbok?",
+        "body": "En första måltid ger en tydligare bild av dagen. Allt behöver inte vara perfekt.",
+        "cta": "Logga en måltid"
+      },
+      "proteinRemaining": {
+        "title": "Proteinet är fortfarande under dagens mål",
+        "body": "Du har ungefär {{grams}} g protein kvar till dagens mål.",
+        "cta": "Lägg till mat"
+      },
+      "caloriesClose": {
+        "title": "Du är nära dagens kalorimål",
+        "body": "{{consumed}} av {{target}} kcal loggade hittills. Det här är en lägesuppdatering, inte en uppmaning att äta mindre.",
+        "cta": "Se veckans framsteg"
+      },
+      "nutritionComplete": {
+        "title": "Dagens kostmål ser ut att vara nådda",
+        "body": "Bra att du följer planen. Du behöver inte skära ner mer.",
+        "cta": "Visa framsteg"
+      },
+      "workoutComplete": {
+        "title": "Dagens pass är loggat",
+        "body": "Det räcker för i dag, om du inte vill röra på dig mer bara för att det känns bra.",
+        "cta": "Visa framsteg"
+      },
+      "restDay": {
+        "title": "I dag är en planerad vilodag",
+        "body": "Återhämtning är en del av planen. Du kan fortfarande logga mat som vanligt.",
+        "cta": "Öppna planeringen"
+      },
+      "optionalActivity": {
+        "title": "Ett kort pass är valfritt i dag",
+        "body": "Inget är inbokat. Vill du röra på dig kan du välja något bekant från historiken.",
+        "cta": "Bläddra bland pass"
+      },
+      "multiProgress": {
+        "title": "Både mat och träning är igång",
+        "body": "Små, jämna steg räknas. Fortsätt i en takt som håller.",
+        "cta": "Visa framsteg"
+      },
+      "partialDay": {
+        "title": "Du har kommit igång i dag",
+        "body": "En del av dagen är loggad. Fortsätt när det passar.",
+        "cta": "Fortsätt"
+      },
+      "welcome": {
+        "title": "Trackwise är redo när du är",
+        "body": "Logga en måltid eller ett pass så byggs bilden på dina egna uppgifter.",
+        "cta": "Logga en måltid"
+      }
+    },
+    "tips": {
+      "proteinTrendLow": {
+        "title": "Proteinet har legat under målet på sistone",
+        "body": "Överväg ett proteinrikt alternativ till en av måltiderna. Det här är ett förslag, inte ett recept.",
+        "cta": "Logga mat"
+      },
+      "missedSessions": {
+        "title": "Schemat kan behöva justeras",
+        "body": "Några planerade pass missades. En mer realistisk frekvens kan göra det lättare att fortsätta.",
+        "cta": "Granska planeringen"
+      },
+      "loggingGap": {
+        "title": "Börja med nästa måltid",
+        "body": "Ett kort uppehåll i loggningen är vanligt. Nästa måltid ger en mer användbar översikt.",
+        "cta": "Logga en måltid"
+      },
+      "restartSimple": {
+        "title": "Vill du komma igång enkelt igen?",
+        "body": "Även ett kort pass kan vara ett tryggt första steg.",
+        "cta": "Öppna träning"
+      },
+      "habitStreak": {
+        "title": "Du har hållit i din rutin",
+        "body": "Små, jämna steg räknas. Det finns inget extra mål att jaga i dag.",
+        "cta": "Se din resa"
+      }
+    },
+    "flexible": {
+      "heading": "Bara i dag",
+      "idleHint": "Behöver du ett mer realistiskt mål för den här dagen? Ditt vanliga mål sparas.",
+      "activeHint": "I dag {{adjusted}} kcal · vanligtvis {{original}} kcal",
+      "originalVisible": "Vanligt mål {{original}} kcal",
+      "targetToday": "Dagens mål",
+      "usual": "Vanligt mål",
+      "busy": "Hektisk dag",
+      "lighter": "Lättare dag",
+      "saveError": "Kunde inte spara dagens justering.",
+      "adjustedReadOnly": "Den dagen {{adjusted}} kcal (vanligtvis {{original}})"
+    },
+    "journey": {
+      "title": "Min resa",
+      "subtitle": "Milstolpar från dina faktiska loggar — inte streakar att skydda.",
+      "empty": "Logga mat och träning för att se dina första milstolpar här.",
+      "loadError": "Kunde inte läsa din resa",
+      "category": {
+        "workout": "Träning",
+        "nutrition": "Kost",
+        "consistency": "Kontinuitet"
+      },
+      "firstWorkout": {
+        "title": "Första passet slutfört",
+        "body": "Du loggade ditt första slutförda pass."
+      },
+      "workouts10": {
+        "title": "10 pass slutförda",
+        "body": "Du har slutfört 10 pass sedan du började."
+      },
+      "workouts25": {
+        "title": "25 pass slutförda",
+        "body": "Du har slutfört 25 pass sedan du började."
+      },
+      "workouts50": {
+        "title": "50 pass slutförda",
+        "body": "Du har slutfört 50 pass sedan du började."
+      },
+      "firstFood": {
+        "title": "Första matdagboksdagen",
+        "body": "Du loggade mat för första gången."
+      },
+      "foodDays7": {
+        "title": "Mat loggad 7 dagar",
+        "body": "Du har loggat mat på 7 olika dagar."
+      },
+      "foodDays30": {
+        "title": "Mat loggad 30 dagar",
+        "body": "Du har loggat mat på 30 olika dagar."
+      },
+      "nutritionOnTrack7": {
+        "title": "Kalorimålet nått 7 dagar",
+        "body": "Du nådde kalorimålet på 7 avslutade dagar."
+      },
+      "consistency7": {
+        "title": "Första 7-dagarsperioden",
+        "body": "Du höll en 7-dagarsperiod med meningsfull aktivitet."
+      },
+      "consistency28": {
+        "title": "4 veckor av jämn medverkan",
+        "body": "Du höll en 28-dagarsperiod med meningsfull aktivitet."
+      },
+      "engagement90": {
+        "title": "3 månader av meningsfull användning",
+        "body": "Du har hängt kvar i Trackwise i 90 dagar, med aktivitet på {{count}} av dem."
+      }
     }
   },
   "widgets": {

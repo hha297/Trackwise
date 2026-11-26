@@ -17,8 +17,11 @@ export type DailyWidgetProps = {
   title: string;
   caloriesLabel: string;
   caloriesValue: string;
+  caloriesRatio: string;
+  caloriesPercent: string;
   remainingLabel: string;
   remainingValue: string;
+  caloriesRemainingLine: string;
   caloriesProgress: number;
   proteinLabel: string;
   proteinValue: string;
@@ -69,8 +72,11 @@ export const UNSIGNED_DAILY_WIDGET_PROPS: DailyWidgetProps = {
   title: 'Trackwise',
   caloriesLabel: 'Calories',
   caloriesValue: '—',
+  caloriesRatio: '—',
+  caloriesPercent: '',
   remainingLabel: 'Left',
   remainingValue: '—',
+  caloriesRemainingLine: '',
   caloriesProgress: 0,
   proteinLabel: 'Protein',
   proteinValue: '—',

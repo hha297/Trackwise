@@ -286,7 +286,7 @@
       "workoutsTitle": "Buổi tập",
       "workoutsBody": "Bắt đầu buổi tập, thêm bài từ catalog, ghi set, rồi kết thúc. Volume sức mạnh = tạ × số lần.",
       "widgetsTitle": "Widget màn hình chính",
-      "widgetsBody": "Trên Android, nhấn giữ màn hình chính → Widget → Trackwise. Thêm Daily (calo và macro) hoặc Workout. Mở app một lần khi đã đăng nhập để số hiện ra, rồi chạm widget để vào lại app. Widget không có trong Expo Go.",
+      "widgetsBody": "Trên Android, nhấn giữ màn hình chính → Widget → Trackwise. Thêm Daily (vòng calo, macro và nước) hoặc Workout. Mở app một lần khi đã đăng nhập để số hiện ra, rồi chạm widget để vào lại app. Widget không có trong Expo Go.",
       "goalsTitle": "Mục tiêu & số đo",
       "goalsBody": "Đặt mục tiêu calo ngày trong Tài khoản → Mục tiêu. Ghi cân nặng và số đo khác trong Tiến độ.",
       "accountTitle": "Tài khoản & dữ liệu",
@@ -1068,7 +1068,7 @@
     "category": {
       "Strength": "Sức mạnh",
       "Cardio": "Cardio",
-      "Bodyweight": "Thân trọng",
+      "Bodyweight": "Trọng lượng cơ thể",
       "Flexibility": "Linh hoạt",
       "Sports": "Thể thao",
       "Other": "Khác"
@@ -1125,7 +1125,7 @@
       "dumbbell": "Tạ đơn",
       "machine": "Máy",
       "cable": "Cáp",
-      "bodyweight": "Thân trọng",
+      "bodyweight": "Trọng lượng cơ thể",
       "mat": "Thảm",
       "kettlebell": "Kettlebell",
       "band": "Dây kháng lực",
@@ -1191,7 +1191,7 @@
       "mobility": "Linh hoạt & phục hồi",
       "arms": "Tay",
       "hamstringsGlutes": "Đùi sau & mông",
-      "calisthenics": "Calisthenics (thân trọng)"
+      "calisthenics": "Calisthenics (trọng lượng cơ thể)"
     },
     "searchTitle": "Tìm bài tập",
     "searchSubtitle": "Tìm trong catalog ExerciseAPI kèm bộ lọc.",
@@ -1223,7 +1223,7 @@
     },
     "apiCategory": {
       "strength": "Sức mạnh",
-      "calisthenics": "Calisthenics (thân trọng)",
+      "calisthenics": "Calisthenics (trọng lượng cơ thể)",
       "conditioning": "Cardio",
       "plyometrics": "Plyometric (nhảy bật)",
       "yoga": "Yoga",
@@ -1275,7 +1275,7 @@
       "mat": "Thảm",
       "cables": "Cáp",
       "machines": "Máy",
-      "bodyweight": "Thân trọng",
+      "bodyweight": "Trọng lượng cơ thể",
       "pull-up bar": "Xà đơn",
       "dumbbells optional": "Tạ đơn (không bắt buộc)",
       "jump rope": "Dây nhảy",
@@ -1308,7 +1308,7 @@
       "power_circuit": "Bài đa khớp trong mạch tập ngắn, thiên sức mạnh.",
       "engine_builder": "Cardio đều để nâng sức làm việc.",
       "jump_conditioner": "Sức bật và thể lực, tiếp đất nhẹ.",
-      "calisthenics_starter": "Sức mạnh thân trọng nền tảng, không cần máy.",
+      "calisthenics_starter": "Sức mạnh trọng lượng cơ thể nền tảng, không cần máy.",
       "core_crusher": "Plank, nâng và xoay cho core chắc.",
       "mobility_flow": "Mở hông, cột sống và vai trước hoặc sau buổi tập tạ.",
       "yoga_essentials": "Tư thế theo nhịp thở để hồi phục và kiểm soát.",
@@ -1317,13 +1317,13 @@
       "pull_hypertrophy": "Kéo dọc và ngang để lưng dày, rồi đến tay trước.",
       "posterior_chain": "Sức mạnh thiên hinge cho mông, đùi sau và cơ dựng sống.",
       "quads_builder": "Mẫu squat và bài một chân cho đùi trước và kiểm soát gối.",
-      "home_dumbbell": "Sức mạnh toàn thân với tạ đơn và thân trọng — không cần máy.",
+      "home_dumbbell": "Sức mạnh toàn thân với tạ đơn và trọng lượng cơ thể — không cần máy.",
       "fat_loss_circuit": "Các vòng toàn thân giữ nhịp tim cao.",
-      "advanced_calisthenics": "Tiến triển thân trọng khó hơn, kiểm soát chặt.",
+      "advanced_calisthenics": "Tiến triển trọng lượng cơ thể khó hơn, kiểm soát chặt.",
       "athletic_conditioning": "Sức mạnh tốc độ và đổi hướng cho thể lực thi đấu."
     },
     "templateVariations": {
-      "push_day_beginner": "Máy và thân trọng để học mẫu đẩy.",
+      "push_day_beginner": "Máy và trọng lượng cơ thể để học mẫu đẩy.",
       "push_day_intermediate": "Push cổ điển: ngực, vai và tay sau với tạ tự do.",
       "push_day_advanced": "Đẩy nặng, kèm dips và bài cô lập trên cáp.",
       "push_hypertrophy_beginner": "Bơm ngực đơn giản trên máy ổn định.",
@@ -1392,8 +1392,8 @@
       "athletic_conditioning_beginner": "Động tác thể thao nhập môn, ít đòi hỏi phối hợp.",
       "athletic_conditioning_intermediate": "Sức mạnh, dây và đổi hướng.",
       "athletic_conditioning_advanced": "Mạch thể thao đầu ra cao — bùng nổ và chuyển hóa.",
-      "calisthenics_starter_beginner": "Đẩy, kéo và core thân trọng, dễ tiếp cận.",
-      "calisthenics_starter_intermediate": "Sức mạnh thân trọng chuẩn, kèm split squat.",
+      "calisthenics_starter_beginner": "Đẩy, kéo và core trọng lượng cơ thể, dễ tiếp cận.",
+      "calisthenics_starter_intermediate": "Sức mạnh trọng lượng cơ thể chuẩn, kèm split squat.",
       "calisthenics_starter_advanced": "Tiến triển khó hơn — kéo xà, pistol, pike press.",
       "advanced_calisthenics_beginner": "Tiến triển chuẩn bị cho kỹ năng khó hơn.",
       "advanced_calisthenics_intermediate": "Kéo và dip chặt, nâng gối khi treo.",
@@ -1956,7 +1956,7 @@
     "suggest": {
       "insufficient": "Chưa đủ buổi để so sánh và gợi ý.",
       "hold": "Giữ mức tạ. Buổi gần nhất không vượt buổi trước.",
-      "not_applicable": "Gợi ý tải chỉ dành cho bài sức mạnh và thân trọng."
+      "not_applicable": "Gợi ý tải chỉ dành cho bài sức mạnh và trọng lượng cơ thể."
     },
     "openProgress": "Tiến triển và kỷ lục",
     "prLine": "{{name}}: {{kind}} mới {{value}}",
@@ -2110,6 +2110,179 @@
       "logFailed": "Không ghi được món vào nhật ký.",
       "alreadyLogged": "Món này đã được ghi. Hãy sửa mục nhật ký.",
       "entryMissing": "Không tìm thấy mục nhật ký của món này."
+    }
+  },
+  "companion": {
+    "kicker": "Hôm nay",
+    "loadError": "Không tải được gợi ý hôm nay",
+    "retry": "Thử lại sau một lát.",
+    "dismiss": "Ẩn gợi ý này",
+    "a11y": {
+      "card": "{{title}}. Mở thao tác được gợi ý"
+    },
+    "comeback": {
+      "title": "Chào mừng bạn quay lại",
+      "body": "Không cần vội. Làm từng bước một là được.",
+      "continuePlan": "Tiếp tục kế hoạch hiện tại",
+      "reviewGoals": "Xem lại mục tiêu",
+      "simpleActivity": "Bắt đầu một hoạt động đơn giản",
+      "openDiary": "Mở nhật ký ăn uống"
+    },
+    "card": {
+      "scheduledWorkout": {
+        "title": "Hôm nay bạn có buổi tập đã lên lịch",
+        "body": "Bắt đầu khi bạn sẵn sàng. Bạn cũng có thể dời lịch trong phần kế hoạch.",
+        "cta": "Mở tập luyện"
+      },
+      "overdueWorkout": {
+        "title": "Một buổi tập đã lên lịch vẫn còn mở",
+        "body": "Hãy dời sang ngày phù hợp hơn, hoặc chọn ngày nghỉ nếu bạn cần. Lịch sử tập vẫn được giữ nguyên.",
+        "cta": "Mở kế hoạch"
+      },
+      "logFood": {
+        "title": "Sẵn sàng ghi nhật ký ăn hôm nay?",
+        "body": "Một bữa đầu tiên giúp bạn nhìn rõ hơn cả ngày. Không cần phải hoàn hảo.",
+        "cta": "Ghi một bữa"
+      },
+      "proteinRemaining": {
+        "title": "Protein vẫn chưa đạt mục tiêu hôm nay",
+        "body": "Bạn còn khoảng {{grams}} g protein nữa để đạt mục tiêu hôm nay.",
+        "cta": "Thêm món"
+      },
+      "caloriesClose": {
+        "title": "Bạn đang gần mục tiêu calo hôm nay",
+        "body": "Đã ghi {{consumed}} / {{target}} kcal. Đây chỉ là cập nhật tiến độ, không phải lời kêu gọi cắt giảm.",
+        "cta": "Xem tiến độ tuần"
+      },
+      "nutritionComplete": {
+        "title": "Mục tiêu dinh dưỡng hôm nay trông đã đủ",
+        "body": "Bạn đã bám kế hoạch. Không cần cắt giảm thêm.",
+        "cta": "Xem tiến độ"
+      },
+      "workoutComplete": {
+        "title": "Buổi tập hôm nay đã được ghi",
+        "body": "Thế là đủ cho hôm nay, trừ khi bạn muốn vận động thêm vì thích.",
+        "cta": "Xem tiến độ"
+      },
+      "restDay": {
+        "title": "Hôm nay là ngày nghỉ theo kế hoạch",
+        "body": "Hồi phục cũng là một phần của kế hoạch. Bạn vẫn có thể ghi ăn uống như bình thường.",
+        "cta": "Mở kế hoạch"
+      },
+      "optionalActivity": {
+        "title": "Hôm nay có thể tập nhẹ nếu muốn",
+        "body": "Chưa có lịch tập. Nếu muốn vận động, hãy chọn bài bạn đã quen.",
+        "cta": "Xem bài tập"
+      },
+      "multiProgress": {
+        "title": "Ăn uống và tập luyện đều đã có mặt",
+        "body": "Những việc nhỏ làm đều đặn sẽ cộng dồn. Giữ nhịp vừa sức.",
+        "cta": "Xem tiến độ"
+      },
+      "partialDay": {
+        "title": "Bạn đã bắt đầu hôm nay",
+        "body": "Một phần ngày đã được ghi. Tiếp tục khi nào thuận tiện.",
+        "cta": "Tiếp tục"
+      },
+      "welcome": {
+        "title": "Trackwise sẵn sàng khi bạn sẵn sàng",
+        "body": "Ghi một bữa hoặc một buổi tập để bắt đầu bức tranh thật sự của bạn.",
+        "cta": "Ghi một bữa"
+      }
+    },
+    "tips": {
+      "proteinTrendLow": {
+        "title": "Protein gần đây thường dưới mục tiêu",
+        "body": "Hãy cân nhắc thêm một lựa chọn giàu protein vào một bữa. Đây là gợi ý, không phải chỉ định.",
+        "cta": "Ghi món ăn"
+      },
+      "missedSessions": {
+        "title": "Lịch tập có thể cần điều chỉnh",
+        "body": "Một vài buổi đã lên lịch bị bỏ. Chọn tần suất thực tế hơn có thể giúp bạn duy trì.",
+        "cta": "Xem kế hoạch"
+      },
+      "loggingGap": {
+        "title": "Hãy bắt đầu từ bữa tiếp theo",
+        "body": "Ngắt quãng ghi chép là bình thường. Ghi bữa kế tiếp sẽ giúp bức tranh rõ hơn.",
+        "cta": "Ghi một bữa"
+      },
+      "restartSimple": {
+        "title": "Muốn bắt đầu lại bằng điều đơn giản?",
+        "body": "Dù chỉ một buổi ngắn cũng có thể là bước đầu dễ chịu.",
+        "cta": "Mở tập luyện"
+      },
+      "habitStreak": {
+        "title": "Bạn đang giữ nhịp đều đặn",
+        "body": "Những việc nhỏ, đều đặn sẽ cộng dồn. Hôm nay không cần thêm mục tiêu để đuổi theo.",
+        "cta": "Xem hành trình"
+      }
+    },
+    "flexible": {
+      "heading": "Chỉ hôm nay",
+      "idleHint": "Cần mục tiêu thực tế hơn cho ngày này? Mục tiêu thường ngày vẫn được lưu.",
+      "activeHint": "Hôm nay {{adjusted}} kcal · thường {{original}} kcal",
+      "originalVisible": "Mục tiêu thường {{original}} kcal",
+      "targetToday": "Mục tiêu hôm nay",
+      "usual": "Mục tiêu thường",
+      "busy": "Ngày bận hơn",
+      "lighter": "Ngày nhẹ hơn",
+      "saveError": "Không lưu được điều chỉnh hôm nay.",
+      "adjustedReadOnly": "Ngày đó {{adjusted}} kcal (thường {{original}})"
+    },
+    "journey": {
+      "title": "Hành trình của tôi",
+      "subtitle": "Cột mốc từ nhật ký thật của bạn — không phải chuỗi ngày phải bảo vệ.",
+      "empty": "Ghi ăn uống và tập luyện để thấy cột mốc đầu tiên tại đây.",
+      "loadError": "Không tải được hành trình",
+      "category": {
+        "workout": "Tập luyện",
+        "nutrition": "Dinh dưỡng",
+        "consistency": "Đều đặn"
+      },
+      "firstWorkout": {
+        "title": "Buổi tập đầu tiên hoàn thành",
+        "body": "Bạn đã ghi buổi tập hoàn thành đầu tiên."
+      },
+      "workouts10": {
+        "title": "10 buổi tập hoàn thành",
+        "body": "Bạn đã hoàn thành 10 buổi tập kể từ khi bắt đầu."
+      },
+      "workouts25": {
+        "title": "25 buổi tập hoàn thành",
+        "body": "Bạn đã hoàn thành 25 buổi tập kể từ khi bắt đầu."
+      },
+      "workouts50": {
+        "title": "50 buổi tập hoàn thành",
+        "body": "Bạn đã hoàn thành 50 buổi tập kể từ khi bắt đầu."
+      },
+      "firstFood": {
+        "title": "Ngày nhật ký ăn đầu tiên",
+        "body": "Bạn đã ghi món ăn lần đầu."
+      },
+      "foodDays7": {
+        "title": "7 ngày ghi nhật ký ăn",
+        "body": "Bạn đã ghi món ăn trong 7 ngày khác nhau."
+      },
+      "foodDays30": {
+        "title": "30 ngày ghi nhật ký ăn",
+        "body": "Bạn đã ghi món ăn trong 30 ngày khác nhau."
+      },
+      "nutritionOnTrack7": {
+        "title": "7 ngày đạt mục tiêu calo",
+        "body": "Bạn đã đạt mục tiêu calo trong 7 ngày đã hoàn thành."
+      },
+      "consistency7": {
+        "title": "Chuỗi 7 ngày đều đặn đầu tiên",
+        "body": "Bạn đã giữ 7 ngày hoạt động có ý nghĩa liên tiếp."
+      },
+      "consistency28": {
+        "title": "4 tuần tham gia đều đặn",
+        "body": "Bạn đã giữ 28 ngày hoạt động có ý nghĩa liên tiếp."
+      },
+      "engagement90": {
+        "title": "3 tháng gắn bó có ý nghĩa",
+        "body": "Bạn đã dùng Trackwise trong 90 ngày, với hoạt động vào {{count}} ngày."
+      }
     }
   },
   "widgets": {

@@ -16,6 +16,7 @@ import type { FoodEntry } from '@/features/food/types';
 import type { Goal, Profile } from '@/features/goals/types';
 import { usePlannedMealsForDate } from '@/features/meal-plan/hooks';
 import { MealPlanPreviewCard } from '@/features/meal-plan/meal-plan-preview-card';
+import { TodayGuidanceCard } from '@/features/companion/components/today-guidance-card';
 import type { WorkoutListItem } from '@/features/workout/hooks';
 
 type DiaryDayViewProps = {
@@ -52,6 +53,12 @@ export function DiaryDayView({
 
   return (
     <View className="gap-4">
+      <TodayGuidanceCard
+        dateKey={dateKey}
+        todayKey={todayKey}
+        entries={entries}
+        workouts={workouts}
+      />
       <NutritionDashboard
         dateKey={dateKey}
         todayKey={todayKey}

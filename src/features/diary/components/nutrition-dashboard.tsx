@@ -28,6 +28,17 @@ import { parseDiaryDateKey } from '@/utils/date';
 
 export type DiaryPeriod = 'day' | 'week';
 
+/** Shared Day/Week calorie ring diameter so the macros block does not jump. */
+const CALORIE_RING_SIZE = 132;
+/**
+ * Shared Day/Week overview height (ring + side content).
+ * Sized for three Day metric rows (fine 18 + metric 24 + gaps) so Week matches Day
+ * and the Macronutrients block stays put when switching tabs.
+ */
+const CALORIE_OVERVIEW_HEIGHT = 156;
+/** Fixed week bar track — no over-target growth, so overview height stays stable. */
+const WEEK_BAR_TRACK_HEIGHT = 108;
+
 type NutritionDashboardProps = {
   dateKey: string;
   todayKey: string;
@@ -139,18 +150,21 @@ export function NutritionDashboard({
       </View>
 
       {period === 'day' ? (
-        <View className="w-full flex-row items-center">
+        <View
+          className="w-full flex-row items-center"
+          style={{ height: CALORIE_OVERVIEW_HEIGHT }}
+        >
           <View className="items-center justify-center" style={{ flexShrink: 0 }}>
             <ProgressRing
               value={dayMacros.calories}
               max={Math.max(1, calorieTarget)}
-              size={132}
+              size={CALORIE_RING_SIZE}
               color={colors.macroCalories}
               centerPrimary={formatNumber(dayMacros.calories, locale)}
               centerSecondary={t('diary.nutrition.consumed')}
             />
           </View>
-          <View className="flex-1 justify-center gap-5 pl-4">
+          <View className="flex-1 justify-center gap-3 pl-4">
             <MetricStackItem
               icon={<Target size={15} color={colors.textSecondary} />}
               label={t('diary.nutrition.toConsume')}
@@ -179,33 +193,32 @@ export function NutritionDashboard({
           </View>
         </View>
       ) : (
-        <View className="flex-row items-end gap-3">
-          <View className="items-center justify-center" style={{ width: '40%' }}>
+        <View
+          className="w-full flex-row items-center gap-3"
+          style={{ height: CALORIE_OVERVIEW_HEIGHT }}
+        >
+          <View className="items-center justify-center" style={{ flexShrink: 0 }}>
             <ProgressRing
               value={weekMacros.calories}
               max={Math.max(1, weekCalorieTarget)}
-              size={112}
+              size={CALORIE_RING_SIZE}
               color={colors.macroCalories}
               centerPrimary={formatNumber(weekMacros.calories, locale)}
               centerSecondary={t('diary.nutrition.kcal')}
             />
           </View>
-          <View className="flex-1" style={{ minHeight: 124 }}>
-            <View className="flex-1 flex-row items-end gap-1.5">
+          <View className="flex-1 justify-center">
+            <View className="flex-row items-end gap-1.5">
               {weekBars.map((bar) => {
                 const value = bar.value;
                 const target = Math.max(1, calorieTarget);
                 const overTarget = value != null && value > target;
-                const baseH = 96;
-                const trackHeight = overTarget
-                  ? baseH + Math.min(28, ((value! - target) / target) * 28)
-                  : baseH;
                 const fillHeight =
                   value == null || value <= 0
                     ? 0
                     : overTarget
-                      ? trackHeight
-                      : Math.max(4, (value / target) * baseH);
+                      ? WEEK_BAR_TRACK_HEIGHT
+                      : Math.max(4, (value / target) * WEEK_BAR_TRACK_HEIGHT);
                 const fillColor = overTarget ? colors.error : colors.primary;
 
                 return (
@@ -213,7 +226,7 @@ export function NutritionDashboard({
                     <View
                       style={{
                         width: '100%',
-                        height: trackHeight,
+                        height: WEEK_BAR_TRACK_HEIGHT,
                         borderRadius: 6,
                         backgroundColor: colors.surfaceMuted,
                         justifyContent: 'flex-end',
@@ -244,7 +257,7 @@ export function NutritionDashboard({
       )}
 
       <View className="gap-1.5">
-        <Text variant="label" tone="secondary">
+        <Text variant="label" tone="secondary" numberOfLines={1}>
           {period === 'week'
             ? t('diary.nutrition.macrosWeekHeading')
             : t('diary.nutrition.macrosDayHeading')}
